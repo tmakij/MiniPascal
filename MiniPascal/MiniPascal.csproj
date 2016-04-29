@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A3C5D6AF-3BBA-48E9-BE00-60914AA072DF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MiniPascal</RootNamespace>
+    <AssemblyName>MiniPascal</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=3.2.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Compiler.cs" />
+    <Compile Include="Lexer\ScannerStates\PartialState\A.cs" />
+    <Compile Include="Lexer\ScannerStates\PartialState\B.cs" />
+    <Compile Include="Lexer\ScannerStates\PartialState\CharacterSplit.cs" />
+    <Compile Include="Lexer\ScannerStates\PartialState\E.cs" />
+    <Compile Include="Lexer\ScannerStates\Exponent.cs" />
+    <Compile Include="Lexer\ScannerStates\ExponentSign.cs" />
+    <Compile Include="Lexer\ScannerStates\Greater.cs" />
+    <Compile Include="Lexer\ScannerStates\PartialState\I.cs" />
+    <Compile Include="Lexer\ScannerStates\Less.cs" />
+    <Compile Include="Lexer\ScannerStates\PartialState\W.cs" />
+    <Compile Include="Lexer\ScannerStates\PartialState\Pro.cs" />
+    <Compile Include="Lexer\ScannerStates\RealLiteral.cs" />
+    <Compile Include="Parser\AST\AbstractSyntaxTree.cs" />
+    <Compile Include="Parser\AST\IValuedExecutable.cs" />
+    <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\BooleanAnd.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\BooleanNegation.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\Equals.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\IBinaryOperator.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\IntegerAddition.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\IntegerDivision.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\IntegerMultiplication.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\IntegerSubstraction.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\IUnaryOperator.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\LessThan.cs" />
+    <Compile Include="Parser\AST\Execution\ReturnValue.cs" />
+    <Compile Include="Parser\AST\Execution\RuntimeVariable.cs" />
+    <Compile Include="Parser\AST\Execution\Operators\StringConcatenation.cs" />
+    <Compile Include="Parser\AST\ITypedNode.cs" />
+    <Compile Include="Parser\AST\IIdentifierHolder.cs" />
+    <Compile Include="Parser\AST\Identifiers\ImmutableVariableException.cs" />
+    <Compile Include="Parser\AST\Statements\Read\IntegerFormatException.cs" />
+    <Compile Include="Parser\AST\Statements\Read\IntegerOverflowException.cs" />
+    <Compile Include="Parser\AST\Statements\Read\IntegerParseOverflowException.cs" />
+    <Compile Include="Parser\AST\Identifiers\InvalidTypeException.cs" />
+    <Compile Include="Parser\AST\ScopedProgram.cs" />
+    <Compile Include="Parser\AST\Statements\Assert\AssertStatement.cs" />
+    <Compile Include="Parser\AST\Statements\AssigmentStatement.cs" />
+    <Compile Include="Parser\AST\Expressions\BinaryExpression.cs" />
+    <Compile Include="Parser\AST\Statements\DeclarationStatement.cs" />
+    <Compile Include="Parser\AST\Operands\ExpressionOperand.cs" />
+    <Compile Include="Parser\AST\Expressions\IExpression.cs" />
+    <Compile Include="Parser\AST\Operands\IntegerLiteralOperand.cs" />
+    <Compile Include="Parser\AST\Statements\Read\ReadStatement.cs" />
+    <Compile Include="Parser\AST\Identifiers\TypeMismatchException.cs" />
+    <Compile Include="Parser\AST\Operands\IOperand.cs" />
+    <Compile Include="Parser\AST\Statements\IStatement.cs" />
+    <Compile Include="Parser\AST\OperatorType.cs" />
+    <Compile Include="Parser\AST\Operands\StringLiteralOperand.cs" />
+    <Compile Include="Parser\AST\Expressions\UnaryExpression.cs" />
+    <Compile Include="Parser\AST\Statements\PrintStatement.cs" />
+    <Compile Include="Parser\AST\MiniPLType.cs" />
+    <Compile Include="Parser\AST\Identifiers\UndefinedOperatorException.cs" />
+    <Compile Include="Parser\AST\Identifiers\UninitializedVariableException.cs" />
+    <Compile Include="Parser\AST\Identifiers\UsedIdentifiers.cs" />
+    <Compile Include="Parser\AST\Identifier.cs" />
+    <Compile Include="Parser\AST\Operands\VariableOperand.cs" />
+    <Compile Include="Parser\AST\Identifiers\IdentifierTypes.cs" />
+    <Compile Include="Parser\AST\Identifiers\VariableNameDefinedException.cs" />
+    <Compile Include="Parser\AST\Execution\Variables.cs" />
+    <Compile Include="Lexer\LexerException.cs" />
+    <Compile Include="Parser\Parser.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Lexer\Scanner.cs" />
+    <Compile Include="Lexer\ScannerStates\Base.cs" />
+    <Compile Include="Lexer\ScannerStates\Colon.cs" />
+    <Compile Include="Lexer\ScannerStates\Comment\CommentEnd.cs" />
+    <Compile Include="Lexer\ScannerStates\Comment\EscapeCharacter.cs" />
+    <Compile Include="Lexer\ScannerStates\ForwardSlash.cs" />
+    <Compile Include="Lexer\ScannerStates\IntegerLiteral.cs" />
+    <Compile Include="Lexer\ScannerStates\Comment\NestedCommentStart.cs" />
+    <Compile Include="Lexer\ScannerStates\Comment\Comment.cs" />
+    <Compile Include="Lexer\ScannerStates\Identifier.cs" />
+    <Compile Include="Lexer\ScannerStates\IScannerState.cs" />
+    <Compile Include="Lexer\ScannerStates\SingleLineComment.cs" />
+    <Compile Include="Lexer\ScannerStates\SingleState.cs" />
+    <Compile Include="Lexer\ScannerStates\SingleStateEnd.cs" />
+    <Compile Include="Lexer\ScannerStates\StateStorage.cs" />
+    <Compile Include="Lexer\ScannerStates\StringLiteral.cs" />
+    <Compile Include="SourceStream.cs" />
+    <Compile Include="Lexer\Symbol.cs" />
+    <Compile Include="Parser\SyntaxException.cs" />
+    <Compile Include="Lexer\Token.cs" />
+    <Compile Include="Lexer\TokenConstruction.cs" />
+    <Compile Include="Lexer\TokenStream.cs" />
+    <Compile Include="TestSuite\HelloWorldTest.cs" />
+    <Compile Include="TestSuite\RedirectedOutputTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
