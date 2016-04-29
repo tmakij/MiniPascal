@@ -5,6 +5,7 @@ namespace MiniPL.Parser.AST
     public sealed class PrintStatement : IStatement
     {
         private readonly IExpression toPrint;
+        private MiniPascalType type;
 
         public PrintStatement(IExpression ToPrint)
         {
@@ -18,7 +19,13 @@ namespace MiniPL.Parser.AST
 
         public void CheckType(IdentifierTypes Types)
         {
-            toPrint.NodeType(Types);
+            type = toPrint.NodeType(Types);
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            toPrint.EmitIR(Emitter);
+            Emitter.CallPrint(type);
         }
 
         public void Execute(Variables Scope)

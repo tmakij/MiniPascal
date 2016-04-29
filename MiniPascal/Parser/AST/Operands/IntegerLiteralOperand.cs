@@ -13,14 +13,19 @@
         {
         }
 
-        public MiniPLType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(IdentifierTypes Types)
         {
-            return MiniPLType.Integer;
+            return MiniPascalType.Integer;
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            Emitter.PushInt(literal);
         }
 
         public ReturnValue Execute(Variables Global)
         {
-            return new ReturnValue(MiniPLType.Integer, literal);
+            return new ReturnValue(MiniPascalType.Integer, literal);
         }
     }
 }

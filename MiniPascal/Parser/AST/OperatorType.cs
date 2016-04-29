@@ -10,6 +10,10 @@
         Negation,
         Equals,
         LessThan,
-        And
+        And,
+        NotEquals,
+        LessOrEqualThan,
+        GreaterOrEqualThan,
+        GreaterThan
     }
 }

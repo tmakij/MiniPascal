@@ -2,6 +2,7 @@
 using MiniPL.Lexer;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace MiniPL.Parser
 {
@@ -129,7 +130,7 @@ namespace MiniPL.Parser
                 } while (Accept(Symbol.Comma));
 
                 Require(Symbol.Colon);
-                MiniPLType type = Type();
+                MiniPascalType type = Type();
                 if (type == null)
                 {
                     throw new SyntaxException(expType, symbol);
@@ -142,7 +143,82 @@ namespace MiniPL.Parser
 
         private IExpression Expression()
         {
-            throw new NotImplementedException();
+            IExpression simpleExpr = SimpleExpression();
+            OperatorType relational = RelationalOperator();
+            if (relational != OperatorType.None)
+            {
+                throw new NotImplementedException();
+            }
+            return simpleExpr;
+        }
+
+        private IExpression SimpleExpression()
+        {
+            return new UnaryExpression(OperatorType.None, Term());
+        }
+
+        private IOperand Term()
+        {
+            return Factor();
+        }
+
+        private IOperand Factor()
+        {
+            string lexeme = tokens.Current.Lexeme;
+            if (Accept(Symbol.IntegerLiteral))
+            {
+                try
+                {
+                    int val = int.Parse(lexeme);
+                    return new IntegerLiteralOperand(val);
+                }
+                catch (OverflowException)
+                {
+                    throw new IntegerParseOverflowException(lexeme);
+                }
+            }
+            if (Accept(Symbol.RealLiteral))
+            {
+                try
+                {
+                    float val = float.Parse(lexeme, CultureInfo.InvariantCulture);
+                    return new RealLiteral(val);
+                }
+                catch (OverflowException)
+                {
+                    throw new IntegerParseOverflowException(lexeme);
+                }
+            }
+            return null;
+        }
+
+        private OperatorType RelationalOperator()
+        {
+            if (Accept(Symbol.Equality))
+            {
+                return OperatorType.Equals;
+            }
+            if (Accept(Symbol.NotEquals))
+            {
+                return OperatorType.NotEquals;
+            }
+            if (Accept(Symbol.LessThan))
+            {
+                return OperatorType.LessThan;
+            }
+            if (Accept(Symbol.LessOrEqualThan))
+            {
+                return OperatorType.LessOrEqualThan;
+            }
+            if (Accept(Symbol.GreaterOrEqualThan))
+            {
+                return OperatorType.GreaterOrEqualThan;
+            }
+            if (Accept(Symbol.GreaterThan))
+            {
+                return OperatorType.GreaterThan;
+            }
+            return OperatorType.None;
         }
 
         /*
@@ -327,22 +403,23 @@ namespace MiniPL.Parser
         }
         */
 
-        private MiniPLType Type()
+        private MiniPascalType Type()
         {
-            if (Matches(Symbol.IntegerType))
+            if (Accept(Symbol.IntegerType))
             {
-                tokens.Next();
-                return MiniPLType.Integer;
+                return MiniPascalType.Integer;
             }
-            if (Matches(Symbol.StringType))
+            if (Accept(Symbol.StringType))
             {
-                tokens.Next();
-                return MiniPLType.String;
+                return MiniPascalType.String;
             }
-            if (Matches(Symbol.BooleanType))
+            if (Accept(Symbol.BooleanType))
             {
-                tokens.Next();
-                return MiniPLType.Boolean;
+                return MiniPascalType.Boolean;
+            }
+            if (Accept(Symbol.RealType))
+            {
+                return MiniPascalType.Real;
             }
             return null;
         }

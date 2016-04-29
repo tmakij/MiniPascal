@@ -4,6 +4,7 @@
     {
         private readonly Identifier identifier;
         private readonly IExpression expression;
+        private MiniPascalType type;
 
         public AssigmentStatement(Identifier Identifier, IExpression Expression)
         {
@@ -26,12 +27,18 @@
 
         public void CheckType(IdentifierTypes Types)
         {
-            MiniPLType type = Types.GetIdentifierType(identifier);
-            MiniPLType assigmentType = expression.NodeType(Types);
+            type = Types.GetIdentifierType(identifier);
+            MiniPascalType assigmentType = expression.NodeType(Types);
             if (!assigmentType.Equals(type))
             {
                 throw new TypeMismatchException(type, assigmentType);
             }
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            expression.EmitIR(Emitter);
+            Emitter.SaveVariable(identifier);
         }
 
         public void Execute(Variables Scope)

@@ -9,6 +9,6 @@
             return first && second;
         }
 
-        public MiniPLType ReturnType { get { return MiniPLType.Boolean; } }
+        public MiniPascalType ReturnType { get { return MiniPascalType.Boolean; } }
     }
 }

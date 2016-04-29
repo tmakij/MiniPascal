@@ -17,9 +17,14 @@
             }
         }
 
-        public MiniPLType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(IdentifierTypes Types)
         {
             return Types.GetIdentifierType(variable);
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            Emitter.LoadVariable(variable);
         }
 
         public ReturnValue Execute(Variables Global)

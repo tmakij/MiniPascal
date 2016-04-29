@@ -4,10 +4,10 @@ namespace MiniPL.Parser.AST
 {
     public sealed class InvalidTypeException : Exception
     {
-        public MiniPLType[] Expected { get; }
-        public MiniPLType Found { get; }
+        public MiniPascalType[] Expected { get; }
+        public MiniPascalType Found { get; }
 
-        public InvalidTypeException(MiniPLType Found, params MiniPLType[] Expected)
+        public InvalidTypeException(MiniPascalType Found, params MiniPascalType[] Expected)
         {
             this.Expected = Expected;
             this.Found = Found;

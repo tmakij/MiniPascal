@@ -4,7 +4,7 @@ namespace MiniPL.Parser.AST
 {
     public sealed class ScopedProgram
     {
-        private readonly List<IStatement> statements = new List<IStatement>();
+        public readonly List<IStatement> statements = new List<IStatement>();
 
         public void Add(IStatement Statement)
         {

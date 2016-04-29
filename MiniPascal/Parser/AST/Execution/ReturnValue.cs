@@ -2,10 +2,10 @@
 {
     public struct ReturnValue
     {
-        public MiniPLType Type { get; }
+        public MiniPascalType Type { get; }
         public object Value { get; }
 
-        public ReturnValue(MiniPLType Type, object Value)
+        public ReturnValue(MiniPascalType Type, object Value)
         {
             this.Type = Type;
             this.Value = Value;

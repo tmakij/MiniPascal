@@ -2,10 +2,10 @@
 {
     public sealed class RuntimeVariable
     {
-        public MiniPLType Type { get; }
+        public MiniPascalType Type { get; }
         public object Value { get; set; }
 
-        public RuntimeVariable(MiniPLType Type)
+        public RuntimeVariable(MiniPascalType Type)
         {
             this.Type = Type;
             Value = Type.DefaultValue;

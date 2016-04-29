@@ -14,9 +14,14 @@
             expression.CheckIdentifiers(Used);
         }
 
-        public MiniPLType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(IdentifierTypes Types)
         {
             return expression.NodeType(Types);
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            expression.EmitIR(Emitter);
         }
 
         public ReturnValue Execute(Variables Global)

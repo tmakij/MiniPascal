@@ -4,5 +4,6 @@
     {
         void CheckType(IdentifierTypes Types);
         void Execute(Variables Scope);
+        void EmitIR(CILEmitter Emitter);
     }
 }

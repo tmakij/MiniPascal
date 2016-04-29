@@ -2,7 +2,7 @@
 {
     public sealed class IntegerAddition : IBinaryOperator
     {
-        public MiniPLType ReturnType { get { return MiniPLType.Integer; } }
+        public MiniPascalType ReturnType { get { return MiniPascalType.Integer; } }
 
         public object Execute(object FirstOperand, object SecondOperand)
         {

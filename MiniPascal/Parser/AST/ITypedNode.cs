@@ -2,6 +2,6 @@
 {
     public interface ITypedNode : IIdentifierHolder
     {
-        MiniPLType NodeType(IdentifierTypes Types);
+        MiniPascalType NodeType(IdentifierTypes Types);
     }
 }

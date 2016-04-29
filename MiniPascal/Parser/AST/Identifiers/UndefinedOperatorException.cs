@@ -4,10 +4,10 @@ namespace MiniPL.Parser.AST
 {
     public sealed class UndefinedOperatorException : Exception
     {
-        public MiniPLType Type { get; }
+        public MiniPascalType Type { get; }
         public OperatorType Operator { get; }
 
-        public UndefinedOperatorException(MiniPLType Type, OperatorType Operator)
+        public UndefinedOperatorException(MiniPascalType Type, OperatorType Operator)
         {
             this.Type = Type;
             this.Operator = Operator;

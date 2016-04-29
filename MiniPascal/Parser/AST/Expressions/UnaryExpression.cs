@@ -16,14 +16,19 @@
             operand.CheckIdentifiers(Used);
         }
 
-        public MiniPLType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(IdentifierTypes Types)
         {
-            MiniPLType type = operand.NodeType(Types);
+            MiniPascalType type = operand.NodeType(Types);
             if (expressionOperator != OperatorType.None && !type.HasOperatorDefined(expressionOperator))
             {
                 throw new UndefinedOperatorException(type, expressionOperator);
             }
             return type;
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            operand.EmitIR(Emitter);
         }
 
         public ReturnValue Execute(Variables Global)

@@ -16,11 +16,16 @@
 
         public void CheckType(IdentifierTypes Types)
         {
-            MiniPLType type = toAssert.NodeType(Types);
-            if (!type.Equals(MiniPLType.Boolean))
+            MiniPascalType type = toAssert.NodeType(Types);
+            if (!type.Equals(MiniPascalType.Boolean))
             {
-                throw new TypeMismatchException(MiniPLType.Boolean, type);
+                throw new TypeMismatchException(MiniPascalType.Boolean, type);
             }
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void Execute(Variables Scope)

@@ -4,7 +4,7 @@ namespace MiniPL.Parser.AST
 {
     public sealed class Equals<T> : IBinaryOperator where T : IEquatable<T>
     {
-        public MiniPLType ReturnType { get { return MiniPLType.Boolean; } }
+        public MiniPascalType ReturnType { get { return MiniPascalType.Boolean; } }
 
         public object Execute(object FirstOperand, object SecondOperand)
         {

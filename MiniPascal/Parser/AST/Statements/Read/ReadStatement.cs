@@ -25,19 +25,24 @@ namespace MiniPL.Parser.AST
 
         public void CheckType(IdentifierTypes Types)
         {
-            MiniPLType varType = Types.GetIdentifierType(variableToReadInto);
-            if (!varType.Equals(MiniPLType.Integer) && !varType.Equals(MiniPLType.String))
+            MiniPascalType varType = Types.GetIdentifierType(variableToReadInto);
+            if (!varType.Equals(MiniPascalType.Integer) && !varType.Equals(MiniPascalType.String))
             {
-                throw new InvalidTypeException(varType, MiniPLType.Integer, MiniPLType.String);
+                throw new InvalidTypeException(varType, MiniPascalType.Integer, MiniPascalType.String);
             }
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            throw new NotImplementedException();
         }
 
         public void Execute(Variables Scope)
         {
             RuntimeVariable var = Scope.GetValue(variableToReadInto);
-            MiniPLType varType = var.Type;
+            MiniPascalType varType = var.Type;
             string input = Console.ReadLine() ?? string.Empty;
-            if (varType.Equals(MiniPLType.Integer))
+            if (varType.Equals(MiniPascalType.Integer))
             {
                 try
                 {
@@ -53,7 +58,7 @@ namespace MiniPL.Parser.AST
                     throw new IntegerFormatException(input);
                 }
             }
-            else if (varType.Equals(MiniPLType.String))
+            else if (varType.Equals(MiniPascalType.String))
             {
                 var.Value = input;
             }

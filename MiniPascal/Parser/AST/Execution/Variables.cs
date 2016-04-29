@@ -6,7 +6,7 @@ namespace MiniPL.Parser.AST
     {
         private readonly Dictionary<Identifier, RuntimeVariable> values = new Dictionary<Identifier, RuntimeVariable>();
 
-        public void AddIdentifier(Identifier Identifier, MiniPLType Type)
+        public void AddIdentifier(Identifier Identifier, MiniPascalType Type)
         {
             values.Add(Identifier, new RuntimeVariable(Type));
         }

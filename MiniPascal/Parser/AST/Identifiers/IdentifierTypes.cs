@@ -4,14 +4,14 @@ namespace MiniPL.Parser.AST
 {
     public sealed class IdentifierTypes
     {
-        private readonly Dictionary<Identifier, MiniPLType> types = new Dictionary<Identifier, MiniPLType>();
+        private readonly Dictionary<Identifier, MiniPascalType> types = new Dictionary<Identifier, MiniPascalType>();
 
-        public void SetIdentifierType(Identifier Identifier, MiniPLType Type)
+        public void SetIdentifierType(Identifier Identifier, MiniPascalType Type)
         {
             types.Add(Identifier, Type);
         }
 
-        public MiniPLType GetIdentifierType(Identifier Identifier)
+        public MiniPascalType GetIdentifierType(Identifier Identifier)
         {
             return types[Identifier];
         }

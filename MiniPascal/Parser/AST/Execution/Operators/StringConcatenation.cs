@@ -2,7 +2,7 @@
 {
     public sealed class StringConcatenation : IBinaryOperator
     {
-        public MiniPLType ReturnType { get { return MiniPLType.String; } }
+        public MiniPascalType ReturnType { get { return MiniPascalType.String; } }
 
         public object Execute(object FirstOperand, object SecondOperand)
         {

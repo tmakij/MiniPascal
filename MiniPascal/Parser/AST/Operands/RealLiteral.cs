@@ -1,10 +1,10 @@
 ﻿namespace MiniPL.Parser.AST
 {
-    public sealed class StringLiteralOperand : IOperand
+    public sealed class RealLiteral : IOperand
     {
-        private readonly string literal;
+        private readonly float literal;
 
-        public StringLiteralOperand(string Literal)
+        public RealLiteral(float Literal)
         {
             literal = Literal;
         }
@@ -15,17 +15,17 @@
 
         public MiniPascalType NodeType(IdentifierTypes Types)
         {
-            return MiniPascalType.String;
+            return MiniPascalType.Real;
         }
 
         public ReturnValue Execute(Variables Global)
         {
-            return new ReturnValue(MiniPascalType.String, literal);
+            return new ReturnValue(MiniPascalType.Real, literal);
         }
 
         public void EmitIR(CILEmitter Emitter)
         {
-            throw new System.NotImplementedException();
+            Emitter.PushSingle(literal);
         }
     }
 }

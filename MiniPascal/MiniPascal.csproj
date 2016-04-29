@@ -35,6 +35,12 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=3.2.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
@@ -64,7 +70,9 @@
     <Compile Include="Lexer\ScannerStates\PartialState\Pro.cs" />
     <Compile Include="Lexer\ScannerStates\RealLiteral.cs" />
     <Compile Include="Parser\AST\AbstractSyntaxTree.cs" />
+    <Compile Include="Parser\AST\CILEmitter.cs" />
     <Compile Include="Parser\AST\IValuedExecutable.cs" />
+    <Compile Include="Parser\AST\Operands\RealLiteral.cs" />
     <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
     <Compile Include="Parser\AST\Execution\Operators\BooleanAnd.cs" />
     <Compile Include="Parser\AST\Execution\Operators\BooleanNegation.cs" />
@@ -102,7 +110,7 @@
     <Compile Include="Parser\AST\Operands\StringLiteralOperand.cs" />
     <Compile Include="Parser\AST\Expressions\UnaryExpression.cs" />
     <Compile Include="Parser\AST\Statements\PrintStatement.cs" />
-    <Compile Include="Parser\AST\MiniPLType.cs" />
+    <Compile Include="Parser\AST\MiniPascalType.cs" />
     <Compile Include="Parser\AST\Identifiers\UndefinedOperatorException.cs" />
     <Compile Include="Parser\AST\Identifiers\UninitializedVariableException.cs" />
     <Compile Include="Parser\AST\Identifiers\UsedIdentifiers.cs" />

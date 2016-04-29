@@ -19,10 +19,10 @@
             second.CheckIdentifiers(Used);
         }
 
-        public MiniPLType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(IdentifierTypes Types)
         {
-            MiniPLType firstType = first.NodeType(Types);
-            MiniPLType secondType = second.NodeType(Types);
+            MiniPascalType firstType = first.NodeType(Types);
+            MiniPascalType secondType = second.NodeType(Types);
             if (!firstType.HasOperatorDefined(expressionOperator))
             {
                 throw new UndefinedOperatorException(firstType, expressionOperator);
@@ -34,13 +34,18 @@
             return firstType.BinaryOperation(expressionOperator).ReturnType;
         }
 
+        public void EmitIR(CILEmitter Emitter)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public ReturnValue Execute(Variables Global)
         {
             ReturnValue firstExprRetVal = first.Execute(Global);
             ReturnValue secondExprRetVal = second.Execute(Global);
             IBinaryOperator opr = firstExprRetVal.Type.BinaryOperation(expressionOperator);
             object retVal = opr.Execute(firstExprRetVal.Value, secondExprRetVal.Value);
-            MiniPLType retType = opr.ReturnType;
+            MiniPascalType retType = opr.ReturnType;
 
             return new ReturnValue(retType, retVal);
         }

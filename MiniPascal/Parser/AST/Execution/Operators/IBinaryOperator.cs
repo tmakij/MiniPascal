@@ -3,6 +3,6 @@
     public interface IBinaryOperator
     {
         object Execute(object FirstOperand, object SecondOperand);
-        MiniPLType ReturnType { get; }
+        MiniPascalType ReturnType { get; }
     }
 }

@@ -4,10 +4,10 @@ namespace MiniPL.Parser.AST
 {
     public sealed class TypeMismatchException : Exception
     {
-        public MiniPLType Expected { get; }
-        public MiniPLType Found { get; }
+        public MiniPascalType Expected { get; }
+        public MiniPascalType Found { get; }
 
-        public TypeMismatchException(MiniPLType Expected, MiniPLType Found)
+        public TypeMismatchException(MiniPascalType Expected, MiniPascalType Found)
         {
             this.Expected = Expected;
             this.Found = Found;
