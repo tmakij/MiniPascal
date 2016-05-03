@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace MiniPL.Lexer
+namespace MiniPascal.Lexer
 {
     public sealed class TokenConstruction
     {

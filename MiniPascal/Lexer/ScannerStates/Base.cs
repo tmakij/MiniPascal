@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Lexer.ScannerStates
+﻿namespace MiniPascal.Lexer.ScannerStates
 {
     public sealed class Base : IScannerState
     {
@@ -72,6 +72,12 @@
                     return States.Less;
                 case '>':
                     return States.Greater;
+                case '%':
+                    Current.End(Symbol.Modulo);
+                    return this;
+                case ',':
+                    Current.End(Symbol.Comma);
+                    return this;
                 case '.':
                     Current.End(Symbol.Period);
                     return this;

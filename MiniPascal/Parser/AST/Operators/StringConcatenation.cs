@@ -1,12 +1,14 @@
-﻿namespace MiniPL.Parser.AST
+﻿using System;
+
+namespace MiniPascal.Parser.AST
 {
     public sealed class StringConcatenation : IBinaryOperator
     {
         public MiniPascalType ReturnType { get { return MiniPascalType.String; } }
 
-        public object Execute(object FirstOperand, object SecondOperand)
+        public void EmitIR(CILEmitter Emitter)
         {
-            return FirstOperand.ToString() + SecondOperand.ToString();
+            throw new NotImplementedException();
         }
     }
 }

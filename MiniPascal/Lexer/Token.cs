@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Lexer
+﻿namespace MiniPascal.Lexer
 {
     public sealed class Token
     {

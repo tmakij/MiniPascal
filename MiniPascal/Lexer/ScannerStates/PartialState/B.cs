@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Lexer.ScannerStates
+﻿namespace MiniPascal.Lexer.ScannerStates
 {
     public sealed class B : IScannerState
     {

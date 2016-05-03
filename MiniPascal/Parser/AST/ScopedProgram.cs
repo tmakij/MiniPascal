@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace MiniPL.Parser.AST
+namespace MiniPascal.Parser.AST
 {
     public sealed class ScopedProgram
     {
-        public readonly List<IStatement> statements = new List<IStatement>();
+        private readonly List<IStatement> statements = new List<IStatement>();
 
         public void Add(IStatement Statement)
         {
@@ -27,11 +27,11 @@ namespace MiniPL.Parser.AST
             }
         }
 
-        public void Execute(Variables Scope)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
             foreach (IStatement item in statements)
             {
-                item.Execute(Scope);
+                item.EmitIR(Emitter, Types);
             }
         }
     }

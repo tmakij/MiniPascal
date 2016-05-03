@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public interface ITypedNode : IIdentifierHolder
     {

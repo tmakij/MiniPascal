@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MiniPL.Lexer.ScannerStates
+namespace MiniPascal.Lexer.ScannerStates
 {
     public sealed class CharacterSplit : IScannerState
     {

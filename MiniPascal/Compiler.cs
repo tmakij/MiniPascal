@@ -1,7 +1,7 @@
-﻿using MiniPL.Parser.AST;
-using MiniPL.Lexer;
+﻿using MiniPascal.Parser.AST;
+using MiniPascal.Lexer;
 
-namespace MiniPL
+namespace MiniPascal
 {
     public sealed class Compiler
     {
@@ -9,7 +9,7 @@ namespace MiniPL
         {
             Scanner scanner = new Scanner(Source);
             TokenStream tokens = scanner.GenerateTokens();
-            var parser = new MiniPL.Parser.Parser(tokens);
+            var parser = new MiniPascal.Parser.Parser(tokens);
             AbstractSyntaxTree tree = parser.Parse();
             tree.CheckIdentifiers();
             tree.CheckTypes();

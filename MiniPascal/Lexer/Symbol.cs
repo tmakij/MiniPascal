@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Lexer
+﻿namespace MiniPascal.Lexer
 {
     public enum Symbol
     {
@@ -51,6 +51,8 @@
         LogicalOr,
         Period,
         Size,
-        Comma
+        Comma,
+        Return,
+        Modulo
     }
 }

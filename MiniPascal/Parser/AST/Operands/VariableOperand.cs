@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class VariableOperand : IOperand
     {
@@ -25,12 +25,6 @@
         public void EmitIR(CILEmitter Emitter)
         {
             Emitter.LoadVariable(variable);
-        }
-
-        public ReturnValue Execute(Variables Global)
-        {
-            RuntimeVariable var = Global.GetValue(variable);
-            return new ReturnValue(var.Type, var.Value);
         }
     }
 }

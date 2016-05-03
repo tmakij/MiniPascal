@@ -1,6 +1,6 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
-    public interface IOperand : ITypedNode, IValuedExecutable
+    public interface IOperand : ITypedNode
     {
         void EmitIR(CILEmitter Emitter);
     }

@@ -1,7 +1,7 @@
 ﻿using System;
-using MiniPL.Lexer;
+using MiniPascal.Lexer;
 
-namespace MiniPL.Parser
+namespace MiniPascal.Parser
 {
     public sealed class SyntaxException : Exception
     {

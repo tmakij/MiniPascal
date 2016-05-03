@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class IntegerLiteralOperand : IOperand
     {
@@ -20,12 +20,7 @@
 
         public void EmitIR(CILEmitter Emitter)
         {
-            Emitter.PushInt(literal);
-        }
-
-        public ReturnValue Execute(Variables Global)
-        {
-            return new ReturnValue(MiniPascalType.Integer, literal);
+            Emitter.PushInt32(literal);
         }
     }
 }

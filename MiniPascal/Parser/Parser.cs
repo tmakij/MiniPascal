@@ -1,12 +1,10 @@
-﻿using MiniPL.Parser.AST;
-using MiniPL.Lexer;
+﻿using MiniPascal.Parser.AST;
+using MiniPascal.Lexer;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 
-namespace MiniPL.Parser
+namespace MiniPascal.Parser
 {
-    public sealed class Parser
+    public sealed partial class Parser
     {
         private readonly TokenStream tokens;
         private Symbol symbol { get { return tokens.Symbol; } }
@@ -29,11 +27,15 @@ namespace MiniPL.Parser
         private AbstractSyntaxTree Program()
         {
             Require(Symbol.Program);
-            Require(Symbol.Identifier);
+            Identifier ident = Identifier();
+            if (ident == null)
+            {
+                throw new SyntaxException("Program must have a name");
+            }
             Require(Symbol.SemiColon);
             ScopedProgram block = Block();
             Require(Symbol.Period);
-            return new AbstractSyntaxTree(block);
+            return new AbstractSyntaxTree(block, ident);
         }
 
         private ScopedProgram Block()
@@ -51,357 +53,17 @@ namespace MiniPL.Parser
                 block.Add(stm);
                 if (!Accept(Symbol.SemiColon))
                 {
-                    Console.WriteLine("?? " + symbol);
                     Require(Symbol.End);
                     break;
                 }
                 if (Accept(Symbol.End))
                 {
-                    Console.WriteLine("YES");
                     break;
                 }
             }
 
             return block;
         }
-
-        private IStatement Statement()
-        {
-            return SimpleStatement() ?? StructuredStatement() ?? DeclarationStatement();
-        }
-
-        private IStatement SimpleStatement()
-        {
-            return AssigmentStatement() ?? CallStatement();
-        }
-
-        private IStatement AssigmentStatement()
-        {
-            Identifier ident = Identifier();
-            if (ident != null)
-            {
-                Require(Symbol.Assigment);
-                IExpression expr = Expression();
-                if (expr == null)
-                {
-                    throw new SyntaxException(expExpression, symbol);
-                }
-                return new AssigmentStatement(ident, expr);
-            }
-            return null;
-        }
-
-        private IStatement CallStatement()
-        {
-            if (Accept(Symbol.PrintProcedure))
-            {
-                Require(Symbol.ClosureOpen);
-                Identifier i = Identifier();
-                //Require(Symbol.Identifier);
-                Require(Symbol.ClosureClose);
-                return new PrintStatement(new UnaryExpression(OperatorType.None, new VariableOperand(i)));
-                //throw new NotImplementedException();
-            }
-            /*Identifier ident = Identifier();
-            if (ident != null)
-            {
-            }*/
-            return null;
-        }
-
-        private IStatement StructuredStatement()
-        {
-            return null;
-        }
-
-        private IStatement DeclarationStatement()
-        {
-            if (Accept(Symbol.Variable))
-            {
-                List<Identifier> ids = new List<Identifier>();
-                do
-                {
-                    Identifier identifier = Identifier();
-                    if (identifier == null)
-                    {
-                        throw new SyntaxException(expIdentifier, symbol);
-                    }
-                    ids.Add(identifier);
-                } while (Accept(Symbol.Comma));
-
-                Require(Symbol.Colon);
-                MiniPascalType type = Type();
-                if (type == null)
-                {
-                    throw new SyntaxException(expType, symbol);
-                }
-                //Require(Symbol.SemiColon);
-                return new DeclarationStatement(ids[0], type, null);
-            }
-            return null;
-        }
-
-        private IExpression Expression()
-        {
-            IExpression simpleExpr = SimpleExpression();
-            OperatorType relational = RelationalOperator();
-            if (relational != OperatorType.None)
-            {
-                throw new NotImplementedException();
-            }
-            return simpleExpr;
-        }
-
-        private IExpression SimpleExpression()
-        {
-            return new UnaryExpression(OperatorType.None, Term());
-        }
-
-        private IOperand Term()
-        {
-            return Factor();
-        }
-
-        private IOperand Factor()
-        {
-            string lexeme = tokens.Current.Lexeme;
-            if (Accept(Symbol.IntegerLiteral))
-            {
-                try
-                {
-                    int val = int.Parse(lexeme);
-                    return new IntegerLiteralOperand(val);
-                }
-                catch (OverflowException)
-                {
-                    throw new IntegerParseOverflowException(lexeme);
-                }
-            }
-            if (Accept(Symbol.RealLiteral))
-            {
-                try
-                {
-                    float val = float.Parse(lexeme, CultureInfo.InvariantCulture);
-                    return new RealLiteral(val);
-                }
-                catch (OverflowException)
-                {
-                    throw new IntegerParseOverflowException(lexeme);
-                }
-            }
-            return null;
-        }
-
-        private OperatorType RelationalOperator()
-        {
-            if (Accept(Symbol.Equality))
-            {
-                return OperatorType.Equals;
-            }
-            if (Accept(Symbol.NotEquals))
-            {
-                return OperatorType.NotEquals;
-            }
-            if (Accept(Symbol.LessThan))
-            {
-                return OperatorType.LessThan;
-            }
-            if (Accept(Symbol.LessOrEqualThan))
-            {
-                return OperatorType.LessOrEqualThan;
-            }
-            if (Accept(Symbol.GreaterOrEqualThan))
-            {
-                return OperatorType.GreaterOrEqualThan;
-            }
-            if (Accept(Symbol.GreaterThan))
-            {
-                return OperatorType.GreaterThan;
-            }
-            return OperatorType.None;
-        }
-
-        /*
-        private IStatement Statement()
-        {
-            if (Accept(Symbol.Variable))
-            {
-                VariableIdentifier identifierToAssigment = Identifier();
-                if (identifierToAssigment == null)
-                {
-                    throw new SyntaxException(expIdentifier, symbol);
-                }
-                Require(Symbol.Colon);
-                MiniPLType type = Type();
-                if (type == null)
-                {
-                    throw new SyntaxException(expType, symbol);
-                }
-                IExpression expr = null;
-                if (Accept(Symbol.Assigment))
-                {
-                    expr = Expression();
-                    if (expr == null)
-                    {
-                        throw new SyntaxException(expExpression, symbol);
-                    }
-                }
-                return new DeclarationStatement(identifierToAssigment, type, expr);
-            }
-
-            VariableIdentifier varIdent = Identifier();
-            if (varIdent != null)
-            {
-                Require(Symbol.Assigment);
-                IExpression expr = Expression();
-                if (expr == null)
-                {
-                    throw new SyntaxException(expExpression, symbol);
-                }
-                return new AssigmentStatement(varIdent, expr);
-            }
-            if (Accept(Symbol.ReadProcedure))
-            {
-                VariableIdentifier toReadInto = Identifier();
-                if (toReadInto == null)
-                {
-                    throw new SyntaxException(expIdentifier, symbol);
-                }
-                return new ReadStatement(toReadInto);
-            }
-            if (Accept(Symbol.PrintProcedure))
-            {
-                IExpression toPrint = Expression();
-                if (toPrint == null)
-                {
-                    throw new SyntaxException(expExpression, symbol);
-                }
-                return new PrintStatement(toPrint);
-            }
-            if (Accept(Symbol.Assert))
-            {
-                IExpression toAssert = Expression();
-                if (toAssert == null)
-                {
-                    throw new SyntaxException(expExpression, symbol);
-                }
-                return new AssertStatement(toAssert);
-            }
-            return null;
-        }
-
-        private IExpression Expression()
-        {
-            if (Accept(Symbol.LogicalNot))
-            {
-                IOperand opr = Operand();
-                if (opr == null)
-                {
-                    throw new SyntaxException(expOperand, symbol);
-                }
-                return new UnaryExpression(OperatorType.Negation, opr);
-            }
-            IOperand firstOperand = Operand();
-            if (firstOperand != null)
-            {
-                OperatorType opr = ReadOperator();
-                if (opr == OperatorType.None)
-                {
-                    return new UnaryExpression(OperatorType.None, firstOperand);
-                }
-                IOperand secondOperand = Operand();
-                if (secondOperand == null)
-                {
-                    throw new SyntaxException(expOperand, symbol);
-                }
-                return new BinaryExpression(firstOperand, opr, secondOperand);
-            }
-            return null;
-        }
-
-        private OperatorType ReadOperator()
-        {
-            if (Accept(Symbol.Addition))
-            {
-                return OperatorType.Addition;
-            }
-            if (Accept(Symbol.Multiplication))
-            {
-                return OperatorType.Multiplication;
-            }
-            if (Accept(Symbol.Substraction))
-            {
-                return OperatorType.Substraction;
-            }
-            if (Accept(Symbol.Division))
-            {
-                return OperatorType.Division;
-            }
-            if (Accept(Symbol.Equality))
-            {
-                return OperatorType.Equals;
-            }
-            if (Accept(Symbol.LessThan))
-            {
-                return OperatorType.LessThan;
-            }
-            if (Accept(Symbol.LogicalAnd))
-            {
-                return OperatorType.And;
-            }
-            return OperatorType.None;
-        }
-
-        private IOperand Operand()
-        {
-            if (Matches(Symbol.IntegerLiteral))
-            {
-                try
-                {
-                    int val = int.Parse(tokens.Current.Lexeme);
-                    tokens.Next();
-                    return new IntegerLiteralOperand(val);
-                }
-                catch(OverflowException)
-                {
-                    throw new IntegerParseOverflowException(tokens.Current.Lexeme);
-                }
-            }
-            if (Matches(Symbol.StringLiteral))
-            {
-                string val = tokens.Current.Lexeme;
-                tokens.Next();
-                return new StringLiteralOperand(val);
-            }
-            VariableIdentifier varIdent = Identifier();
-            if (varIdent != null)
-            {
-                return new VariableOperand(varIdent);
-            }
-            if (Accept(Symbol.ClosureOpen))
-            {
-                IExpression expr = Expression();
-                if (expr == null)
-                {
-                    throw new SyntaxException(expExpression, symbol);
-                }
-                Require(Symbol.ClosureClose);
-                return new ExpressionOperand(expr);
-            }
-            return null;
-        }
-
-        private VariableIdentifier Identifier()
-        {
-            if (Matches(Symbol.Identifier))
-            {
-                VariableIdentifier id = new VariableIdentifier(tokens.Current.Lexeme);
-                tokens.Next();
-                return id;
-            }
-            return null;
-        }
-        */
 
         private MiniPascalType Type()
         {
@@ -445,6 +107,12 @@ namespace MiniPL.Parser
             return false;
         }
 
+        private bool AcceptWithLexeme(Symbol Accepted, out String Lexeme)
+        {
+            Lexeme = tokens.Current.Lexeme;
+            return Accept(Accepted);
+        }
+
         private bool Matches(Symbol Expected)
         {
             return symbol == Expected;
@@ -454,9 +122,7 @@ namespace MiniPL.Parser
         {
             if (!Accept(Expected))
             {
-                Symbol s = symbol;
-                tokens.Next();
-                throw new SyntaxException(Expected.ToString() + " " + tokens.Current.Symbol, s);
+                throw new SyntaxException(Expected.ToString(), symbol);
             }
         }
     }

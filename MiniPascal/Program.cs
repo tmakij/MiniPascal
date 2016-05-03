@@ -1,16 +1,19 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using MiniPL.Parser;
-using MiniPL.Parser.AST;
-using MiniPL.Lexer;
+using MiniPascal.Parser;
+using MiniPascal.Parser.AST;
+using MiniPascal.Lexer;
 
-namespace MiniPL
+namespace MiniPascal
 {
     public static class Program
     {
         private static int Main(string[] args)
         {
+            //int i = 0;
+            Console.WriteLine(1.CompareTo(3));
+
 #if !DEBUG
             if (args.Length != 1)
             {

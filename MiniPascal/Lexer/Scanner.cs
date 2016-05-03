@@ -1,6 +1,6 @@
-﻿using MiniPL.Lexer.ScannerStates;
+﻿using MiniPascal.Lexer.ScannerStates;
 
-namespace MiniPL.Lexer
+namespace MiniPascal.Lexer
 {
     public sealed class Scanner
     {

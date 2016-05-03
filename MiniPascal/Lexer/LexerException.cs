@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MiniPL.Lexer
+namespace MiniPascal.Lexer
 {
     public sealed class LexerException : Exception
     {

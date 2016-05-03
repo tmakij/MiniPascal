@@ -1,9 +1,8 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public interface IStatement : IIdentifierHolder
     {
         void CheckType(IdentifierTypes Types);
-        void Execute(Variables Scope);
-        void EmitIR(CILEmitter Emitter);
+        void EmitIR(CILEmitter Emitter, IdentifierTypes Types);
     }
 }

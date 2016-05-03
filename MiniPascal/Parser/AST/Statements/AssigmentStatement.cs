@@ -1,12 +1,11 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class AssigmentStatement : IStatement
     {
         private readonly Identifier identifier;
-        private readonly IExpression expression;
-        private MiniPascalType type;
+        private readonly Expression expression;
 
-        public AssigmentStatement(Identifier Identifier, IExpression Expression)
+        public AssigmentStatement(Identifier Identifier, Expression Expression)
         {
             identifier = Identifier;
             expression = Expression;
@@ -27,7 +26,7 @@
 
         public void CheckType(IdentifierTypes Types)
         {
-            type = Types.GetIdentifierType(identifier);
+            MiniPascalType type = Types.GetIdentifierType(identifier);
             MiniPascalType assigmentType = expression.NodeType(Types);
             if (!assigmentType.Equals(type))
             {
@@ -35,17 +34,10 @@
             }
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
             expression.EmitIR(Emitter);
             Emitter.SaveVariable(identifier);
-        }
-
-        public void Execute(Variables Scope)
-        {
-            RuntimeVariable var = Scope.GetValue(identifier);
-            ReturnValue ret = expression.Execute(Scope);
-            var.Value = ret.Value;
         }
     }
 }

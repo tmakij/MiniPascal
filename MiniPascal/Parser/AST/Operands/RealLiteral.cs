@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class RealLiteral : IOperand
     {
@@ -16,11 +16,6 @@
         public MiniPascalType NodeType(IdentifierTypes Types)
         {
             return MiniPascalType.Real;
-        }
-
-        public ReturnValue Execute(Variables Global)
-        {
-            return new ReturnValue(MiniPascalType.Real, literal);
         }
 
         public void EmitIR(CILEmitter Emitter)

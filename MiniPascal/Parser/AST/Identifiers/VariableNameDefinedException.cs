@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MiniPL.Parser.AST
+namespace MiniPascal.Parser.AST
 {
     public sealed class VariableNameDefinedException : Exception
     {

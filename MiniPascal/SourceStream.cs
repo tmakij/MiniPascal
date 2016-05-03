@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MiniPL
+namespace MiniPascal
 {
     public sealed class SourceStream
     {

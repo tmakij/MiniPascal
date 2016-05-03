@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.IO;
-using MiniPL;
+using MiniPascal;
 
 namespace MiniPascal.TestSuite
 {

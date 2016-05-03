@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MiniPL.Parser.AST
+namespace MiniPascal.Parser.AST
 {
     public sealed class ReadStatement : IStatement
     {
@@ -32,36 +32,9 @@ namespace MiniPL.Parser.AST
             }
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
             throw new NotImplementedException();
-        }
-
-        public void Execute(Variables Scope)
-        {
-            RuntimeVariable var = Scope.GetValue(variableToReadInto);
-            MiniPascalType varType = var.Type;
-            string input = Console.ReadLine() ?? string.Empty;
-            if (varType.Equals(MiniPascalType.Integer))
-            {
-                try
-                {
-                    int value = int.Parse(input);
-                    var.Value = value;
-                }
-                catch (OverflowException)
-                {
-                    throw new IntegerParseOverflowException(input);
-                }
-                catch (FormatException)
-                {
-                    throw new IntegerFormatException(input);
-                }
-            }
-            else if (varType.Equals(MiniPascalType.String))
-            {
-                var.Value = input;
-            }
         }
     }
 }

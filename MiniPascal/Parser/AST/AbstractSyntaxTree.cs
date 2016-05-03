@@ -5,15 +5,18 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace MiniPL.Parser.AST
+namespace MiniPascal.Parser.AST
 {
     public sealed class AbstractSyntaxTree
     {
+        private readonly Identifier name;
         private readonly ScopedProgram statements;
+        private readonly IdentifierTypes types = new IdentifierTypes();
 
-        public AbstractSyntaxTree(ScopedProgram Statements)
+        public AbstractSyntaxTree(ScopedProgram Statements, Identifier Name)
         {
             statements = Statements;
+            name = Name;
         }
 
         public void CheckIdentifiers()
@@ -24,42 +27,32 @@ namespace MiniPL.Parser.AST
 
         public void CheckTypes()
         {
-            IdentifierTypes types = new IdentifierTypes();
             statements.CheckTypes(types);
-        }
-
-        public void Execute()
-        {
-            Variables globalScope = new Variables();
-            statements.Execute(globalScope);
         }
 
         public void GenerateCIL()
         {
+            string moduleName = name.ToString() + ".exe";
+
             AssemblyBuilder ab = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("MP ASSEMBLY"), AssemblyBuilderAccess.Save);
-            ModuleBuilder mb = ab.DefineDynamicModule("test.exe");
+            ModuleBuilder mb = ab.DefineDynamicModule(moduleName);
             TypeBuilder MainType = mb.DefineType("MainType", TypeAttributes.NotPublic | TypeAttributes.Abstract | TypeAttributes.Sealed);
             MethodBuilder main = MainType.DefineMethod("Main", MethodAttributes.Private | MethodAttributes.Static);
             ILGenerator emitter = main.GetILGenerator();
 
-            CILEmitter c = new CILEmitter(emitter);
-            statements.statements.ForEach(p =>
-            {
-                p.EmitIR(c);
-            });
+            CILEmitter cilEmitter = new CILEmitter(emitter);
+            statements.EmitIR(cilEmitter, types);
 
-            //emitter.Emit(OpCodes.Ldstr, "Hello World!");
-            //emitter.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.WriteLine), new[] { typeof(string) }));
             emitter.Emit(OpCodes.Ret);
             Type mainTypeFinal = MainType.CreateType();
 
             ab.SetEntryPoint(main, PEFileKinds.ConsoleApplication);
-            ab.Save("test.exe");
+            ab.Save(moduleName);
 
-            AppDomain resultDomain = AppDomain.CreateDomain("asd");
+            AppDomain resultDomain = AppDomain.CreateDomain("executingAssembly");
             //try
             {
-                resultDomain.ExecuteAssembly("test.exe");
+                resultDomain.ExecuteAssembly(moduleName);
             }
             //catch (InvalidProgramException ex)
             {

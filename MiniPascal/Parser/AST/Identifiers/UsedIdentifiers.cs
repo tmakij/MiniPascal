@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MiniPL.Parser.AST
+namespace MiniPascal.Parser.AST
 {
     public sealed class UsedIdentifiers
     {

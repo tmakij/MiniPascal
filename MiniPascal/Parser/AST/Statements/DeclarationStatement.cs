@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class DeclarationStatement : IStatement
     {
@@ -39,28 +39,18 @@
             }
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
             Emitter.CreateVariable(identifier, type);
             if (type.Equals(MiniPascalType.Integer))
             {
-                Emitter.PushInt(0);
+                Emitter.PushInt32(0);
             }
             else if (type.Equals(MiniPascalType.Real))
             {
                 Emitter.PushSingle(0f);
             }
             Emitter.SaveVariable(identifier);
-        }
-
-        public void Execute(Variables Scope)
-        {
-            Scope.AddIdentifier(identifier, type);
-            if (optionalAssigment != null)
-            {
-                object assigment = optionalAssigment.Execute(Scope).Value;
-                Scope.GetValue(identifier).Value = assigment;
-            }
         }
     }
 }

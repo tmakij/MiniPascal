@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MiniPL.Parser.AST
+namespace MiniPascal.Parser.AST
 {
-    public sealed class MiniPascalType
+    public sealed class MiniPascalType : IEquatable<MiniPascalType>
     {
-        public static MiniPascalType Integer { get; } = new MiniPascalType("Integer", default(int), typeof(int));
-        public static MiniPascalType String { get; } = new MiniPascalType("String", string.Empty, typeof(string));
-        public static MiniPascalType Boolean { get; } = new MiniPascalType("Boolean", default(bool), typeof(bool));
-        public static MiniPascalType Real { get; } = new MiniPascalType("Real", default(float), typeof(float));
+        public static MiniPascalType Integer { get; } = new MiniPascalType("Integer", typeof(int));
+        public static MiniPascalType String { get; } = new MiniPascalType("String", typeof(string));
+        public static MiniPascalType Boolean { get; } = new MiniPascalType("Boolean", typeof(bool));
+        public static MiniPascalType Real { get; } = new MiniPascalType("Real", typeof(float));
 
         static MiniPascalType()
         {
@@ -16,28 +16,36 @@ namespace MiniPL.Parser.AST
             Integer.AddBinaryOperator(OperatorType.Multiplication, new IntegerMultiplication());
             Integer.AddBinaryOperator(OperatorType.Substraction, new IntegerSubstraction());
             Integer.AddBinaryOperator(OperatorType.Division, new IntegerDivision());
-            Integer.AddBinaryOperator(OperatorType.Equals, new Equals<int>());
+            Integer.AddBinaryOperator(OperatorType.Equals, new NumericalEquals());
             Integer.AddBinaryOperator(OperatorType.LessThan, new LessThan<int>());
+            Integer.AddBinaryOperator(OperatorType.Modulo, new IntegerModulo());
+
+            Real.AddBinaryOperator(OperatorType.Addition, new IntegerAddition());
+            Real.AddBinaryOperator(OperatorType.Multiplication, new IntegerMultiplication());
+            Real.AddBinaryOperator(OperatorType.Substraction, new IntegerSubstraction());
+            Real.AddBinaryOperator(OperatorType.Division, new IntegerDivision());
+            Real.AddBinaryOperator(OperatorType.Equals, new NumericalEquals());
+
             String.AddBinaryOperator(OperatorType.Addition, new StringConcatenation());
-            String.AddBinaryOperator(OperatorType.Equals, new Equals<string>());
+            String.AddBinaryOperator(OperatorType.Equals, new StringEquals());
             String.AddBinaryOperator(OperatorType.LessThan, new LessThan<string>());
+
             Boolean.AddUnaryOperator(OperatorType.Negation, new BooleanNegation());
-            Boolean.AddBinaryOperator(OperatorType.Equals, new Equals<bool>());
+            Boolean.AddBinaryOperator(OperatorType.Equals, new NumericalEquals());
             Boolean.AddBinaryOperator(OperatorType.LessThan, new LessThan<bool>());
             Boolean.AddBinaryOperator(OperatorType.And, new BooleanAnd());
         }
 
-        public Type CLRType { get; }
-        public object DefaultValue { get; }
+        public Type[] CLRTypeArray { get; }
+        public Type CLRType { get { return CLRTypeArray[0]; } }
         private readonly Dictionary<OperatorType, IBinaryOperator> binaryOperators = new Dictionary<OperatorType, IBinaryOperator>();
         private readonly Dictionary<OperatorType, IUnaryOperator> unaryOperators = new Dictionary<OperatorType, IUnaryOperator>();
         private readonly string name;
 
-        private MiniPascalType(string Name, object DefaultValue, Type CLRType)
+        private MiniPascalType(string Name, Type CLRType)
         {
             name = Name;
-            this.DefaultValue = DefaultValue;
-            this.CLRType = CLRType;
+            CLRTypeArray = new[] { CLRType };
         }
 
         private void AddBinaryOperator(OperatorType Type, IBinaryOperator Operator)
@@ -55,9 +63,9 @@ namespace MiniPL.Parser.AST
             return binaryOperators[Operator];
         }
 
-        public object UnaryOperation(object Operand, OperatorType Operator)
+        public IUnaryOperator UnaryOperation(OperatorType Operator)
         {
-            return unaryOperators[Operator].Execute(Operand);
+            return unaryOperators[Operator];
         }
 
         public bool HasOperatorDefined(OperatorType Operator)
@@ -77,7 +85,11 @@ namespace MiniPL.Parser.AST
 
         public override bool Equals(object obj)
         {
-            MiniPascalType other = (MiniPascalType)obj;
+            return Equals((MiniPascalType)obj);
+        }
+
+        public bool Equals(MiniPascalType other)
+        {
             return name == other.name;
         }
     }

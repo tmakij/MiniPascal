@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public enum OperatorType
     {
@@ -14,6 +14,8 @@
         NotEquals,
         LessOrEqualThan,
         GreaterOrEqualThan,
-        GreaterThan
+        GreaterThan,
+        Or,
+        Modulo
     }
 }

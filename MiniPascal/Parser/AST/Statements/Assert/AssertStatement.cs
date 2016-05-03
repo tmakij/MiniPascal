@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class AssertStatement : IStatement
     {
@@ -23,19 +23,9 @@
             }
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
             throw new System.NotImplementedException();
-        }
-
-        public void Execute(Variables Scope)
-        {
-            ReturnValue ret = toAssert.Execute(Scope);
-            bool assert = (bool)ret.Value;
-            if (!assert)
-            {
-                throw new AssertationExecption();
-            }
         }
     }
 }

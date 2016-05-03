@@ -1,4 +1,4 @@
-﻿namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class ExpressionOperand : IOperand
     {
@@ -22,11 +22,6 @@
         public void EmitIR(CILEmitter Emitter)
         {
             expression.EmitIR(Emitter);
-        }
-
-        public ReturnValue Execute(Variables Global)
-        {
-            return expression.Execute(Global);
         }
     }
 }

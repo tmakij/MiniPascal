@@ -1,0 +1,48 @@
+﻿using System.Collections.Generic;
+
+namespace MiniPascal.Parser.AST
+{
+    public sealed class Expression
+    {
+        private readonly List<OperatorPair<SimpleExpression>> simpleExpressions = new List<OperatorPair<SimpleExpression>>();
+        private readonly SimpleExpression firstExpression;
+
+        public Expression(SimpleExpression FirstExpression)
+        {
+            firstExpression = FirstExpression;
+        }
+
+        public void Add(OperatorPair<SimpleExpression> SimpleExpression)
+        {
+            simpleExpressions.Add(SimpleExpression);
+        }
+
+        public void CheckIdentifiers(UsedIdentifiers Used)
+        {
+        }
+
+        public MiniPascalType NodeType(IdentifierTypes Types)
+        {
+            MiniPascalType type = firstExpression.NodeType(Types);
+            foreach (OperatorPair<SimpleExpression> expr in simpleExpressions)
+            {
+                MiniPascalType anotherType = expr.Operand.NodeType(Types);
+                if (!type.Equals(anotherType))
+                {
+                    throw new InvalidTypeException(anotherType, type);
+                }
+            }
+            return type;
+        }
+
+        public void EmitIR(CILEmitter Emitter)
+        {
+            firstExpression.EmitIR(Emitter);
+            foreach (OperatorPair<SimpleExpression> expr in simpleExpressions)
+            {
+                expr.Operand.EmitIR(Emitter);
+                expr.Operand.Type.BinaryOperation(expr.Operator).EmitIR(Emitter);
+            }
+        }
+    }
+}

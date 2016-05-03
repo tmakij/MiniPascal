@@ -1,13 +1,10 @@
-﻿using System;
-
-namespace MiniPL.Parser.AST
+﻿namespace MiniPascal.Parser.AST
 {
     public sealed class PrintStatement : IStatement
     {
-        private readonly IExpression toPrint;
-        private MiniPascalType type;
+        private readonly Arguments toPrint;
 
-        public PrintStatement(IExpression ToPrint)
+        public PrintStatement(Arguments ToPrint)
         {
             toPrint = ToPrint;
         }
@@ -19,19 +16,16 @@ namespace MiniPL.Parser.AST
 
         public void CheckType(IdentifierTypes Types)
         {
-            type = toPrint.NodeType(Types);
+            toPrint.CheckType(Types);
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
-            toPrint.EmitIR(Emitter);
-            Emitter.CallPrint(type);
-        }
-
-        public void Execute(Variables Scope)
-        {
-            ReturnValue ret = toPrint.Execute(Scope);
-            Console.Write(ret.Value);
+            foreach (Expression expr in toPrint)
+            {
+                expr.EmitIR(Emitter);
+                Emitter.CallPrint(toPrint.ArgumentType(expr));
+            }
         }
     }
 }
