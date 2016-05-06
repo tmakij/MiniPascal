@@ -12,28 +12,62 @@ namespace MiniPascal.Parser.AST
 
         static MiniPascalType()
         {
-            Integer.AddBinaryOperator(OperatorType.Addition, new IntegerAddition());
-            Integer.AddBinaryOperator(OperatorType.Multiplication, new IntegerMultiplication());
-            Integer.AddBinaryOperator(OperatorType.Substraction, new IntegerSubstraction());
-            Integer.AddBinaryOperator(OperatorType.Division, new IntegerDivision());
-            Integer.AddBinaryOperator(OperatorType.Equals, new NumericalEquals());
-            Integer.AddBinaryOperator(OperatorType.LessThan, new LessThan<int>());
+            NumericalAddition add = new NumericalAddition();
+            NumericalMultiplication mul = new NumericalMultiplication();
+            NumericalSubstraction sub = new NumericalSubstraction();
+            NumericalDivision div = new NumericalDivision();
+
+            NumericalEquals eq = new NumericalEquals();
+            NumericalNotEquals noteq = new NumericalNotEquals();
+
+            NumericalGreaterOrEqualThan greq = new NumericalGreaterOrEqualThan();
+            NumericalLessOrEqualThan leeq = new NumericalLessOrEqualThan();
+            NumericalGreaterThan gre = new NumericalGreaterThan();
+            NumericalLessThan leq = new NumericalLessThan();
+
+            Integer.AddBinaryOperator(OperatorType.Addition, add);
+            Integer.AddBinaryOperator(OperatorType.Multiplication, mul);
+            Integer.AddBinaryOperator(OperatorType.Substraction, sub);
+            Integer.AddBinaryOperator(OperatorType.Division, div);
+
+            Integer.AddBinaryOperator(OperatorType.Equals, eq);
+            Integer.AddBinaryOperator(OperatorType.NotEquals, noteq);
             Integer.AddBinaryOperator(OperatorType.Modulo, new IntegerModulo());
 
-            Real.AddBinaryOperator(OperatorType.Addition, new IntegerAddition());
-            Real.AddBinaryOperator(OperatorType.Multiplication, new IntegerMultiplication());
-            Real.AddBinaryOperator(OperatorType.Substraction, new IntegerSubstraction());
-            Real.AddBinaryOperator(OperatorType.Division, new IntegerDivision());
-            Real.AddBinaryOperator(OperatorType.Equals, new NumericalEquals());
+            Integer.AddBinaryOperator(OperatorType.GreaterOrEqualThan, greq);
+            Integer.AddBinaryOperator(OperatorType.GreaterThan, gre);
+            Integer.AddBinaryOperator(OperatorType.LessOrEqualThan, leeq);
+            Integer.AddBinaryOperator(OperatorType.LessThan, leq);
+
+            Real.AddBinaryOperator(OperatorType.Addition, add);
+            Real.AddBinaryOperator(OperatorType.Multiplication, mul);
+            Real.AddBinaryOperator(OperatorType.Substraction, sub);
+            Real.AddBinaryOperator(OperatorType.Division, div);
+
+            Real.AddBinaryOperator(OperatorType.Equals, eq);
+            Real.AddBinaryOperator(OperatorType.NotEquals, noteq);
+
+            Real.AddBinaryOperator(OperatorType.GreaterOrEqualThan, greq);
+            Real.AddBinaryOperator(OperatorType.GreaterThan, gre);
+            Real.AddBinaryOperator(OperatorType.LessOrEqualThan, leeq);
+            Real.AddBinaryOperator(OperatorType.LessThan, leq);
 
             String.AddBinaryOperator(OperatorType.Addition, new StringConcatenation());
             String.AddBinaryOperator(OperatorType.Equals, new StringEquals());
-            String.AddBinaryOperator(OperatorType.LessThan, new LessThan<string>());
+            String.AddBinaryOperator(OperatorType.NotEquals, new StringNotEquals());
+            String.AddBinaryOperator(OperatorType.LessThan, new StringLessThan());
 
             Boolean.AddUnaryOperator(OperatorType.Negation, new BooleanNegation());
-            Boolean.AddBinaryOperator(OperatorType.Equals, new NumericalEquals());
-            Boolean.AddBinaryOperator(OperatorType.LessThan, new LessThan<bool>());
             Boolean.AddBinaryOperator(OperatorType.And, new BooleanAnd());
+            Boolean.AddBinaryOperator(OperatorType.Or, new BooleanOr());
+
+            Boolean.AddBinaryOperator(OperatorType.Equals, eq);
+            Boolean.AddBinaryOperator(OperatorType.NotEquals, noteq);
+
+            Boolean.AddBinaryOperator(OperatorType.GreaterOrEqualThan, greq);
+            Boolean.AddBinaryOperator(OperatorType.GreaterThan, gre);
+            Boolean.AddBinaryOperator(OperatorType.LessOrEqualThan, leeq);
+            Boolean.AddBinaryOperator(OperatorType.LessThan, leq);
         }
 
         public Type[] CLRTypeArray { get; }

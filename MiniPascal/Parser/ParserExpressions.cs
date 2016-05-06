@@ -85,8 +85,29 @@ namespace MiniPascal.Parser
 
         private IOperand Factor()
         {
-            IOperand opr = ReadVariableOperand() ?? ReadIntegerLiteral() ?? ReadRealLiteral();
+            IOperand opr = ReadVariableOperand() ?? ReadIntegerLiteral() ?? ReadRealLiteral() ?? ReadStringLiteral() ?? ReadBooleanLiteral();
             return opr;
+        }
+
+        private IOperand ReadBooleanLiteral()
+        {
+            string lex;
+            if (AcceptWithLexeme(Symbol.BooleanLiteral, out lex))
+            {
+                bool val = lex == "true";
+                return new BooleanLiteral(val);
+            }
+            return null;
+        }
+
+        private IOperand ReadStringLiteral()
+        {
+            string lex;
+            if (AcceptWithLexeme(Symbol.StringLiteral, out lex))
+            {
+                return new StringLiteralOperand(lex);
+            }
+            return null;
         }
 
         private IOperand ReadVariableOperand()

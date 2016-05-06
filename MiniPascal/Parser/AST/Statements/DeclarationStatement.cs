@@ -4,13 +4,11 @@
     {
         private readonly Identifier identifier;
         private readonly MiniPascalType type;
-        private readonly IExpression optionalAssigment;
 
         public DeclarationStatement(Identifier Identifier, MiniPascalType Type, IExpression OptionalAssigment)
         {
             identifier = Identifier;
             type = Type;
-            optionalAssigment = OptionalAssigment;
         }
 
         public void CheckIdentifiers(UsedIdentifiers Used)
@@ -20,23 +18,11 @@
                 throw new VariableNameDefinedException(identifier);
             }
             Used.DeclareVariable(identifier);
-            if (optionalAssigment != null)
-            {
-                optionalAssigment.CheckIdentifiers(Used);
-            }
         }
 
         public void CheckType(IdentifierTypes Types)
         {
             Types.SetIdentifierType(identifier, type);
-            if (optionalAssigment != null)
-            {
-                MiniPascalType assigmentType = optionalAssigment.NodeType(Types);
-                if (!assigmentType.Equals(type))
-                {
-                    throw new TypeMismatchException(type, assigmentType);
-                }
-            }
         }
 
         public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
@@ -49,6 +35,14 @@
             else if (type.Equals(MiniPascalType.Real))
             {
                 Emitter.PushSingle(0f);
+            }
+            else if (type.Equals(MiniPascalType.String))
+            {
+                Emitter.PushString("");
+            }
+            else if (type.Equals(MiniPascalType.Boolean))
+            {
+                Emitter.PushInt32(0);
             }
             Emitter.SaveVariable(identifier);
         }

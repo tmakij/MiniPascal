@@ -2,7 +2,7 @@
 
 namespace MiniPascal.Parser.AST
 {
-    public sealed class Expression
+    public class Expression
     {
         private readonly List<OperatorPair<SimpleExpression>> simpleExpressions = new List<OperatorPair<SimpleExpression>>();
         private readonly SimpleExpression firstExpression;
@@ -31,6 +31,15 @@ namespace MiniPascal.Parser.AST
                 {
                     throw new InvalidTypeException(anotherType, type);
                 }
+                if (!type.HasOperatorDefined(expr.Operator))
+                {
+                    throw new UndefinedOperatorException(type, expr.Operator);
+                }
+                type = anotherType.BinaryOperation(expr.Operator).ReturnType;
+                /*if (!type.Equals(operationResultType))
+                {
+                    throw new InvalidTypeException(operationResultType, type);
+                }*/
             }
             return type;
         }

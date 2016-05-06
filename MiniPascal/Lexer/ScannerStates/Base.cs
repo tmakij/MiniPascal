@@ -33,7 +33,7 @@
                     case 'n':
                         return States.Not;
                     case 'o':
-                        return States.Of;
+                        return States.O;
                     case 'p':
                         /* procedure, program */
                         return States.P;

@@ -1,12 +1,12 @@
 ﻿namespace MiniPascal.Parser.AST
 {
-    public sealed class StringLiteralOperand : IOperand
+    public sealed class BooleanLiteral : IOperand
     {
-        private readonly string literal;
+        private readonly bool literal;
 
-        public StringLiteralOperand(string Literal)
+        public BooleanLiteral(bool Value)
         {
-            literal = Literal;
+            literal = Value;
         }
 
         public void CheckIdentifiers(UsedIdentifiers Used)
@@ -15,12 +15,13 @@
 
         public MiniPascalType NodeType(IdentifierTypes Types)
         {
-            return MiniPascalType.String;
+            return MiniPascalType.Boolean;
         }
 
         public void EmitIR(CILEmitter Emitter)
         {
-            Emitter.PushString(literal);
+            int booleanValue = literal ? 1 : 0;
+            Emitter.PushInt32(booleanValue);
         }
     }
 }

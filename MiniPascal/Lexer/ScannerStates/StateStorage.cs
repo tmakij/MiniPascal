@@ -23,7 +23,6 @@ namespace MiniPascal.Lexer.ScannerStates
         public IScannerState Exponent { get; } = new Exponent();
         public IScannerState Less { get; } = new Less();
         public IScannerState Greater { get; } = new Greater();
-        public IScannerState A { get; } = new A();
         public IScannerState B { get; } = new B();
         public IScannerState E { get; } = new E();
         public IScannerState I { get; } = new I();
@@ -35,17 +34,17 @@ namespace MiniPascal.Lexer.ScannerStates
         public IScannerState T { get; }
         public IScannerState P { get; }
         public IScannerState S { get; }
+        public IScannerState O { get; }
+        public IScannerState A { get; }
 
         public IScannerState If { get; } = new SingleStateEnd(Symbol.If);
         public IScannerState Integer { get; }
         public IScannerState Write { get; }
         public IScannerState Variable { get; }
         public IScannerState End { get; }
-        public IScannerState Assert { get; }
         public IScannerState Boolean { get; }
         public IScannerState Do { get; }
 
-        public IScannerState Array { get; }
         public IScannerState PROcedure { get; }
         public IScannerState Function { get; }
         public IScannerState PROgram { get; }
@@ -63,10 +62,8 @@ namespace MiniPascal.Lexer.ScannerStates
             Write = Scanner(Symbol.PrintProcedure, "riteln");
             Variable = Scanner(Symbol.Variable, "var");
             End = Scanner(Symbol.End, "nd");
-            Assert = Scanner(Symbol.Assert, "assert");
             Boolean = Scanner(Symbol.BooleanType, "oolean");
             Do = Scanner(Symbol.Do, "do");
-            Array = Scanner(Symbol.Array, "array");
             PROcedure = Scanner(Symbol.Procedure, "cedure");
             Function = Scanner(Symbol.Function, "function");
             PROgram = Scanner(Symbol.Program, "gram");
@@ -89,6 +86,8 @@ namespace MiniPascal.Lexer.ScannerStates
             REA = Scanner(realRead, "rea");
 
             S = new CharacterSplit(Value("tring", Symbol.StringType), Value("ize", Symbol.Size));
+            O = new CharacterSplit(Value("f", Symbol.Of), Value("r", Symbol.LogicalOr));
+            A = new CharacterSplit(Value("nd", Symbol.LogicalAnd), Value("ssert", Symbol.Assert), Value("rray", Symbol.Array));
         }
 
         private static Tuple<char, IScannerState> Value(string Rest, Symbol Result)

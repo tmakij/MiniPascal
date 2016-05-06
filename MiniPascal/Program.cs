@@ -11,9 +11,6 @@ namespace MiniPascal
     {
         private static int Main(string[] args)
         {
-            //int i = 0;
-            Console.WriteLine(1.CompareTo(3));
-
 #if !DEBUG
             if (args.Length != 1)
             {
@@ -81,6 +78,15 @@ namespace MiniPascal
             catch (ImmutableVariableException ex)
             {
                 return Error("Identifier \"" + ex.Identifier + "\" cannot be changed, when it is used as iterator");
+            }
+            catch (InvalidTypeException ex)
+            {
+                string exp = ex.Expected[0].ToString();
+                for (int i = 1; i < ex.Expected.Length; i++)
+                {
+                    exp += ", " + ex.Expected[i];
+                }
+                return Error("Type mismatch: Expected \"" + exp + "\" but \"" + ex.Found + "\" was found");
             }
             catch (Exception ex)
             {

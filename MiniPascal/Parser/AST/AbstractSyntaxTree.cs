@@ -37,6 +37,10 @@ namespace MiniPascal.Parser.AST
             AssemblyBuilder ab = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("MP ASSEMBLY"), AssemblyBuilderAccess.Save);
             ModuleBuilder mb = ab.DefineDynamicModule(moduleName);
             TypeBuilder MainType = mb.DefineType("MainType", TypeAttributes.NotPublic | TypeAttributes.Abstract | TypeAttributes.Sealed);
+
+
+            //MethodBuilder strEq = StringEquals(MainType);
+
             MethodBuilder main = MainType.DefineMethod("Main", MethodAttributes.Private | MethodAttributes.Static);
             ILGenerator emitter = main.GetILGenerator();
 
@@ -71,5 +75,19 @@ namespace MiniPascal.Parser.AST
             resultDomain.ExecuteAssembly("test.exe");
             */
         }
+
+        /*private MethodBuilder StringEquals(TypeBuilder MainType)
+        {
+            MethodBuilder ret = MainType.DefineMethod("StringEquality", MethodAttributes.Private | MethodAttributes.Static, CallingConventions.Standard,
+                typeof(int), null, null, new[] { typeof(string), typeof(string) }, null, null);
+            ILGenerator str = ret.GetILGenerator();
+            ret.DefineParameter(0, ParameterAttributes.None, null);
+            ret.DefineParameter(1, ParameterAttributes.None, null);
+            str.Emit(OpCodes.Ldarg_0);
+            str.Emit(OpCodes.Ldarg_1);
+            str.EmitCall(OpCodes.Call, typeof(string));
+            str.Emit(OpCodes.Ret);
+            return ret;
+        }*/
     }
 }

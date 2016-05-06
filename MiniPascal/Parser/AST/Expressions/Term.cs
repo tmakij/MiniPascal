@@ -37,6 +37,12 @@ namespace MiniPascal.Parser.AST
                 {
                     throw new UndefinedOperatorException(Type, opr.Operator);
                 }
+                Type = nextType.BinaryOperation(opr.Operator).ReturnType;
+                /*MiniPascalType operationResultType = nextType.BinaryOperation(opr.Operator).ReturnType;
+                if (!Type.Equals(operationResultType))
+                {
+                    throw new InvalidTypeException(operationResultType, Type);
+                }*/
             }
             return Type;
         }

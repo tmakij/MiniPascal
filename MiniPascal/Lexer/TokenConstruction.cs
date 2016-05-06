@@ -44,14 +44,20 @@ namespace MiniPascal.Lexer
 
         private string TokenText(Symbol ID)
         {
-            if (ID == Symbol.IntegerLiteral || ID == Symbol.StringLiteral || ID == Symbol.Identifier || ID == Symbol.RealLiteral)
+            switch (ID)
             {
-                string text = curr.ToString();
-                curr.Clear();
-                return text;
+                case Symbol.IntegerLiteral:
+                case Symbol.StringLiteral:
+                case Symbol.Identifier:
+                case Symbol.RealLiteral:
+                case Symbol.BooleanLiteral:
+                    string text = curr.ToString();
+                    curr.Clear();
+                    return text;
+                default:
+                    curr.Clear();
+                    return ID.ToString();
             }
-            curr.Clear();
-            return ID.ToString();
         }
     }
 }
