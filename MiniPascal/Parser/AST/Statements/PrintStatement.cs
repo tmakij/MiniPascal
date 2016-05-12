@@ -21,10 +21,12 @@
 
         public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
-            foreach (Expression expr in toPrint)
+            for (int i = 0; i < toPrint.Count; i++)
             {
+                Expression expr = toPrint.Expression(i);
+                MiniPascalType exprType = toPrint.Type(i);
                 expr.EmitIR(Emitter);
-                Emitter.CallPrint(toPrint.ArgumentType(expr));
+                Emitter.CallPrint(exprType);
             }
         }
     }

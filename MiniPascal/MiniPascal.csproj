@@ -104,6 +104,8 @@
     <Compile Include="Parser\AST\ITypedNode.cs" />
     <Compile Include="Parser\AST\IIdentifierHolder.cs" />
     <Compile Include="Parser\AST\Identifiers\ImmutableVariableException.cs" />
+    <Compile Include="Parser\AST\Statements\Call.cs" />
+    <Compile Include="Parser\AST\Statements\Procedure.cs" />
     <Compile Include="Parser\AST\Statements\Read\IntegerFormatException.cs" />
     <Compile Include="Parser\AST\Statements\Read\IntegerOverflowException.cs" />
     <Compile Include="Parser\AST\Statements\Read\IntegerParseOverflowException.cs" />
@@ -160,7 +162,9 @@
     <Compile Include="Lexer\Token.cs" />
     <Compile Include="Lexer\TokenConstruction.cs" />
     <Compile Include="Lexer\TokenStream.cs" />
+    <Compile Include="TestSuite\AssigmentTest.cs" />
     <Compile Include="TestSuite\HelloWorldTest.cs" />
+    <Compile Include="TestSuite\ProcedureTest.cs" />
     <Compile Include="TestSuite\RedirectedOutputTest.cs" />
   </ItemGroup>
   <ItemGroup>

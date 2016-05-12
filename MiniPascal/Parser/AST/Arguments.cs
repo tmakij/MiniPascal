@@ -4,8 +4,9 @@ namespace MiniPascal.Parser.AST
 {
     public sealed class Arguments
     {
+        public int Count { get { return arguments.Count; } }
         private readonly List<Expression> arguments = new List<Expression>();
-        private readonly Dictionary<Expression, MiniPascalType> types = new Dictionary<Expression, MiniPascalType>();
+        private readonly List<MiniPascalType> types = new List<MiniPascalType>();
 
         public void Add(Expression Argument)
         {
@@ -20,7 +21,7 @@ namespace MiniPascal.Parser.AST
         {
             foreach (Expression exp in arguments)
             {
-                types.Add(exp, exp.NodeType(Types));
+                types.Add(exp.NodeType(Types));
             }
         }
 
@@ -28,14 +29,14 @@ namespace MiniPascal.Parser.AST
         {
         }
 
-        public MiniPascalType ArgumentType(Expression Arg)
+        public MiniPascalType Type(int Index)
         {
-            return types[Arg];
+            return types[Index];
         }
 
-        public List<Expression>.Enumerator GetEnumerator()
+        public Expression Expression(int Index)
         {
-            return arguments.GetEnumerator();
+            return arguments[Index];
         }
     }
 }

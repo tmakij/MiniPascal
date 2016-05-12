@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Generic;
 
@@ -7,12 +8,18 @@ namespace MiniPascal.Parser.AST
     public sealed class CILEmitter
     {
         private static readonly Type[] stringTypes = new[] { typeof(string), typeof(string) };
+        private Parameters parameters;
         private readonly Dictionary<Identifier, LocalBuilder> localVariables = new Dictionary<Identifier, LocalBuilder>();
-        private readonly ILGenerator generator;
+        private readonly Dictionary<Identifier, MethodBuilder> procedures = new Dictionary<Identifier, MethodBuilder>();
+        private ILGenerator generator, mg;
+        private readonly TypeBuilder mainType;
+        private readonly MethodBuilder main;
 
-        public CILEmitter(ILGenerator Generator)
+        public CILEmitter(ILGenerator Generator, TypeBuilder MainType, MethodBuilder Main)
         {
             generator = Generator;
+            mainType = MainType;
+            main = Main;
         }
 
         public void CreateVariable(Identifier Identifier, MiniPascalType Type)
@@ -28,7 +35,14 @@ namespace MiniPascal.Parser.AST
 
         public void LoadVariable(Identifier Variable)
         {
-            generator.Emit(OpCodes.Ldloc, localVariables[Variable]);
+            if (localVariables.ContainsKey(Variable))
+            {
+                generator.Emit(OpCodes.Ldloc, localVariables[Variable]);
+            }
+            else
+            {
+                generator.Emit(OpCodes.Ldarg, parameters.Index(Variable));
+            }
         }
 
         public void PushString(string Value)
@@ -99,6 +113,26 @@ namespace MiniPascal.Parser.AST
         public void ToInt32()
         {
             generator.Emit(OpCodes.Conv_I4);
+        }
+
+        public void CreateProcedure(Identifier Identifier, Parameters Parameters)
+        {
+            MethodBuilder mb = mainType.DefineMethod(Identifier.ToString(), MethodAttributes.Private | MethodAttributes.Static, null, Parameters.Types);
+            procedures.Add(Identifier, mb);
+            mg = generator;
+            generator = mb.GetILGenerator();
+            parameters = Parameters;
+        }
+
+        public void EndProcedure()
+        {
+            generator.Emit(OpCodes.Ret);
+            generator = mg;
+        }
+
+        public void Call(Identifier ProcedureId)
+        {
+            generator.Emit(OpCodes.Call, procedures[ProcedureId]);
         }
 
         public void CallPrint(MiniPascalType Type)

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Diagnostics;
 //using System.Security;
 //using System.Security.Policy;
 //using System.Security.Permissions;
@@ -9,14 +11,14 @@ namespace MiniPascal.Parser.AST
 {
     public sealed class AbstractSyntaxTree
     {
-        private readonly Identifier name;
+        private string Name { get; }
         private readonly ScopedProgram statements;
         private readonly IdentifierTypes types = new IdentifierTypes();
 
         public AbstractSyntaxTree(ScopedProgram Statements, Identifier Name)
         {
             statements = Statements;
-            name = Name;
+            this.Name = Name.ToString() + ".exe";
         }
 
         public void CheckIdentifiers()
@@ -30,12 +32,10 @@ namespace MiniPascal.Parser.AST
             statements.CheckTypes(types);
         }
 
-        public void GenerateCIL()
+        public void GenerateCIL(string Location)
         {
-            string moduleName = name.ToString() + ".exe";
-
             AssemblyBuilder ab = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("MP ASSEMBLY"), AssemblyBuilderAccess.Save);
-            ModuleBuilder mb = ab.DefineDynamicModule(moduleName);
+            ModuleBuilder mb = ab.DefineDynamicModule(Name);
             TypeBuilder MainType = mb.DefineType("MainType", TypeAttributes.NotPublic | TypeAttributes.Abstract | TypeAttributes.Sealed);
 
 
@@ -44,25 +44,21 @@ namespace MiniPascal.Parser.AST
             MethodBuilder main = MainType.DefineMethod("Main", MethodAttributes.Private | MethodAttributes.Static);
             ILGenerator emitter = main.GetILGenerator();
 
-            CILEmitter cilEmitter = new CILEmitter(emitter);
+            CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main);
             statements.EmitIR(cilEmitter, types);
 
             emitter.Emit(OpCodes.Ret);
             Type mainTypeFinal = MainType.CreateType();
 
             ab.SetEntryPoint(main, PEFileKinds.ConsoleApplication);
-            ab.Save(moduleName);
-
-            AppDomain resultDomain = AppDomain.CreateDomain("executingAssembly");
-            //try
+            ab.Save(Name, PortableExecutableKinds.ILOnly, ImageFileMachine.AMD64);
+            
+            string target = Path.Combine(Location, Name);
+            if (target != Path.GetFullPath(Name) && File.Exists(target))
             {
-                resultDomain.ExecuteAssembly(moduleName);
+                File.Delete(target);
             }
-            //catch (InvalidProgramException ex)
-            {
-                //Console.WriteLine("Error: " + ex.StackTrace);
-            }
-
+            File.Move(Name, target);
             /*
             StrongName fullTrustAssembly = Assembly.GetExecutingAssembly().Evidence.GetHostEvidence<StrongName>();
             PermissionSet permSet = new PermissionSet(PermissionState.None);
@@ -74,6 +70,19 @@ namespace MiniPascal.Parser.AST
             AppDomain resultDomain = AppDomain.CreateDomain("asd", null, adSetup, permSet, fullTrustAssembly);
             resultDomain.ExecuteAssembly("test.exe");
             */
+        }
+
+        public void Execute()
+        {
+            Process proc = new Process();
+            proc.StartInfo.FileName = Name;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.Start();
+            proc.WaitForExit(7500);
+            Console.Write(proc.StandardOutput.ReadToEnd());
+            //AppDomain resultDomain = AppDomain.CreateDomain("executingAssembly");
+            //resultDomain.ExecuteAssembly(Path.Combine(Environment.CurrentDirectory, Name));
         }
 
         /*private MethodBuilder StringEquals(TypeBuilder MainType)

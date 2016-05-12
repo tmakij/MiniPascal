@@ -5,16 +5,16 @@ namespace MiniPascal
 {
     public sealed class Compiler
     {
-        public static void Compile(SourceStream Source)
+        public static AbstractSyntaxTree Compile(SourceStream Source, string SaveLocation)
         {
             Scanner scanner = new Scanner(Source);
             TokenStream tokens = scanner.GenerateTokens();
-            var parser = new MiniPascal.Parser.Parser(tokens);
+            var parser = new Parser.Parser(tokens);
             AbstractSyntaxTree tree = parser.Parse();
             tree.CheckIdentifiers();
             tree.CheckTypes();
-            //tree.Execute();
-            tree.GenerateCIL();
+            tree.GenerateCIL(SaveLocation);
+            return tree;
         }
     }
 }

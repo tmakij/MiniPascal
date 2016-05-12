@@ -8,31 +8,52 @@ namespace MiniPascal.Parser
     {
         private IStatement Statement()
         {
-            return SimpleStatement() ?? StructuredStatement() ?? DeclarationStatement(VarRequired.Yes);
+            return SimpleStatement() ?? StructuredStatement() ?? DeclarationStatement();
         }
 
         private IStatement SimpleStatement()
         {
-            return AssigmentStatement() ?? CallStatement() ?? ReturnStatement();
+            return IdentifierStart() ?? CallPrint() ?? ReturnStatement();
         }
 
-        private IStatement AssigmentStatement()
+        private IStatement IdentifierStart()
         {
             Identifier ident = Identifier();
             if (ident != null)
             {
-                Require(Symbol.Assigment);
-                Expression expr = ReadExpression();
-                if (expr == null)
+                IStatement call = CallStatement(ident);
+                if (call != null)
                 {
-                    throw new SyntaxException(expExpression, symbol);
+                    return call;
                 }
-                return new AssigmentStatement(ident, expr);
+                return AssigmentStatement(ident);
             }
             return null;
         }
 
-        private IStatement CallStatement()
+        private IStatement AssigmentStatement(Identifier Identifier)
+        {
+            Require(Symbol.Assigment);
+            Expression expr = ReadExpression();
+            if (expr == null)
+            {
+                throw new SyntaxException(expExpression, symbol);
+            }
+            return new AssigmentStatement(Identifier, expr);
+        }
+
+        private IStatement CallStatement(Identifier Identifier)
+        {
+            if (Accept(Symbol.ClosureOpen))
+            {
+                Arguments args = ReadArguments();
+                Require(Symbol.ClosureClose);
+                return new Call(Identifier, args);
+            }
+            return null;
+        }
+
+        private IStatement CallPrint()
         {
             if (Accept(Symbol.PrintProcedure))
             {
@@ -69,7 +90,37 @@ namespace MiniPascal.Parser
             return null;
         }
 
-        private DeclarationStatement DeclarationStatement(VarRequired Required)
+        private IStatement DeclarationStatement()
+        {
+            DeclarationStatement varDecl = VariableDeclaration(VarRequired.Yes);
+            if (varDecl != null)
+            {
+                return varDecl;
+            }
+            Procedure procDecl = ProcedureStatement();
+            if (procDecl != null)
+            {
+                return procDecl;
+            }
+            return null;
+        }
+
+        private Procedure ProcedureStatement()
+        {
+            if (Accept(Symbol.Procedure))
+            {
+                Identifier ident = Identifier();
+                Require(Symbol.ClosureOpen);
+                Parameters parameters = ReadParameters();
+                Require(Symbol.ClosureClose);
+                Require(Symbol.SemiColon);
+                ScopedProgram block = Block();
+                return new Procedure(ident, parameters, block);
+            }
+            return null;
+        }
+
+        private DeclarationStatement VariableDeclaration(VarRequired Required)
         {
             if (Accept(Symbol.Variable) || Required == VarRequired.No)
             {
@@ -91,7 +142,7 @@ namespace MiniPascal.Parser
                     throw new SyntaxException(expType, symbol);
                 }
                 //Require(Symbol.SemiColon);
-                return new DeclarationStatement(ids[0], type, null);
+                return new DeclarationStatement(ids, type, null);
             }
             return null;
         }
@@ -117,7 +168,7 @@ namespace MiniPascal.Parser
             Parameters parameters = new Parameters();
             do
             {
-                DeclarationStatement decl = DeclarationStatement(VarRequired.No);
+                DeclarationStatement decl = VariableDeclaration(VarRequired.No);
                 parameters.Add(decl);
             } while (Accept(Symbol.Comma));
             return parameters;

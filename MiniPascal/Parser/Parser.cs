@@ -53,11 +53,13 @@ namespace MiniPascal.Parser
                 block.Add(stm);
                 if (!Accept(Symbol.SemiColon))
                 {
+                    //Console.WriteLine(Environment.StackTrace);
                     Require(Symbol.End);
                     break;
                 }
                 if (Accept(Symbol.End))
                 {
+                    //Console.WriteLine(Environment.StackTrace);
                     break;
                 }
             }

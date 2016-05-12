@@ -57,7 +57,14 @@ namespace MiniPascal.Parser.AST
         {
             if (sign == OperatorType.Substraction)
             {
-                Emitter.PushInt32(-1);
+                if (Type.Equals(MiniPascalType.Integer))
+                {
+                    Emitter.PushInt32(-1);
+                }
+                else if (Type.Equals(MiniPascalType.Real))
+                {
+                    Emitter.PushSingle(-1f);
+                }
                 first.EmitIR(Emitter);
                 Emitter.Multiply();
             }

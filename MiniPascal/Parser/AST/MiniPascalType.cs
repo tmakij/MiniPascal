@@ -7,7 +7,7 @@ namespace MiniPascal.Parser.AST
     {
         public static MiniPascalType Integer { get; } = new MiniPascalType("Integer", typeof(int));
         public static MiniPascalType String { get; } = new MiniPascalType("String", typeof(string));
-        public static MiniPascalType Boolean { get; } = new MiniPascalType("Boolean", typeof(bool));
+        public static MiniPascalType Boolean { get; } = new MiniPascalType("Boolean", typeof(int));
         public static MiniPascalType Real { get; } = new MiniPascalType("Real", typeof(float));
 
         static MiniPascalType()

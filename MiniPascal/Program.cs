@@ -27,7 +27,7 @@ namespace MiniPascal
                 using (StreamReader sr = new StreamReader(sourcePath, Encoding.UTF8))
                 {
                     SourceStream source = new SourceStream(sr);
-                    Compiler.Compile(source);
+                    Compiler.Compile(source, Environment.CurrentDirectory).Execute();
                 }
 
 #if DEBUG
