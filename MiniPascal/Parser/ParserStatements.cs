@@ -92,7 +92,7 @@ namespace MiniPascal.Parser
 
         private IStatement DeclarationStatement()
         {
-            DeclarationStatement varDecl = VariableDeclaration(VarRequired.Yes);
+            DeclarationStatement varDecl = VariableDeclaration();
             if (varDecl != null)
             {
                 return varDecl;
@@ -120,9 +120,9 @@ namespace MiniPascal.Parser
             return null;
         }
 
-        private DeclarationStatement VariableDeclaration(VarRequired Required)
+        private DeclarationStatement VariableDeclaration()
         {
-            if (Accept(Symbol.Variable) || Required == VarRequired.No)
+            if (Accept(Symbol.Variable))
             {
                 List<Identifier> ids = new List<Identifier>();
                 do
@@ -163,13 +163,32 @@ namespace MiniPascal.Parser
             return args;
         }
 
+        private Variable ReadVariable()
+        {
+            bool isReference = Accept(Symbol.Variable);
+
+            Identifier identifier = Identifier();
+            if (identifier == null)
+            {
+                throw new SyntaxException(expIdentifier, symbol);
+            }
+
+            Require(Symbol.Colon);
+            MiniPascalType type = Type();
+            if (type == null)
+            {
+                throw new SyntaxException(expType, symbol);
+            }
+            return new Variable(identifier, type, isReference);
+        }
+
         private Parameters ReadParameters()
         {
             Parameters parameters = new Parameters();
             do
             {
-                DeclarationStatement decl = VariableDeclaration(VarRequired.No);
-                parameters.Add(decl);
+                Variable variable = ReadVariable();
+                parameters.Add(variable);
             } while (Accept(Symbol.Comma));
             return parameters;
         }

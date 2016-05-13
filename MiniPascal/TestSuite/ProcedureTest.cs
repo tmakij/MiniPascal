@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using MiniPascal.Parser.AST;
 
 namespace MiniPascal.TestSuite
 {
@@ -15,7 +16,7 @@ namespace MiniPascal.TestSuite
         [Test]
         public void CallBooleanFalse()
         {
-            Assert.Catch<Parser.AST.TypeMismatchException>(() => Redirect("begin procedure hello(i:boolean);begin writeln(\"HelloWorld\",i);end; hello(1); end."));
+            Assert.Catch<TypeMismatchException>(() => Redirect("begin procedure hello(i:boolean);begin writeln(\"HelloWorld\",i);end; hello(1); end."));
         }
 
         [Test]
@@ -25,20 +26,46 @@ namespace MiniPascal.TestSuite
             Assert.AreEqual("Hello World!Hello you too!", output);
         }
 
-
         [Test]
         public void CallManyParameters()
         {
             Redirect(
                 @"
                 begin 
-                    procedure hello(i:string,j:integer,k:integer,l:boolean,o:real);
+                    procedure prt(i:string,j:integer,k:integer,l:boolean,o:real);
                         begin
                             writeln(i,k,l,o,j *2);
                         end;
-                    hello(""Hello World!"", 50, 13,false,12.556);
+                    prt(""Hello World!"", 50, 13,false,12.556);
                 end.");
             Assert.AreEqual("Hello World!" + 13 + "" + false + "" + 12.556 + "" + (50 * 2), output);
+        }
+
+        [Test]
+        public void CallAndAssign()
+        {
+            try
+            {
+                Redirect(
+                    @"
+                begin 
+                    procedure mul(var a:integer);
+                        begin
+                            a := 2 * a;
+                        end;
+                    var i,j : integer;
+                    i:=2;
+                    j:=5;
+                    mul(i);
+                    mul(j);
+                    writeln(j, "" "", i);
+                end.");
+            }
+            catch (UninitializedVariableException e)
+            {
+                System.Console.WriteLine(e.Identifier);
+            }
+            Assert.AreEqual("10 4", output);
         }
     }
 }

@@ -8,33 +8,43 @@ namespace MiniPascal.Parser.AST
     {
         public int Count { get { return parameters.Count; } }
         public Type[] Types { get { return (from p in types select p.CLRType).ToArray(); } }
-        private readonly List<DeclarationStatement> parameters = new List<DeclarationStatement>();
+        private readonly List<Variable> parameters = new List<Variable>();
         private readonly List<MiniPascalType> types = new List<MiniPascalType>();
 
         public ushort Index(Identifier Identifier)
         {
-            return (ushort)parameters.FindIndex(p => p.identifiers[0].Equals(Identifier));
+            return (ushort)parameters.FindIndex(p => p.Identifier.Equals(Identifier));
         }
 
-        public void Add(DeclarationStatement Parameter)
+        public bool HasParameter(Identifier Identifier)
+        {
+            return parameters.Any(p => p.Identifier.Equals(Identifier));
+        }
+
+        public void Add(Variable Parameter)
         {
             parameters.Add(Parameter);
         }
 
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
-            foreach (DeclarationStatement decl in parameters)
+            foreach (Variable variable in parameters)
             {
-                decl.CheckIdentifiers(Used);
+                if (Used.IsUsed(variable.Identifier))
+                {
+                    throw new VariableNameDefinedException(variable.Identifier);
+                }
+                Console.WriteLine(variable.Identifier);
+                Used.DeclareVariable(variable);
             }
         }
 
         public void CheckType(IdentifierTypes Types)
         {
-            foreach (DeclarationStatement decl in parameters)
+            foreach (Variable variable in parameters)
             {
-                decl.CheckType(Types);
-                types.Add(decl.Type);
+                Types.SetIdentifierType(variable.Identifier, variable.Type);
+                types.Add(variable.Type);
             }
         }
 
@@ -43,12 +53,12 @@ namespace MiniPascal.Parser.AST
             return types[Index];
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        /*public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
-            /*foreach (DeclarationStatement decl in parameters)
+            /oreach (DeclarationStatement decl in parameters)
             {
                 decl.EmitIR(Emitter, Types);
-            }*/
-        }
+            }
+        }*/
     }
 }

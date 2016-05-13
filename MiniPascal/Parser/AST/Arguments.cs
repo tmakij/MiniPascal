@@ -15,6 +15,10 @@ namespace MiniPascal.Parser.AST
 
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
+            foreach (Expression exp in arguments)
+            {
+                exp.CheckIdentifiers(Used);
+            }
         }
 
         public void CheckType(IdentifierTypes Types)

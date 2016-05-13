@@ -4,40 +4,43 @@ namespace MiniPascal.Parser.AST
 {
     public sealed class DeclarationStatement : IStatement
     {
-        public MiniPascalType Type { get; }
-        public readonly List<Identifier> identifiers;
+        private MiniPascalType Type { get; }
+        private readonly List<Variable> variables = new List<Variable>();
 
         public DeclarationStatement(List<Identifier> Identifiers, MiniPascalType Type, IExpression OptionalAssigment)
         {
-            identifiers = Identifiers;
+            foreach (Identifier ident in Identifiers)
+            {
+                variables.Add(new Variable(ident, Type, false));
+            }
             this.Type = Type;
         }
 
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
-            foreach (Identifier ident in identifiers)
+            foreach (Variable variable in variables)
             {
-                if (Used.IsUsed(ident))
+                if (Used.IsUsed(variable))
                 {
-                    throw new VariableNameDefinedException(ident);
+                    throw new VariableNameDefinedException(variable.Identifier);
                 }
-                Used.DeclareVariable(ident);
+                Used.DeclareVariable(variable);
             }
         }
 
         public void CheckType(IdentifierTypes Types)
         {
-            foreach (Identifier ident in identifiers)
+            foreach (Variable variable in variables)
             {
-                Types.SetIdentifierType(ident, Type);
+                Types.SetIdentifierType(variable.Identifier, Type);
             }
         }
 
         public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
-            foreach (Identifier ident in identifiers)
+            foreach (Variable variable in variables)
             {
-                Emitter.CreateVariable(ident, Type);
+                Emitter.CreateVariable(variable.Identifier, Type);
                 if (Type.Equals(MiniPascalType.Integer))
                 {
                     Emitter.PushInt32(0);
@@ -54,7 +57,7 @@ namespace MiniPascal.Parser.AST
                 {
                     Emitter.PushInt32(0);
                 }
-                Emitter.SaveVariable(ident);
+                Emitter.SaveVariable(variable.Identifier);
             }
         }
     }

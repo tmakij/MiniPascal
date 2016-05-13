@@ -4,6 +4,7 @@
     {
         private readonly Identifier identifier;
         private readonly Expression expression;
+        private Variable variable;
 
         public AssigmentStatement(Identifier Identifier, Expression Expression)
         {
@@ -17,10 +18,8 @@
             {
                 throw new UninitializedVariableException(identifier);
             }
-            if (!Used.IsMutable(identifier))
-            {
-                throw new ImmutableVariableException(identifier);
-            }
+            variable = Used.Variable(identifier);
+            System.Console.WriteLine(variable);
             expression.CheckIdentifiers(Used);
         }
 
@@ -36,8 +35,12 @@
 
         public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
+            if (variable.IsReference)
+            {
+                Emitter.LoadArgumentAddress(identifier);
+            }
             expression.EmitIR(Emitter);
-            Emitter.SaveVariable(identifier);
+            Emitter.SaveVariable(identifier, variable.IsReference);
         }
     }
 }

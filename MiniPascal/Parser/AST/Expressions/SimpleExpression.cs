@@ -23,6 +23,10 @@ namespace MiniPascal.Parser.AST
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
             first.CheckIdentifiers(Used);
+            foreach (OperatorPair<Term> opr in toAdd)
+            {
+                opr.Operand.CheckIdentifiers(Used);
+            }
         }
 
         public MiniPascalType NodeType(IdentifierTypes Types)

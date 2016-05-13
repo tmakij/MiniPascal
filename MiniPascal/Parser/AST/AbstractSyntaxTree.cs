@@ -44,15 +44,15 @@ namespace MiniPascal.Parser.AST
             MethodBuilder main = MainType.DefineMethod("Main", MethodAttributes.Private | MethodAttributes.Static);
             ILGenerator emitter = main.GetILGenerator();
 
-            CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main);
-            statements.EmitIR(cilEmitter, types);
+            CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main, null, null);
+            statements.EmitIR(cilEmitter, types, null);
+            cilEmitter.EndProcedure();
 
-            emitter.Emit(OpCodes.Ret);
             Type mainTypeFinal = MainType.CreateType();
 
             ab.SetEntryPoint(main, PEFileKinds.ConsoleApplication);
             ab.Save(Name, PortableExecutableKinds.ILOnly, ImageFileMachine.AMD64);
-            
+
             string target = Path.Combine(Location, Name);
             if (target != Path.GetFullPath(Name) && File.Exists(target))
             {

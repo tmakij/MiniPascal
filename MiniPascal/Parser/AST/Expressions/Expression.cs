@@ -19,6 +19,12 @@ namespace MiniPascal.Parser.AST
 
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
+            System.Console.WriteLine("Expr ident");
+            firstExpression.CheckIdentifiers(Used);
+            foreach (OperatorPair<SimpleExpression> opr in simpleExpressions)
+            {
+                opr.Operand.CheckIdentifiers(Used);
+            }
         }
 
         public MiniPascalType NodeType(IdentifierTypes Types)

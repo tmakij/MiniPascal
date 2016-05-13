@@ -17,10 +17,10 @@ namespace MiniPascal.Parser.AST
             {
                 throw new UninitializedVariableException(variableToReadInto);
             }
-            if (!Used.IsMutable(variableToReadInto))
+            /*if (!Used.IsMutable(variableToReadInto))
             {
                 throw new ImmutableVariableException(variableToReadInto);
-            }
+            }*/
         }
 
         public void CheckType(IdentifierTypes Types)

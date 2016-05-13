@@ -9,8 +9,16 @@ namespace MiniPascal
 {
     public static class Program
     {
+        private static void load(ref int i)
+        {
+            i = 0;
+        }
+
         private static int Main(string[] args)
         {
+            int a = 1;
+            load(ref a);
+            Console.WriteLine(a);
 #if !DEBUG
             if (args.Length != 1)
             {

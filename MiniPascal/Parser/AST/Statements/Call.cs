@@ -13,6 +13,10 @@
 
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
+            if (!Used.IsUsed(toBeCalled))
+            {
+                throw new UninitializedVariableException(toBeCalled);
+            }
             arguments.CheckIdentifiers(Used);
         }
 

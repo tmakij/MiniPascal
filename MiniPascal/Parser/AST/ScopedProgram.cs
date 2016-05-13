@@ -27,12 +27,14 @@ namespace MiniPascal.Parser.AST
             }
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types, Parameters Parameters)
         {
+            CILEmitter blockScope = Emitter.StartBlock(Parameters);
             foreach (IStatement item in statements)
             {
-                item.EmitIR(Emitter, Types);
+                item.EmitIR(blockScope, Types);
             }
+            //System.Console.WriteLine("End block");
         }
     }
 }

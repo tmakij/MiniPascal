@@ -2,29 +2,38 @@
 {
     public sealed class VariableOperand : IOperand
     {
-        private readonly Identifier variable;
+        private readonly Identifier identifier;
+        private Variable variable;
 
         public VariableOperand(Identifier Variable)
         {
-            variable = Variable;
+            identifier = Variable;
         }
 
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
-            if (!Used.IsUsed(variable))
+            if (!Used.IsUsed(identifier))
             {
-                throw new UninitializedVariableException(variable);
+                throw new UninitializedVariableException(identifier);
             }
+            variable = Used.Variable(identifier);
         }
 
         public MiniPascalType NodeType(IdentifierTypes Types)
         {
-            return Types.GetIdentifierType(variable);
+            return Types.GetIdentifierType(identifier);
         }
 
         public void EmitIR(CILEmitter Emitter)
         {
-            Emitter.LoadVariable(variable);
+            System.Console.WriteLine(identifier);
+            if (variable.IsReference)
+            {
+                Emitter.LoadVariable(identifier, true);
+            }else
+            {
+                Emitter.LoadVariable(identifier, false);
+            }
         }
     }
 }

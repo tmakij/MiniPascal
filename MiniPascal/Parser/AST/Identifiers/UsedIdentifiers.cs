@@ -4,32 +4,32 @@ namespace MiniPascal.Parser.AST
 {
     public sealed class UsedIdentifiers
     {
-        private readonly HashSet<Identifier> usedIdentifiers = new HashSet<Identifier>();
-        private readonly HashSet<Identifier> immutableIdentifiers = new HashSet<Identifier>();
+        private readonly HashSet<Identifier> methods = new HashSet<Identifier>();
+        private readonly Dictionary<Identifier, Variable> variables = new Dictionary<Identifier, Variable>();
 
-        public void DeclareVariable(Identifier Identifier)
+        public void DeclareMethod(Identifier Identifier)
         {
-            usedIdentifiers.Add(Identifier);
+            methods.Add(Identifier);
+        }
+
+        public void DeclareVariable(Variable Variable)
+        {
+            variables.Add(Variable.Identifier, Variable);
+        }
+
+        public bool IsUsed(Variable Variable)
+        {
+            return IsUsed(Variable.Identifier);
         }
 
         public bool IsUsed(Identifier Identifier)
         {
-            return usedIdentifiers.Contains(Identifier);
+            return variables.ContainsKey(Identifier) || methods.Contains(Identifier);
         }
 
-        public bool IsMutable(Identifier Identifier)
+        public Variable Variable(Identifier VarIdentifier)
         {
-            return !immutableIdentifiers.Contains(Identifier);
-        }
-
-        public void SetMutable(Identifier Identifier)
-        {
-            immutableIdentifiers.Remove(Identifier);
-        }
-
-        public void SetImmutable(Identifier Identifier)
-        {
-            immutableIdentifiers.Add(Identifier);
+            return variables[VarIdentifier];
         }
     }
 }

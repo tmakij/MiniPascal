@@ -134,6 +134,7 @@
     <Compile Include="Parser\AST\Identifiers\VariableNameDefinedException.cs" />
     <Compile Include="Lexer\LexerException.cs" />
     <Compile Include="Parser\AST\Parameters.cs" />
+    <Compile Include="Parser\AST\Variable.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserExpressions.cs" />
     <Compile Include="Parser\ParserStatements.cs" />

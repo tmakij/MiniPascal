@@ -4,6 +4,7 @@ using System.IO;
 
 namespace MiniPascal.TestSuite
 {
+    [TestFixture]
     public abstract class RedirectedOutputTest
     {
         protected string output { get { return proc.StandardOutput.ReadToEnd(); } }
@@ -26,6 +27,16 @@ namespace MiniPascal.TestSuite
             proc.StartInfo.RedirectStandardOutput = true;
             proc.Start();
             proc.WaitForExit(7500);
+        }
+
+        [TearDown]
+        private void Dispose()
+        {
+            if (proc != null)
+            {
+                proc.Dispose();
+                proc = null;
+            }
         }
     }
 }

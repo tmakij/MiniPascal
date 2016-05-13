@@ -15,7 +15,7 @@
 
         public void CheckIdentifiers(UsedIdentifiers Used)
         {
-            Used.DeclareVariable(identifier);
+            Used.DeclareMethod(identifier);
             Parameters.CheckIdentifiers(Used);
             block.CheckIdentifiers(Used);
         }
@@ -30,9 +30,10 @@
         public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
             Emitter.CreateProcedure(identifier, Parameters);
-            Parameters.EmitIR(Emitter, Types);
-            block.EmitIR(Emitter, Types);
-            Emitter.EndProcedure();
+            CILEmitter procBlock = Emitter.StartBlock(Parameters);
+            //Parameters.EmitIR(procBlock, Types);
+            block.EmitIR(procBlock, Types, Parameters);
+            procBlock.EndProcedure();
         }
     }
 }
