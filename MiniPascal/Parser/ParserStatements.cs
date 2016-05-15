@@ -87,6 +87,47 @@ namespace MiniPascal.Parser
 
         private IStatement StructuredStatement()
         {
+            ScopedProgram block = Block();
+            if (block != null)
+            {
+                return block;
+            }
+            If ifStm = IfStatement();
+            if (ifStm != null)
+            {
+                return ifStm;
+            }
+            return null;
+        }
+
+        private If IfStatement()
+        {
+            if (Accept(Symbol.If))
+            {
+                Require(Symbol.ClosureOpen);
+                Expression condition = ReadExpression();
+                Require(Symbol.ClosureClose);
+                if (condition == null)
+                {
+                    throw new SyntaxException(expExpression, symbol);
+                }
+                Require(Symbol.Then);
+                IStatement then = Statement();
+                if (then == null)
+                {
+                    throw new SyntaxException("statement", symbol);
+                }
+                IStatement elseStatement = null;
+                if (Accept(Symbol.Else))
+                {
+                    elseStatement = Statement();
+                    if (elseStatement == null)
+                    {
+                        throw new SyntaxException("statement", symbol);
+                    }
+                }
+                return new If(condition, then, elseStatement);
+            }
             return null;
         }
 

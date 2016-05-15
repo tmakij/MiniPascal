@@ -2,6 +2,6 @@
 {
     public interface IOperand : ITypedNode
     {
-        void EmitIR(CILEmitter Emitter);
+        void EmitIR(CILEmitter Emitter, bool Reference);
     }
 }

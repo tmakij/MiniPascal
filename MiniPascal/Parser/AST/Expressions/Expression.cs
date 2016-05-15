@@ -50,12 +50,12 @@ namespace MiniPascal.Parser.AST
             return type;
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
-            firstExpression.EmitIR(Emitter);
+            firstExpression.EmitIR(Emitter, Reference);
             foreach (OperatorPair<SimpleExpression> expr in simpleExpressions)
             {
-                expr.Operand.EmitIR(Emitter);
+                expr.Operand.EmitIR(Emitter, Reference);
                 expr.Operand.Type.BinaryOperation(expr.Operator).EmitIR(Emitter);
             }
         }

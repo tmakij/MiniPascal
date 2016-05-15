@@ -34,13 +34,21 @@ namespace MiniPascal.Parser
             }
             Require(Symbol.SemiColon);
             ScopedProgram block = Block();
+            if (block == null)
+            {
+                throw new SyntaxException("Program must start with a block");
+            }
             Require(Symbol.Period);
             return new AbstractSyntaxTree(block, ident);
         }
 
         private ScopedProgram Block()
         {
-            Require(Symbol.Begin);
+            if (!Accept(Symbol.Begin))
+            {
+                return null;
+            }
+
             ScopedProgram block = new ScopedProgram();
 
             while (true)

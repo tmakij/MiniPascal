@@ -24,7 +24,7 @@
         {
             Types.SetProcedureType(identifier, this);
             Parameters.CheckType(Types);
-            block.CheckTypes(Types);
+            block.CheckType(Types);
         }
 
         public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
@@ -32,7 +32,7 @@
             Emitter.CreateProcedure(identifier, Parameters);
             CILEmitter procBlock = Emitter.StartBlock(Parameters);
             //Parameters.EmitIR(procBlock, Types);
-            block.EmitIR(procBlock, Types, Parameters);
+            block.EmitIR(procBlock, Types);
             procBlock.EndProcedure();
         }
     }

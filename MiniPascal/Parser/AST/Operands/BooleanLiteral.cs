@@ -18,7 +18,7 @@
             return MiniPascalType.Boolean;
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
             int booleanValue = literal ? 1 : 0;
             Emitter.PushInt32(booleanValue);

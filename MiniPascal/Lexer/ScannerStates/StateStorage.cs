@@ -69,7 +69,7 @@ namespace MiniPascal.Lexer.ScannerStates
             PROgram = Scanner(Symbol.Program, "gram");
             Begin = Scanner(Symbol.Begin, "egin");
             While = Scanner(Symbol.While, "hile");
-            Else = Scanner(Symbol.Else, "else");
+            Else = Scanner(Symbol.Else, "lse");
             Of = Scanner(Symbol.Of, "of");
             And = Scanner(Symbol.LogicalAnd, "and");
             Or = Scanner(Symbol.LogicalOr, "or");

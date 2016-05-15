@@ -25,7 +25,7 @@
             {
                 Expression expr = toPrint.Expression(i);
                 MiniPascalType exprType = toPrint.Type(i);
-                expr.EmitIR(Emitter);
+                expr.EmitIR(Emitter, false);
                 Emitter.CallPrint(exprType);
             }
         }

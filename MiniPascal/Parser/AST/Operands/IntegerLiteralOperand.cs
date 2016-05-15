@@ -18,7 +18,7 @@
             return MiniPascalType.Integer;
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
             Emitter.PushInt32(literal);
         }

@@ -8,13 +8,14 @@ namespace MiniPascal.Parser.AST
     public sealed class CILEmitter
     {
         public CILEmitter Previous { get; }
+
         private static readonly Type[] stringTypes = new[] { typeof(string), typeof(string) };
         private readonly Dictionary<Identifier, LocalBuilder> localValueVariables = new Dictionary<Identifier, LocalBuilder>();
         //private readonly Dictionary<Identifier, LocalBuilder> localReferenceVariables = new Dictionary<Identifier, LocalBuilder>();
         private readonly Dictionary<Identifier, MethodBuilder> procedures = new Dictionary<Identifier, MethodBuilder>();
         private readonly ILGenerator generator;
         private readonly TypeBuilder mainType;
-        private Parameters parameters;
+        private readonly Parameters parameters;
         private MethodBuilder currentMethod;
 
         public CILEmitter(ILGenerator Generator, TypeBuilder MainType, MethodBuilder Current, CILEmitter Previous, Parameters Parameters)
@@ -22,8 +23,8 @@ namespace MiniPascal.Parser.AST
             generator = Generator;
             mainType = MainType;
             currentMethod = Current;
-            this.Previous = Previous;
             parameters = Parameters;
+            this.Previous = Previous;
         }
 
         public void CreateVariable(Identifier Identifier, MiniPascalType Type)
@@ -32,7 +33,25 @@ namespace MiniPascal.Parser.AST
             localValueVariables.Add(Identifier, variable);
         }
 
-        public void SaveVariable(Identifier Variable, bool IsReference = false)
+        public void SaveReferenceVariable(Variable Variable)
+        {
+            ushort loc = parameters.Index(Variable.Identifier);
+            MiniPascalType varType = Variable.Type;
+            if (varType.Equals(MiniPascalType.Integer) || varType.Equals(MiniPascalType.Boolean))
+            {
+                generator.Emit(OpCodes.Stind_I4);
+            }
+            else if (varType.Equals(MiniPascalType.Real))
+            {
+                generator.Emit(OpCodes.Stind_R4);
+            }
+            else if (varType.Equals(MiniPascalType.String))
+            {
+                generator.Emit(OpCodes.Stind_Ref);
+            }
+        }
+
+        public void SaveVariable(Identifier Variable)
         {
             if (localValueVariables.ContainsKey(Variable))
             {
@@ -41,22 +60,35 @@ namespace MiniPascal.Parser.AST
             else if (parameters.HasParameter(Variable))
             {
                 ushort loc = parameters.Index(Variable);
-                if (IsReference)
-                {
-                    generator.Emit(OpCodes.Stind_I4, loc);
-                }
-                else
-                {
-                    generator.Emit(OpCodes.Starg, loc);
-                }
+                //if (IsReference)
+                generator.Emit(OpCodes.Starg, loc);
             }
             else
             {
-                Previous.LoadVariable(Variable, IsReference);
+                throw new NotImplementedException();
             }
         }
 
-        public void LoadVariable(Identifier Variable, bool IsReference)
+        public void LoadReferenceVariable(Variable Variable)
+        {
+            ushort loc = parameters.Index(Variable.Identifier);
+            generator.Emit(OpCodes.Ldarg, loc);
+            MiniPascalType varType = Variable.Type;
+            if (varType.Equals(MiniPascalType.Integer) || varType.Equals(MiniPascalType.Boolean))
+            {
+                generator.Emit(OpCodes.Ldind_I4);
+            }
+            else if (varType.Equals(MiniPascalType.Real))
+            {
+                generator.Emit(OpCodes.Ldind_R4);
+            }
+            else if (varType.Equals(MiniPascalType.String))
+            {
+                generator.Emit(OpCodes.Ldind_Ref);
+            }
+        }
+
+        public void LoadVariable(Identifier Variable)
         {
             if (localValueVariables.ContainsKey(Variable))
             {
@@ -65,23 +97,16 @@ namespace MiniPascal.Parser.AST
             else if (parameters.HasParameter(Variable))
             {
                 generator.Emit(OpCodes.Ldarg, parameters.Index(Variable));
-                if (IsReference)
-                {
-                    generator.Emit(OpCodes.Ldind_I4);
-                }
             }
             else
             {
-                Previous.LoadVariable(Variable, IsReference);
+                throw new NotImplementedException();
             }
         }
 
-        public void LoadArgumentAddress(Identifier Variable)
+        public void LoadVariableAddress(Identifier Variable)
         {
-            //if (parameters.ContainsKey(Variable))
-            {
-                generator.Emit(OpCodes.Ldarga, parameters.Index(Variable));
-            }
+            generator.Emit(OpCodes.Ldloca, localValueVariables[Variable]);
         }
 
         public void PushString(string Value)
@@ -154,6 +179,31 @@ namespace MiniPascal.Parser.AST
             generator.Emit(OpCodes.Conv_I4);
         }
 
+        public void If(Action Result)
+        {
+            Label end = generator.DefineLabel();
+            generator.Emit(OpCodes.Brfalse_S, end);
+            Result();
+            generator.MarkLabel(end);
+        }
+
+        public void IfElse(Action True, Action False)
+        {
+            Label falseBranch = generator.DefineLabel();
+            Label end = generator.DefineLabel();
+            generator.Emit(OpCodes.Brfalse_S, falseBranch);
+            True();
+            generator.Emit(OpCodes.Br_S, end);
+            generator.MarkLabel(falseBranch);
+            False();
+            generator.MarkLabel(end);
+        }
+
+        public CILEmitter StartBlock()
+        {
+            return StartBlock(parameters);
+        }
+
         public CILEmitter StartBlock(Parameters Parameters)
         {
             Console.WriteLine("Start block");
@@ -163,9 +213,14 @@ namespace MiniPascal.Parser.AST
 
         public void CreateProcedure(Identifier Identifier, Parameters Parameters)
         {
-            Console.WriteLine("Proc " + Identifier);
-            Console.WriteLine("Type: " + typeof(int) + ", REF " + typeof(int).MakeByRefType().IsByRef);
-            MethodBuilder mb = mainType.DefineMethod(Identifier.ToString(), MethodAttributes.Private | MethodAttributes.Static, null, new[] { typeof(int).MakeByRefType() });
+            List<Type> types = new List<Type>();
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                Type curr = Parameters.Types[i];
+                bool byRef = Parameters.At(i).IsReference;
+                types.Add(byRef ? curr.MakeByRefType() : curr);
+            }
+            MethodBuilder mb = mainType.DefineMethod(Identifier.ToString(), MethodAttributes.Private | MethodAttributes.Static, null, types.ToArray());
             procedures.Add(Identifier, mb);
             currentMethod = mb;
         }

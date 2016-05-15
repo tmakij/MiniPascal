@@ -38,16 +38,14 @@ namespace MiniPascal.TestSuite
                         end;
                     prt(""Hello World!"", 50, 13,false,12.556);
                 end.");
-            Assert.AreEqual("Hello World!" + 13 + "" + false + "" + 12.556 + "" + (50 * 2), output);
+            Assert.AreEqual("Hello World!" + 13 + "" + false + "" + 12.556f + "" + (50 * 2), output);
         }
 
         [Test]
         public void CallAndAssign()
         {
-            try
-            {
-                Redirect(
-                    @"
+            Redirect(
+                @"
                 begin 
                     procedure mul(var a:integer);
                         begin
@@ -60,12 +58,28 @@ namespace MiniPascal.TestSuite
                     mul(j);
                     writeln(j, "" "", i);
                 end.");
-            }
-            catch (UninitializedVariableException e)
-            {
-                System.Console.WriteLine(e.Identifier);
-            }
             Assert.AreEqual("10 4", output);
+        }
+
+        [Test]
+        public void CallAndAssignEveryType()
+        {
+            Redirect(
+                @"
+                begin 
+                    procedure proc(var a:integer, var b :real, var c:boolean,var d : string);
+                        begin
+                            a := 2 * a;
+                            b := 3.14;
+                            c := true;
+                            d := d + ""__Addition__""
+                        end;
+                    var i : integer; var r:real;var bb:boolean; var s:string;
+                    i:= 50;r:=-1.0;bb:=false;s:=""test"";
+                    proc(i,r,bb,s);
+                    writeln(i,r,bb,s);
+                end.");
+            Assert.AreEqual("1003,14Truetest__Addition__", output);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MiniPascal.Parser.AST
 {
-    public sealed class SimpleExpression : IExpression
+    public sealed class SimpleExpression
     {
         public MiniPascalType Type { get; private set; }
         private readonly OperatorType sign;
@@ -57,7 +57,7 @@ namespace MiniPascal.Parser.AST
             return Type;
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
             if (sign == OperatorType.Substraction)
             {
@@ -69,16 +69,16 @@ namespace MiniPascal.Parser.AST
                 {
                     Emitter.PushSingle(-1f);
                 }
-                first.EmitIR(Emitter);
+                first.EmitIR(Emitter, Reference);
                 Emitter.Multiply();
             }
             else
             {
-                first.EmitIR(Emitter);
+                first.EmitIR(Emitter, Reference);
             }
             foreach (OperatorPair<Term> opr in toAdd)
             {
-                opr.Operand.EmitIR(Emitter);
+                opr.Operand.EmitIR(Emitter, Reference);
                 Type.BinaryOperation(opr.Operator).EmitIR(Emitter);
             }
         }

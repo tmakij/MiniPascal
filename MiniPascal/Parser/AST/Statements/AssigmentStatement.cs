@@ -37,10 +37,17 @@
         {
             if (variable.IsReference)
             {
-                Emitter.LoadArgumentAddress(identifier);
+                Emitter.LoadVariable(identifier);
             }
-            expression.EmitIR(Emitter);
-            Emitter.SaveVariable(identifier, variable.IsReference);
+            expression.EmitIR(Emitter, false);
+            if (variable.IsReference)
+            {
+                Emitter.SaveReferenceVariable(variable);
+            }
+            else
+            {
+                Emitter.SaveVariable(identifier);
+            }
         }
     }
 }

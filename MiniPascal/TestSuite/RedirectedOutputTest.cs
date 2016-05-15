@@ -13,8 +13,9 @@ namespace MiniPascal.TestSuite
         protected void Redirect(string FirstBlockInput)
         {
             const string binaryName = "TestBinary";
+            const string binaryNameExe = binaryName + ".exe";
             string temp = Path.GetTempPath();
-            string fullName = Path.Combine(temp, binaryName);
+            string fullName = Path.Combine(temp, binaryNameExe);
             string input = "program " + binaryName + ";" + FirstBlockInput;
             using (StringReader stringReader = new StringReader(input))
             {
@@ -22,6 +23,8 @@ namespace MiniPascal.TestSuite
                 Compiler.Compile(ss, temp);
             }
             proc = new Process();
+            proc.StartInfo.CreateNoWindow = true;
+            proc.StartInfo.WorkingDirectory = temp;
             proc.StartInfo.FileName = fullName;
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.RedirectStandardOutput = true;
@@ -30,7 +33,7 @@ namespace MiniPascal.TestSuite
         }
 
         [TearDown]
-        private void Dispose()
+        public void Dispose()
         {
             if (proc != null)
             {

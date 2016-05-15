@@ -53,6 +53,11 @@ namespace MiniPascal.Parser.AST
             return types[Index];
         }
 
+        public Variable At(int Index)
+        {
+            return parameters[Index];
+        }
+
         /*public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
             /oreach (DeclarationStatement decl in parameters)

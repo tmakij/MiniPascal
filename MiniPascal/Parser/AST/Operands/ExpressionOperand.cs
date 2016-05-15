@@ -19,7 +19,7 @@
             return expression.NodeType(Types);
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
             expression.EmitIR(Emitter);
         }

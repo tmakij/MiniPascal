@@ -18,7 +18,7 @@
             return MiniPascalType.Real;
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
             Emitter.PushSingle(literal);
         }

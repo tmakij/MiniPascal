@@ -2,7 +2,7 @@
 
 namespace MiniPascal.Parser.AST
 {
-    public sealed class ScopedProgram
+    public sealed class ScopedProgram : IStatement
     {
         private readonly List<IStatement> statements = new List<IStatement>();
 
@@ -19,7 +19,7 @@ namespace MiniPascal.Parser.AST
             }
         }
 
-        public void CheckTypes(IdentifierTypes Types)
+        public void CheckType(IdentifierTypes Types)
         {
             foreach (IStatement item in statements)
             {
@@ -27,9 +27,9 @@ namespace MiniPascal.Parser.AST
             }
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types, Parameters Parameters)
+        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
         {
-            CILEmitter blockScope = Emitter.StartBlock(Parameters);
+            CILEmitter blockScope = Emitter.StartBlock();
             foreach (IStatement item in statements)
             {
                 item.EmitIR(blockScope, Types);

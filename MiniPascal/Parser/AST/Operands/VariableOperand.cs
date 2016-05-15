@@ -24,15 +24,19 @@
             return Types.GetIdentifierType(identifier);
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
-            System.Console.WriteLine(identifier);
-            if (variable.IsReference)
+            if (Reference)
             {
-                Emitter.LoadVariable(identifier, true);
-            }else
+                Emitter.LoadVariableAddress(identifier);
+            }
+            else if (variable.IsReference)
             {
-                Emitter.LoadVariable(identifier, false);
+                Emitter.LoadReferenceVariable(variable);
+            }
+            else
+            {
+                Emitter.LoadVariable(identifier);
             }
         }
     }

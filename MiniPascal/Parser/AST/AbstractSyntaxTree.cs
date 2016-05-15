@@ -29,12 +29,13 @@ namespace MiniPascal.Parser.AST
 
         public void CheckTypes()
         {
-            statements.CheckTypes(types);
+            statements.CheckType(types);
         }
 
         public void GenerateCIL(string Location)
         {
-            AssemblyBuilder ab = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("MP ASSEMBLY"), AssemblyBuilderAccess.Save);
+            //CustomAttributeBuilder sb = new CustomAttributeBuilder();
+            AssemblyBuilder ab = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("MP ASSEMBLY"), AssemblyBuilderAccess.Save, Location);
             ModuleBuilder mb = ab.DefineDynamicModule(Name);
             TypeBuilder MainType = mb.DefineType("MainType", TypeAttributes.NotPublic | TypeAttributes.Abstract | TypeAttributes.Sealed);
 
@@ -45,7 +46,7 @@ namespace MiniPascal.Parser.AST
             ILGenerator emitter = main.GetILGenerator();
 
             CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main, null, null);
-            statements.EmitIR(cilEmitter, types, null);
+            statements.EmitIR(cilEmitter, types);
             cilEmitter.EndProcedure();
 
             Type mainTypeFinal = MainType.CreateType();
@@ -53,12 +54,12 @@ namespace MiniPascal.Parser.AST
             ab.SetEntryPoint(main, PEFileKinds.ConsoleApplication);
             ab.Save(Name, PortableExecutableKinds.ILOnly, ImageFileMachine.AMD64);
 
-            string target = Path.Combine(Location, Name);
+            /*string target = Path.Combine(Location, Name);
             if (target != Path.GetFullPath(Name) && File.Exists(target))
             {
                 File.Delete(target);
             }
-            File.Move(Name, target);
+            File.Move(Name, target);*/
             /*
             StrongName fullTrustAssembly = Assembly.GetExecutingAssembly().Evidence.GetHostEvidence<StrongName>();
             PermissionSet permSet = new PermissionSet(PermissionState.None);

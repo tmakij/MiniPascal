@@ -4,6 +4,7 @@
     {
         private readonly Arguments arguments;
         private readonly Identifier toBeCalled;
+        private Procedure proc;
 
         public Call(Identifier ToBeCalled, Arguments Arguments)
         {
@@ -23,7 +24,7 @@
         public void CheckType(IdentifierTypes Types)
         {
             arguments.CheckType(Types);
-            Procedure proc = Types.Procedure(toBeCalled);
+            proc = Types.Procedure(toBeCalled);
             if (arguments.Count != proc.Parameters.Count)
             {
                 throw new System.Exception("Invalid parameter count");
@@ -45,7 +46,8 @@
             for (int i = 0; i < arguments.Count; i++)
             {
                 Expression expr = arguments.Expression(i);
-                expr.EmitIR(Emitter);
+                bool loadReference = proc.Parameters.At(i).IsReference;
+                expr.EmitIR(Emitter, loadReference);
             }
             Emitter.Call(toBeCalled);
         }
