@@ -2,7 +2,7 @@
 {
     public interface IStatement : IIdentifierHolder
     {
-        void CheckType(IdentifierTypes Types);
-        void EmitIR(CILEmitter Emitter, IdentifierTypes Types);
+        void CheckType(Scope Current);
+        void EmitIR(CILEmitter Emitter);
     }
 }

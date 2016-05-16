@@ -2,6 +2,6 @@
 {
     public interface IIdentifierHolder
     {
-        void CheckIdentifiers(UsedIdentifiers Used);
+        void CheckIdentifiers(Scope Current);
     }
 }

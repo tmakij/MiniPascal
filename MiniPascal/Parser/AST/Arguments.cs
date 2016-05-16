@@ -13,19 +13,19 @@ namespace MiniPascal.Parser.AST
             arguments.Add(Argument);
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
             foreach (Expression exp in arguments)
             {
-                exp.CheckIdentifiers(Used);
+                exp.CheckIdentifiers(Current);
             }
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void CheckType(Scope Current)
         {
             foreach (Expression exp in arguments)
             {
-                types.Add(exp.NodeType(Types));
+                types.Add(exp.NodeType(Current));
             }
         }
 

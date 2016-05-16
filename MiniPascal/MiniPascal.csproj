@@ -90,6 +90,7 @@
     <Compile Include="Parser\AST\Operators\Equals\NumericalNotEquals.cs" />
     <Compile Include="Parser\AST\Operators\Equals\StringEquals.cs" />
     <Compile Include="Parser\AST\Operators\Equals\StringNotEquals.cs" />
+    <Compile Include="Parser\AST\Scope.cs" />
     <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
     <Compile Include="Parser\AST\Operators\BooleanAnd.cs" />
     <Compile Include="Parser\AST\Operators\BooleanNegation.cs" />

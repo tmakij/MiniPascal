@@ -9,14 +9,14 @@
             expression = Expression;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            expression.CheckIdentifiers(Used);
+            expression.CheckIdentifiers(Current);
         }
 
-        public MiniPascalType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(Scope Current)
         {
-            return expression.NodeType(Types);
+            return expression.NodeType(Current);
         }
 
         public void EmitIR(CILEmitter Emitter, bool Reference)

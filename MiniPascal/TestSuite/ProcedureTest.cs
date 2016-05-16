@@ -81,5 +81,22 @@ namespace MiniPascal.TestSuite
                 end.");
             Assert.AreEqual("1003,14Truetest__Addition__", output);
         }
+
+        [Test]
+        public void CallAndAssignPreviousScope()
+        {
+            Redirect(
+                @"
+                begin
+                    var b, d:integer;
+                    procedure mul(a:integer);
+                        begin
+                            b := 2 * a; d:= b* 3;
+                        end;
+                    mul(75);
+                    writeln(b,d);
+                end.");
+            Assert.AreEqual("150450", output);
+        }
     }
 }

@@ -2,8 +2,10 @@
 
 namespace MiniPascal.Parser.AST
 {
-    public sealed class UsedIdentifiers
+    public sealed class CurrentIdentifiers
     {
+        public IEnumerable<Variable> Variables { get { return variables.Values; } }
+
         private readonly HashSet<Identifier> methods = new HashSet<Identifier>();
         private readonly Dictionary<Identifier, Variable> variables = new Dictionary<Identifier, Variable>();
 
@@ -17,12 +19,12 @@ namespace MiniPascal.Parser.AST
             variables.Add(Variable.Identifier, Variable);
         }
 
-        public bool IsUsed(Variable Variable)
+        public bool IsCurrent(Variable Variable)
         {
-            return IsUsed(Variable.Identifier);
+            return IsCurrent(Variable.Identifier);
         }
 
-        public bool IsUsed(Identifier Identifier)
+        public bool IsCurrent(Identifier Identifier)
         {
             return variables.ContainsKey(Identifier) || methods.Contains(Identifier);
         }

@@ -17,22 +17,22 @@ namespace MiniPascal.Parser.AST
             simpleExpressions.Add(SimpleExpression);
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            System.Console.WriteLine("Expr ident");
-            firstExpression.CheckIdentifiers(Used);
+            //System.Console.WriteLine("Expr ident");
+            firstExpression.CheckIdentifiers(Current);
             foreach (OperatorPair<SimpleExpression> opr in simpleExpressions)
             {
-                opr.Operand.CheckIdentifiers(Used);
+                opr.Operand.CheckIdentifiers(Current);
             }
         }
 
-        public MiniPascalType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(Scope Current)
         {
-            MiniPascalType type = firstExpression.NodeType(Types);
+            MiniPascalType type = firstExpression.NodeType(Current);
             foreach (OperatorPair<SimpleExpression> expr in simpleExpressions)
             {
-                MiniPascalType anotherType = expr.Operand.NodeType(Types);
+                MiniPascalType anotherType = expr.Operand.NodeType(Current);
                 if (!type.Equals(anotherType))
                 {
                     throw new InvalidTypeException(anotherType, type);

@@ -89,7 +89,7 @@ namespace MiniPascal
             }
             catch (ImmutableVariableException ex)
             {
-                return Error("Identifier \"" + ex.Identifier + "\" cannot be changed, when it is used as iterator");
+                return Error("Identifier \"" + ex.Identifier + "\" cannot be changed, when it is Current as iterator");
             }
             catch (InvalidTypeException ex)
             {

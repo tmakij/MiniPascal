@@ -9,21 +9,21 @@
             toAssert = ToAssert;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            toAssert.CheckIdentifiers(Used);
+            toAssert.CheckIdentifiers(Current);
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void CheckType(Scope Current)
         {
-            MiniPascalType type = toAssert.NodeType(Types);
+            MiniPascalType type = toAssert.NodeType(Current);
             if (!type.Equals(MiniPascalType.Boolean))
             {
                 throw new TypeMismatchException(MiniPascalType.Boolean, type);
             }
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter)
         {
             throw new System.NotImplementedException();
         }

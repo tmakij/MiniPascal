@@ -62,6 +62,7 @@ namespace MiniPascal.Parser
                 if (!Accept(Symbol.SemiColon))
                 {
                     //Console.WriteLine(Environment.StackTrace);
+                    //Console.WriteLine(tokens.Current.Lexeme);
                     Require(Symbol.End);
                     break;
                 }

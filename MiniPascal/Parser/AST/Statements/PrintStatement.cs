@@ -9,17 +9,17 @@
             toPrint = ToPrint;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            toPrint.CheckIdentifiers(Used);
+            toPrint.CheckIdentifiers(Current);
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void CheckType(Scope Current)
         {
-            toPrint.CheckType(Types);
+            toPrint.CheckType(Current);
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter)
         {
             for (int i = 0; i < toPrint.Count; i++)
             {

@@ -9,11 +9,11 @@
             literal = Literal;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
         }
 
-        public MiniPascalType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(Scope Current)
         {
             return MiniPascalType.String;
         }

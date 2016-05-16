@@ -13,27 +13,25 @@
             block = Block;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            Used.DeclareMethod(identifier);
-            Parameters.CheckIdentifiers(Used);
-            block.CheckIdentifiers(Used);
+            Current.DeclareMethod(identifier, this);
+            //Parameters.CheckIdentifiers(Current);
+            block.CheckIdentifiers(Current);
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void CheckType(Scope Current)
         {
-            Types.SetProcedureType(identifier, this);
-            Parameters.CheckType(Types);
-            block.CheckType(Types);
+            //Parameters.CheckType(Current);
+            block.CheckType(Current);
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter)
         {
-            Emitter.CreateProcedure(identifier, Parameters);
-            CILEmitter procBlock = Emitter.StartBlock(Parameters);
-            //Parameters.EmitIR(procBlock, Types);
-            block.EmitIR(procBlock, Types);
-            procBlock.EndProcedure();
+            CILEmitter proc = Emitter.StartProcedure(identifier, Parameters);
+            //CILEmitter procBlock = proc.StartBlock();
+            block.EmitIR(proc);
+            proc.EndProcedure();
         }
     }
 }

@@ -156,6 +156,7 @@ namespace MiniPascal.Parser
                 Require(Symbol.ClosureClose);
                 Require(Symbol.SemiColon);
                 ScopedProgram block = Block();
+                block.AddParameters(parameters);
                 return new Procedure(ident, parameters, block);
             }
             return null;

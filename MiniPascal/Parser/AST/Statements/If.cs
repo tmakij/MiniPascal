@@ -12,34 +12,34 @@
             elseStatement = Else;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            condition.CheckIdentifiers(Used);
-            thenStatement.CheckIdentifiers(Used);
-            elseStatement?.CheckIdentifiers(Used);
+            condition.CheckIdentifiers(Current);
+            thenStatement.CheckIdentifiers(Current);
+            elseStatement?.CheckIdentifiers(Current);
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void CheckType(Scope Current)
         {
-            MiniPascalType condType = condition.NodeType(Types);
+            MiniPascalType condType = condition.NodeType(Current);
             if (!condType.Equals(MiniPascalType.Boolean))
             {
                 throw new TypeMismatchException(MiniPascalType.Boolean, condType);
             }
-            thenStatement.CheckType(Types);
-            elseStatement?.CheckType(Types);
+            thenStatement.CheckType(Current);
+            elseStatement?.CheckType(Current);
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter)
         {
             condition.EmitIR(Emitter, false);
             if (elseStatement == null)
             {
-                Emitter.If(() => thenStatement.EmitIR(Emitter, Types));
+                Emitter.If(() => thenStatement.EmitIR(Emitter));
             }
             else
             {
-                Emitter.IfElse(() => thenStatement.EmitIR(Emitter, Types), () => elseStatement.EmitIR(Emitter, Types));
+                Emitter.IfElse(() => thenStatement.EmitIR(Emitter), () => elseStatement.EmitIR(Emitter));
             }
         }
     }

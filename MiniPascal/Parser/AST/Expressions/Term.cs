@@ -18,21 +18,21 @@ namespace MiniPascal.Parser.AST
             toAdd.Add(Factor);
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            first.CheckIdentifiers(Used);
+            first.CheckIdentifiers(Current);
             foreach (OperatorPair<IOperand> opr in toAdd)
             {
-                opr.Operand.CheckIdentifiers(Used);
+                opr.Operand.CheckIdentifiers(Current);
             }
         }
 
-        public MiniPascalType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(Scope Current)
         {
-            Type = first.NodeType(Types);
+            Type = first.NodeType(Current);
             foreach (OperatorPair<IOperand> opr in toAdd)
             {
-                MiniPascalType nextType = opr.Operand.NodeType(Types);
+                MiniPascalType nextType = opr.Operand.NodeType(Current);
                 if (!Type.Equals(nextType))
                 {
                     throw new InvalidTypeException(nextType, Type);

@@ -13,7 +13,7 @@ namespace MiniPascal.Parser.AST
     {
         private string Name { get; }
         private readonly ScopedProgram statements;
-        private readonly IdentifierTypes types = new IdentifierTypes();
+        private readonly Scope root = new Scope(null);
 
         public AbstractSyntaxTree(ScopedProgram Statements, Identifier Name)
         {
@@ -23,13 +23,12 @@ namespace MiniPascal.Parser.AST
 
         public void CheckIdentifiers()
         {
-            UsedIdentifiers identifiers = new UsedIdentifiers();
-            statements.CheckIdentifiers(identifiers);
+            statements.CheckIdentifiers(root);
         }
 
         public void CheckTypes()
         {
-            statements.CheckType(types);
+            statements.CheckType(root);
         }
 
         public void GenerateCIL(string Location)
@@ -46,7 +45,7 @@ namespace MiniPascal.Parser.AST
             ILGenerator emitter = main.GetILGenerator();
 
             CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main, null, null);
-            statements.EmitIR(cilEmitter, types);
+            statements.EmitIR(cilEmitter);
             cilEmitter.EndProcedure();
 
             Type mainTypeFinal = MainType.CreateType();
@@ -79,6 +78,7 @@ namespace MiniPascal.Parser.AST
             proc.StartInfo.FileName = Name;
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.RedirectStandardOutput = true;
+            //proc.StartInfo.
             proc.Start();
             proc.WaitForExit(7500);
             Console.Write(proc.StandardOutput.ReadToEnd());

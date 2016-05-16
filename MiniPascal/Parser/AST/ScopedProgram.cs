@@ -4,6 +4,7 @@ namespace MiniPascal.Parser.AST
 {
     public sealed class ScopedProgram : IStatement
     {
+        public Scope Scope { get; private set; }
         private readonly List<IStatement> statements = new List<IStatement>();
 
         public void Add(IStatement Statement)
@@ -11,30 +12,37 @@ namespace MiniPascal.Parser.AST
             statements.Add(Statement);
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Identifiers)
+        public void AddParameters(Parameters Parameters)
+        {
+            statements.Insert(0, Parameters);
+        }
+
+        public void CheckIdentifiers(Scope Current)
+        {
+            Scope = new Scope(Current);
+            //System.Console.WriteLine("New Scope");
+            foreach (IStatement item in statements)
+            {
+                item.CheckIdentifiers(Scope);
+            }
+            //System.Console.WriteLine("End Scope");
+        }
+
+        public void CheckType(Scope Current)
         {
             foreach (IStatement item in statements)
             {
-                item.CheckIdentifiers(Identifiers);
+                item.CheckType(Scope);
             }
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter)
         {
+            CILEmitter blockScope = Emitter.StartBlock(Scope);
             foreach (IStatement item in statements)
             {
-                item.CheckType(Types);
+                item.EmitIR(blockScope);
             }
-        }
-
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
-        {
-            CILEmitter blockScope = Emitter.StartBlock();
-            foreach (IStatement item in statements)
-            {
-                item.EmitIR(blockScope, Types);
-            }
-            //System.Console.WriteLine("End block");
         }
     }
 }

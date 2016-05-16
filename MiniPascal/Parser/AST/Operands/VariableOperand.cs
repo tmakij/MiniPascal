@@ -10,18 +10,18 @@
             identifier = Variable;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            if (!Used.IsUsed(identifier))
+            if (!Current.IsUsed(identifier))
             {
                 throw new UninitializedVariableException(identifier);
             }
-            variable = Used.Variable(identifier);
+            variable = Current.Variable(identifier);
         }
 
-        public MiniPascalType NodeType(IdentifierTypes Types)
+        public MiniPascalType NodeType(Scope Current)
         {
-            return Types.GetIdentifierType(identifier);
+            return Current.Variable(identifier).Type;
         }
 
         public void EmitIR(CILEmitter Emitter, bool Reference)

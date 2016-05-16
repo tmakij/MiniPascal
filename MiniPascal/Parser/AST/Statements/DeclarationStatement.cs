@@ -16,27 +16,23 @@ namespace MiniPascal.Parser.AST
             this.Type = Type;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
             foreach (Variable variable in variables)
             {
-                if (Used.IsUsed(variable))
+                if (Current.IsUsed(variable))
                 {
                     throw new VariableNameDefinedException(variable.Identifier);
                 }
-                Used.DeclareVariable(variable);
+                Current.DeclareVariable(variable);
             }
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void CheckType(Scope Current)
         {
-            foreach (Variable variable in variables)
-            {
-                Types.SetIdentifierType(variable.Identifier, Type);
-            }
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter)
         {
             foreach (Variable variable in variables)
             {

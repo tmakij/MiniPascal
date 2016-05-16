@@ -11,28 +11,28 @@ namespace MiniPascal.Parser.AST
             variableToReadInto = VariableToReadInto;
         }
 
-        public void CheckIdentifiers(UsedIdentifiers Used)
+        public void CheckIdentifiers(Scope Current)
         {
-            if (!Used.IsUsed(variableToReadInto))
+            if (!Current.IsUsed(variableToReadInto))
             {
                 throw new UninitializedVariableException(variableToReadInto);
             }
-            /*if (!Used.IsMutable(variableToReadInto))
+            /*if (!Current.IsMutable(variableToReadInto))
             {
                 throw new ImmutableVariableException(variableToReadInto);
             }*/
         }
 
-        public void CheckType(IdentifierTypes Types)
+        public void CheckType(Scope Current)
         {
-            MiniPascalType varType = Types.GetIdentifierType(variableToReadInto);
+            MiniPascalType varType = Current.Variable(variableToReadInto).Type;
             if (!varType.Equals(MiniPascalType.Integer) && !varType.Equals(MiniPascalType.String))
             {
                 throw new InvalidTypeException(varType, MiniPascalType.Integer, MiniPascalType.String);
             }
         }
 
-        public void EmitIR(CILEmitter Emitter, IdentifierTypes Types)
+        public void EmitIR(CILEmitter Emitter)
         {
             throw new NotImplementedException();
         }

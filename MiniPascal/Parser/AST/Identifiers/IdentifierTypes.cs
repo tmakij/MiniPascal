@@ -9,7 +9,11 @@ namespace MiniPascal.Parser.AST
 
         public void SetIdentifierType(Identifier Identifier, MiniPascalType Type)
         {
-            types.Add(Identifier, Type);
+            if (!types.ContainsKey(Identifier))
+            {
+                types.Add(Identifier, null);
+            }
+            types[Identifier] = Type;
         }
 
         public void SetProcedureType(Identifier Identifier, Procedure Procedure)
