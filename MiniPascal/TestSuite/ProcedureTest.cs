@@ -96,7 +96,33 @@ namespace MiniPascal.TestSuite
                     mul(75);
                     writeln(b,d);
                 end.");
-            Assert.AreEqual("150450", output);
+            Assert.AreEqual(150 + "" + 450, output);
+        }
+
+        [Test]
+        public void CallAndAssignPreviousScopeMany()
+        {
+            Redirect(
+                @"
+                begin
+                    var b, d:integer;
+                    b := -5;
+                    d:=1;
+                    procedure mul(a:integer);
+                        begin
+                        procedure proc2(k:boolean);
+                            begin
+                                b := b * a;
+                                d:= 4 * d;
+                            end;
+                        b := 2 * a;
+                        proc2(false);
+                        d:= d* b* 3;
+                        end;
+                    mul(7);
+                    writeln(b,d);
+                end.");
+            Assert.AreEqual(98 + "" + 1176, output);
         }
     }
 }

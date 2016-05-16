@@ -14,11 +14,6 @@
 
         public void CheckIdentifiers(Scope Current)
         {
-            System.Console.WriteLine("All");
-            foreach (Variable var in Current.All)
-            {
-                System.Console.WriteLine(var.Identifier);
-            }
             if (!Current.IsUsed(identifier))
             {
                 throw new UninitializedVariableException(identifier);

@@ -100,8 +100,6 @@ namespace MiniPascal.Parser.AST
 
         public void LoadVariable(Identifier Variable)
         {
-            Console.WriteLine(Variable);
-            Console.WriteLine(parameters);
             if (localValueVariables.ContainsKey(Variable))
             {
                 generator.Emit(OpCodes.Ldloc, localValueVariables[Variable]);
@@ -118,7 +116,30 @@ namespace MiniPascal.Parser.AST
 
         public void LoadVariableAddress(Identifier Variable)
         {
-            generator.Emit(OpCodes.Ldloca, localValueVariables[Variable]);
+            foreach (var item in localValueVariables.Keys)
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine(Variable);
+            Console.WriteLine(currentMethod.Name);
+            if (localValueVariables.ContainsKey(Variable))
+            {
+                generator.Emit(OpCodes.Ldloca, localValueVariables[Variable]);
+            }
+            else
+#if DEBUG
+            if (parameters.HasParameter(Variable))
+#endif
+            {
+                ushort loc = parameters.Index(Variable);
+                generator.Emit(OpCodes.Ldarga, loc);
+            }
+#if DEBUG
+            else
+            {
+                throw new InvalidOperationException();
+            }
+#endif
         }
 
         public void PushString(string Value)
@@ -214,7 +235,7 @@ namespace MiniPascal.Parser.AST
         public CILEmitter StartBlock(Scope Scope)
         {
             Console.WriteLine("Start block");
-            CILEmitter next = new CILEmitter(generator, mainType, currentMethod, scope, parameters);
+            CILEmitter next = new CILEmitter(generator, mainType, currentMethod, Scope, parameters);
             return next;
         }
 
