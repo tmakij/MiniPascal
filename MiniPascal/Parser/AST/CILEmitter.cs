@@ -44,7 +44,7 @@ namespace MiniPascal.Parser.AST
 
         public void SaveReferenceVariable(Variable Variable)
         {
-            ushort loc = parameters.Index(Variable.Identifier);
+            //ushort loc = parameters.Index(Variable.Identifier);
             SimpleType varType = Variable.Type.SimpleType;
             if (varType.Equals(SimpleType.Integer) || varType.Equals(SimpleType.Boolean))
             {
@@ -100,8 +100,8 @@ namespace MiniPascal.Parser.AST
             if (parameters.HasParameter(Variable))
 #endif
             {
-                ushort loc = parameters.Index(Variable);
-                generator.Emit(OpCodes.Starg, loc);
+                byte loc = parameters.Index(Variable);
+                generator.Emit(OpCodes.Starg_S, loc);
             }
 #if DEBUG
             else
@@ -113,8 +113,8 @@ namespace MiniPascal.Parser.AST
 
         public void LoadReferenceVariable(Variable Variable)
         {
-            ushort loc = parameters.Index(Variable.Identifier);
-            generator.Emit(OpCodes.Ldarg, loc);
+            byte loc = parameters.Index(Variable.Identifier);
+            generator.Emit(OpCodes.Ldarg_S, loc);
             if (Variable.Type.IsArray)
             {
                 generator.Emit(OpCodes.Ldind_Ref);
@@ -160,6 +160,29 @@ namespace MiniPascal.Parser.AST
             generator.Emit(code);
         }
 
+        private static OpCode Ldarg(byte Value)
+        {
+            switch (Value)
+            {
+                case 1:
+                    return OpCodes.Ldarg_1;
+                case 2:
+                    return OpCodes.Ldarg_2;
+                case 3:
+                    return OpCodes.Ldarg_3;
+#if DEBUG
+                case 0:
+#else
+                default:
+#endif
+                    return OpCodes.Ldarg_0;
+#if DEBUG
+                default:
+                    throw new InvalidOperationException();
+#endif
+            }
+        }
+
         public void LoadVariable(Identifier Variable)
         {
             if (localValueVariables.ContainsKey(Variable))
@@ -168,7 +191,15 @@ namespace MiniPascal.Parser.AST
             }
             else if (parameters.HasParameter(Variable))
             {
-                generator.Emit(OpCodes.Ldarg, parameters.Index(Variable));
+                byte argIndex = parameters.Index(Variable);
+                if (argIndex >= 0 && argIndex <= 3)
+                {
+                    generator.Emit(Ldarg(argIndex));
+                }
+                else
+                {
+                    generator.Emit(OpCodes.Ldarg_S, argIndex);
+                }
             }
             else
             {
@@ -178,23 +209,17 @@ namespace MiniPascal.Parser.AST
 
         public void LoadVariableAddress(Identifier Variable)
         {
-            foreach (var item in localValueVariables.Keys)
-            {
-                Console.WriteLine(item);
-            }
-            Console.WriteLine(Variable);
-            Console.WriteLine(currentMethod.Name);
             if (localValueVariables.ContainsKey(Variable))
             {
-                generator.Emit(OpCodes.Ldloca, localValueVariables[Variable]);
+                generator.Emit(OpCodes.Ldloca_S, localValueVariables[Variable]);
             }
             else
 #if DEBUG
             if (parameters.HasParameter(Variable))
 #endif
             {
-                ushort loc = parameters.Index(Variable);
-                generator.Emit(OpCodes.Ldarga, loc);
+                byte loc = parameters.Index(Variable);
+                generator.Emit(OpCodes.Ldarga_S, loc);
             }
 #if DEBUG
             else
@@ -213,10 +238,45 @@ namespace MiniPascal.Parser.AST
         {
             generator.Emit(OpCodes.Ldstr, Value);
         }
+        private static OpCode IntCode(int Value)
+        {
+            switch (Value)
+            {
+                case -1:
+                    return OpCodes.Ldc_I4_M1;
+                case 0:
+                    return OpCodes.Ldc_I4_0;
+                case 1:
+                    return OpCodes.Ldc_I4_1;
+                case 2:
+                    return OpCodes.Ldc_I4_2;
+                case 3:
+                    return OpCodes.Ldc_I4_3;
+                case 4:
+                    return OpCodes.Ldc_I4_4;
+                case 5:
+                    return OpCodes.Ldc_I4_5;
+                case 6:
+                    return OpCodes.Ldc_I4_6;
+                case 7:
+                    return OpCodes.Ldc_I4_7;
+                case 8:
+                    return OpCodes.Ldc_I4_8;
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
 
         public void PushInt32(int Value)
         {
-            generator.Emit(OpCodes.Ldc_I4, Value);
+            if (-1 <= Value && Value <= 8)
+            {
+                generator.Emit(IntCode(Value));
+            }
+            else
+            {
+                generator.Emit(OpCodes.Ldc_I4, Value);
+            }
         }
 
         public void PushSingle(float Value)
@@ -301,7 +361,6 @@ namespace MiniPascal.Parser.AST
 
         public CILEmitter StartBlock(Scope Scope)
         {
-            Console.WriteLine("Start block");
             CILEmitter next = new CILEmitter(generator, mainType, currentMethod, Scope, parameters);
             return next;
         }
@@ -337,7 +396,6 @@ namespace MiniPascal.Parser.AST
 
         public void EndProcedure()
         {
-            Console.WriteLine("End Proc " + currentMethod.Name);
             generator.Emit(OpCodes.Ret);
         }
 
@@ -360,7 +418,6 @@ namespace MiniPascal.Parser.AST
                 generator.MarkLabel(trueRes);
                 PushString(bool.TrueString);
                 generator.MarkLabel(end);
-                generator.Emit(OpCodes.Nop);
                 generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Write), SimpleType.String.CLRTypeArray));
             }
             else

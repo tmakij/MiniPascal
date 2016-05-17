@@ -27,9 +27,9 @@ namespace MiniPascal.Parser.AST
         private readonly List<Variable> parametersFromPreviousScope = new List<Variable>();
         private readonly List<Variable> allParameters = new List<Variable>();
 
-        public ushort Index(Identifier Identifier)
+        public byte Index(Identifier Identifier)
         {
-            return (ushort)allParameters.FindIndex(p => p.Identifier.Equals(Identifier));
+            return (byte)allParameters.FindIndex(p => p.Identifier.Equals(Identifier));
         }
 
         public bool HasParameter(Identifier Identifier)

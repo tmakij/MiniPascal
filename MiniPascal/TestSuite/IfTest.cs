@@ -6,7 +6,7 @@ namespace MiniPascal.TestSuite
     public sealed class IfTest : RedirectedOutputTest
     {
         [Test]
-        public void ifPrint()
+        public void IfPrint()
         {
             Redirect(@"begin var b : boolean;
                        b := true;
