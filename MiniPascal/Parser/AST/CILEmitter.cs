@@ -206,7 +206,7 @@ namespace MiniPascal.Parser.AST
 
         public void PushArray(MiniPascalType Type)
         {
-            generator.Emit(OpCodes.Newarr, Type.SimpleType.CLRType.MakeArrayType());
+            generator.Emit(OpCodes.Newarr, Type.SimpleType.CLRType);
         }
 
         public void PushString(string Value)

@@ -6,7 +6,7 @@ namespace MiniPascal.TestSuite
     public sealed class ArrayTest : RedirectedOutputTest
     {
         [Test]
-        public void TestZero()
+        public void ArraysZero()
         {
             Redirect(@"begin
                         var arr : array[1] of integer;
@@ -16,7 +16,7 @@ namespace MiniPascal.TestSuite
         }
 
         [Test]
-        public void TestMultipleAssigments()
+        public void ArraysMultipleAssigments()
         {
             Redirect(@"begin
                         var arr : array[100] of integer;
@@ -30,7 +30,7 @@ namespace MiniPascal.TestSuite
         }
 
         [Test]
-        public void TestArrayReassigment()
+        public void ArraysReassigment()
         {
             Redirect(@"begin
                         var arr : array[100] of integer;
@@ -38,11 +38,11 @@ namespace MiniPascal.TestSuite
                         procedure aas(i:integer); begin arr[0] := 2 end;
                         aas(0);
                         writeln(arr[0]) end.");
-            Assert.AreEqual("2", output);
+            Assert.AreEqual(2.ToString(), output);
         }
 
         [Test]
-        public void TestArrayVariableReassigment()
+        public void ArraysVariableReassigment()
         {
             Redirect(@"begin
                         var arr : array[100] of integer;
@@ -50,17 +50,60 @@ namespace MiniPascal.TestSuite
                         procedure aas(i:integer); begin var arr2 : array[1] of integer; arr2[0] :=3;arr := arr2; end;
                         aas(0);
                         writeln(arr[0]) end.");
-            Assert.AreEqual("3", output);
+            Assert.AreEqual(3.ToString(), output);
         }
 
         [Test]
-        public void TestArraySize()
+        public void ArraysSize()
         {
             Redirect(@"begin
                         var arr : array[100] of integer;
                         var arr2 : array[12322] of integer;
                         writeln(arr.size, arr2.size) end.");
             Assert.AreEqual(100 + "" + 12322, output);
+        }
+
+        [Test]
+        public void ArraysReal()
+        {
+            Redirect(@"begin
+                        var arr : array[100] of real;
+                        arr[5]:= 3.14;
+                        writeln(arr[5], "" "", arr[0]) end.");
+            Assert.AreEqual(3.14 + " " + 0f, output);
+        }
+
+        [Test]
+        public void ArraysBoolean()
+        {
+            Redirect(@"begin
+                        var arr : array[3] of boolean;
+                        arr[0]:= true;
+                        arr[1]:= true;
+                        arr[2]:= false;
+                        writeln(arr[0], arr[1], arr[2]) end.");
+            Assert.AreEqual(bool.TrueString + bool.TrueString + bool.FalseString, output);
+        }
+
+        [Test]
+        public void ArraysString()
+        {
+            Redirect(@"begin
+                        var arr : array[3] of string;
+                        arr[0]:= ""hello "";
+                        arr[1]:= ""world"";
+                        arr[2]:= ""!"";
+                        writeln(arr[0], arr[1], arr[2]) end.");
+            Assert.AreEqual("hello world!", output);
+        }
+
+        [Test]
+        public void ArraysEmptyString()
+        {
+            Redirect(@"begin
+                        var arr : array[3] of string;
+                        writeln("""" = arr[0],"""" <> arr[1], arr[2]) end.");
+            Assert.AreEqual(bool.FalseString + bool.TrueString, output);
         }
     }
 }

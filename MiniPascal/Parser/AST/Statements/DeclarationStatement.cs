@@ -36,7 +36,8 @@ namespace MiniPascal.Parser.AST
         {
             if (Type.IsArray)
             {
-                if (!Type.SimpleType.Equals(SimpleType.Integer))
+                Type.Size.NodeType(Current);
+                if (!Type.Size.Type.Equals(MiniPascalType.Integer))
                 {
                     throw new System.Exception("Expected integer expression, found " + Type.SimpleType);
                 }
