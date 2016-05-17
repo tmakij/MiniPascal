@@ -234,11 +234,6 @@ namespace MiniPascal.Parser.AST
             generator.Emit(OpCodes.Mul);
         }
 
-        public void Negate()
-        {
-            generator.Emit(OpCodes.Not);
-        }
-
         public void Or()
         {
             generator.Emit(OpCodes.Or);
@@ -277,6 +272,11 @@ namespace MiniPascal.Parser.AST
         public void ToInt32()
         {
             generator.Emit(OpCodes.Conv_I4);
+        }
+
+        public void ArraySize()
+        {
+            generator.Emit(OpCodes.Ldlen);
         }
 
         public void If(Action Result)

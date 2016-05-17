@@ -85,7 +85,17 @@ namespace MiniPascal.Parser
 
         private IOperand Factor()
         {
-            IOperand opr = ReadVariableOperand() ?? ReadIntegerLiteral() ?? ReadRealLiteral() ?? ReadStringLiteral() ?? ReadBooleanLiteral();
+            IOperand opr = ReadVariableOperand() ?? ReadIntegerLiteral() ?? ReadRealLiteral()
+                ?? ReadStringLiteral() ?? ReadBooleanLiteral() ?? LogicalNot();
+            if (opr == null)
+            {
+                return null;
+            }
+            if (Accept(Symbol.Period))
+            {
+                Require(Symbol.Size);
+                return new Size(opr);
+            }
             return opr;
         }
 
@@ -152,6 +162,20 @@ namespace MiniPascal.Parser
                 {
                     throw new IntegerParseOverflowException(lex);
                 }
+            }
+            return null;
+        }
+
+        private IOperand LogicalNot()
+        {
+            if (Accept(Symbol.LogicalNot))
+            {
+                IOperand factor = Factor();
+                if (factor == null)
+                {
+                    throw new SyntaxException(expOperand, symbol);
+                }
+                return new Unary(OperatorType.Not, factor);
             }
             return null;
         }

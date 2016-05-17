@@ -7,15 +7,15 @@
         Multiplication,
         Substraction,
         Division,
-        Negation,
         Equals,
-        LessThan,
-        And,
         NotEquals,
+        LessThan,
         LessOrEqualThan,
         GreaterOrEqualThan,
         GreaterThan,
+        Modulo,
+        And,
         Or,
-        Modulo
+        Not
     }
 }

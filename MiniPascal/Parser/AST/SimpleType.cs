@@ -12,11 +12,6 @@ namespace MiniPascal.Parser.AST
 
         static SimpleType()
         {
-            NumericalAddition add = new NumericalAddition();
-            NumericalMultiplication mul = new NumericalMultiplication();
-            NumericalSubstraction sub = new NumericalSubstraction();
-            NumericalDivision div = new NumericalDivision();
-
             NumericalEquals eq = new NumericalEquals();
             NumericalNotEquals noteq = new NumericalNotEquals();
 
@@ -25,10 +20,10 @@ namespace MiniPascal.Parser.AST
             NumericalGreaterThan gre = new NumericalGreaterThan();
             NumericalLessThan leq = new NumericalLessThan();
 
-            Integer.AddBinaryOperator(OperatorType.Addition, add);
-            Integer.AddBinaryOperator(OperatorType.Multiplication, mul);
-            Integer.AddBinaryOperator(OperatorType.Substraction, sub);
-            Integer.AddBinaryOperator(OperatorType.Division, div);
+            Integer.AddBinaryOperator(OperatorType.Addition, new IntegerAddition());
+            Integer.AddBinaryOperator(OperatorType.Multiplication, new IntegerMultiplication());
+            Integer.AddBinaryOperator(OperatorType.Substraction, new IntegerSubstraction());
+            Integer.AddBinaryOperator(OperatorType.Division, new IntegerDivision());
 
             Integer.AddBinaryOperator(OperatorType.Equals, eq);
             Integer.AddBinaryOperator(OperatorType.NotEquals, noteq);
@@ -39,10 +34,10 @@ namespace MiniPascal.Parser.AST
             Integer.AddBinaryOperator(OperatorType.LessOrEqualThan, leeq);
             Integer.AddBinaryOperator(OperatorType.LessThan, leq);
 
-            Real.AddBinaryOperator(OperatorType.Addition, add);
-            Real.AddBinaryOperator(OperatorType.Multiplication, mul);
-            Real.AddBinaryOperator(OperatorType.Substraction, sub);
-            Real.AddBinaryOperator(OperatorType.Division, div);
+            Real.AddBinaryOperator(OperatorType.Addition, new RealAddition());
+            Real.AddBinaryOperator(OperatorType.Multiplication, new RealMultiplication());
+            Real.AddBinaryOperator(OperatorType.Substraction, new RealSubstraction());
+            Real.AddBinaryOperator(OperatorType.Division, new RealDivision());
 
             Real.AddBinaryOperator(OperatorType.Equals, eq);
             Real.AddBinaryOperator(OperatorType.NotEquals, noteq);
@@ -57,7 +52,7 @@ namespace MiniPascal.Parser.AST
             String.AddBinaryOperator(OperatorType.NotEquals, new StringNotEquals());
             String.AddBinaryOperator(OperatorType.LessThan, new StringLessThan());
 
-            Boolean.AddUnaryOperator(OperatorType.Negation, new BooleanNegation());
+            Boolean.AddUnaryOperator(OperatorType.Not, new BooleanNegation());
             Boolean.AddBinaryOperator(OperatorType.And, new BooleanAnd());
             Boolean.AddBinaryOperator(OperatorType.Or, new BooleanOr());
 

@@ -76,6 +76,7 @@
     <Compile Include="Parser\AST\Expressions\SignedExpression.cs" />
     <Compile Include="Parser\AST\MiniPascalType.cs" />
     <Compile Include="Parser\AST\Operands\BooleanLiteral.cs" />
+    <Compile Include="Parser\AST\Operands\Size.cs" />
     <Compile Include="Parser\AST\Operators\BooleanOr.cs" />
     <Compile Include="Parser\AST\CILEmitter.cs" />
     <Compile Include="Parser\AST\Operands\RealLiteral.cs" />
@@ -89,16 +90,21 @@
     <Compile Include="Parser\AST\Operators\Equals\NumericalNotEquals.cs" />
     <Compile Include="Parser\AST\Operators\Equals\StringEquals.cs" />
     <Compile Include="Parser\AST\Operators\Equals\StringNotEquals.cs" />
+    <Compile Include="Parser\AST\Operands\Unary.cs" />
+    <Compile Include="Parser\AST\Operators\Integer\IntegerAddition.cs" />
+    <Compile Include="Parser\AST\Operators\Integer\IntegerDivision.cs" />
+    <Compile Include="Parser\AST\Operators\Integer\IntegerMultiplication.cs" />
+    <Compile Include="Parser\AST\Operators\Integer\IntegerSubstraction.cs" />
+    <Compile Include="Parser\AST\Operators\Real\RealAddition.cs" />
+    <Compile Include="Parser\AST\Operators\Real\RealDivision.cs" />
+    <Compile Include="Parser\AST\Operators\Real\RealMultiplication.cs" />
+    <Compile Include="Parser\AST\Operators\Real\RealSubstraction.cs" />
     <Compile Include="Parser\AST\Scope.cs" />
     <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
     <Compile Include="Parser\AST\Operators\BooleanAnd.cs" />
     <Compile Include="Parser\AST\Operators\BooleanNegation.cs" />
     <Compile Include="Parser\AST\Operators\Equals\NumericalEquals.cs" />
     <Compile Include="Parser\AST\Operators\IBinaryOperator.cs" />
-    <Compile Include="Parser\AST\Operators\NumericalAddition.cs" />
-    <Compile Include="Parser\AST\Operators\NumericalDivision.cs" />
-    <Compile Include="Parser\AST\Operators\NumericalMultiplication.cs" />
-    <Compile Include="Parser\AST\Operators\NumericalSubstraction.cs" />
     <Compile Include="Parser\AST\Operators\IUnaryOperator.cs" />
     <Compile Include="Parser\AST\Operators\StringConcatenation.cs" />
     <Compile Include="Parser\AST\ITypedNode.cs" />
@@ -168,6 +174,7 @@
     <Compile Include="TestSuite\AssigmentTest.cs" />
     <Compile Include="TestSuite\HelloWorldTest.cs" />
     <Compile Include="TestSuite\IfTest.cs" />
+    <Compile Include="TestSuite\OperatorTest.cs" />
     <Compile Include="TestSuite\ProcedureTest.cs" />
     <Compile Include="TestSuite\RedirectedOutputTest.cs" />
   </ItemGroup>

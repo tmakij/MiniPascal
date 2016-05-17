@@ -4,7 +4,8 @@
     {
         public void EmitIR(CILEmitter Emitter)
         {
-            Emitter.Negate();
+            Emitter.PushInt32(0);
+            Emitter.Equals();
         }
     }
 }

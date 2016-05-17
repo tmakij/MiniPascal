@@ -52,5 +52,15 @@ namespace MiniPascal.TestSuite
                         writeln(arr[0]) end.");
             Assert.AreEqual("3", output);
         }
+
+        [Test]
+        public void TestArraySize()
+        {
+            Redirect(@"begin
+                        var arr : array[100] of integer;
+                        var arr2 : array[12322] of integer;
+                        writeln(arr.size, arr2.size) end.");
+            Assert.AreEqual(100 + "" + 12322, output);
+        }
     }
 }
