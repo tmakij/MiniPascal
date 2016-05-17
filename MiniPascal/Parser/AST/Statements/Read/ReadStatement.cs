@@ -25,11 +25,13 @@ namespace MiniPascal.Parser.AST
 
         public void CheckType(Scope Current)
         {
-            MiniPascalType varType = Current.Variable(variableToReadInto).Type;
-            if (!varType.Equals(MiniPascalType.Integer) && !varType.Equals(MiniPascalType.String))
+            /*
+            SimpleType varType = Current.Variable(variableToReadInto).Type;
+            if (!varType.Equals(SimpleType.Integer) && !varType.Equals(SimpleType.String))
             {
-                throw new InvalidTypeException(varType, MiniPascalType.Integer, MiniPascalType.String);
+                throw new InvalidTypeException(varType, SimpleType.Integer, SimpleType.String);
             }
+            */
         }
 
         public void EmitIR(CILEmitter Emitter)

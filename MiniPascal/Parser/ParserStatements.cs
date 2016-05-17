@@ -33,13 +33,14 @@ namespace MiniPascal.Parser
 
         private IStatement AssigmentStatement(Identifier Identifier)
         {
+            VariableReference varRef = ReadVariableReference(Identifier);
             Require(Symbol.Assigment);
-            Expression expr = ReadExpression();
+            IExpression expr = ReadExpression();
             if (expr == null)
             {
                 throw new SyntaxException(expExpression, symbol);
             }
-            return new AssigmentStatement(Identifier, expr);
+            return new AssigmentStatement(varRef, expr);
         }
 
         private IStatement CallStatement(Identifier Identifier)
@@ -75,7 +76,7 @@ namespace MiniPascal.Parser
         {
             if (Accept(Symbol.Return))
             {
-                Expression expr = ReadExpression();
+                IExpression expr = ReadExpression();
                 if (expr == null)
                 {
                     throw new SyntaxException(expExpression, symbol);
@@ -105,7 +106,7 @@ namespace MiniPascal.Parser
             if (Accept(Symbol.If))
             {
                 Require(Symbol.ClosureOpen);
-                Expression condition = ReadExpression();
+                IExpression condition = ReadExpression();
                 Require(Symbol.ClosureClose);
                 if (condition == null)
                 {
@@ -178,13 +179,13 @@ namespace MiniPascal.Parser
                 } while (Accept(Symbol.Comma));
 
                 Require(Symbol.Colon);
-                MiniPascalType type = Type();
+                MiniPascalType type = ReadType();
                 if (type == null)
                 {
                     throw new SyntaxException(expType, symbol);
                 }
                 //Require(Symbol.SemiColon);
-                return new DeclarationStatement(ids, type, null);
+                return new DeclarationStatement(ids, type);
             }
             return null;
         }
@@ -194,7 +195,7 @@ namespace MiniPascal.Parser
             Arguments args = new Arguments();
             do
             {
-                Expression ident = ReadExpression();
+                IExpression ident = ReadExpression();
                 if (ident == null)
                 {
                     throw new SyntaxException(expExpression, symbol);
@@ -216,7 +217,7 @@ namespace MiniPascal.Parser
             }
 
             Require(Symbol.Colon);
-            MiniPascalType type = Type();
+            MiniPascalType type = ReadType();
             if (type == null)
             {
                 throw new SyntaxException(expType, symbol);

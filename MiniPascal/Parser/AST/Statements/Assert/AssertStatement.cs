@@ -16,11 +16,13 @@
 
         public void CheckType(Scope Current)
         {
-            MiniPascalType type = toAssert.NodeType(Current);
-            if (!type.Equals(MiniPascalType.Boolean))
+            /*
+            SimpleType type = toAssert.NodeType(Current);
+            if (!type.Equals(SimpleType.Boolean))
             {
-                throw new TypeMismatchException(MiniPascalType.Boolean, type);
+                throw new TypeMismatchException(SimpleType.Boolean, type);
             }
+            */
         }
 
         public void EmitIR(CILEmitter Emitter)

@@ -108,6 +108,12 @@
                 case '-':
                     Current.End(Symbol.Substraction);
                     return this;
+                case '[':
+                    Current.End(Symbol.IndexOpen);
+                    return this;
+                case ']':
+                    Current.End(Symbol.IndexClose);
+                    return this;
             }
             throw new LexerException("Invalid character " + Read);
         }

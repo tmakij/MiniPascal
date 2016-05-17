@@ -2,6 +2,5 @@
 {
     public interface IExpression : ITypedNode
     {
-        void EmitIR(CILEmitter Emitter);
     }
 }

@@ -2,10 +2,10 @@
 {
     public sealed class If : IStatement
     {
-        private readonly Expression condition;
+        private readonly IExpression condition;
         private readonly IStatement thenStatement, elseStatement;
 
-        public If(Expression Condition, IStatement Then, IStatement Else)
+        public If(IExpression Condition, IStatement Then, IStatement Else)
         {
             condition = Condition;
             thenStatement = Then;

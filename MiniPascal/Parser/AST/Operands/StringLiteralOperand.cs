@@ -2,6 +2,7 @@
 {
     public sealed class StringLiteralOperand : IOperand
     {
+        public MiniPascalType Type { get { return MiniPascalType.String; } }
         private readonly string literal;
 
         public StringLiteralOperand(string Literal)

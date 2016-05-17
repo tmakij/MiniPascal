@@ -7,14 +7,14 @@ namespace MiniPascal.Parser
 {
     public sealed partial class Parser
     {
-        private Expression ReadExpression()
+        private IExpression ReadExpression()
         {
-            SimpleExpression simpleExpr = ReadSimpleExpression();
+            IExpression simpleExpr = ReadSimpleExpression();
             if (simpleExpr == null)
             {
                 return null;
             }
-            Expression expr = new Expression(simpleExpr);
+            Expression<IExpression> expr = new Expression<IExpression>(simpleExpr);
             while (true)
             {
                 OperatorType relational = RelationalOperator();
@@ -22,25 +22,25 @@ namespace MiniPascal.Parser
                 {
                     break;
                 }
-                SimpleExpression addedExpr = ReadSimpleExpression();
+                IExpression addedExpr = ReadSimpleExpression();
                 if (addedExpr == null)
                 {
                     throw new SyntaxException("expression", symbol);
                 }
-                expr.Add(new OperatorPair<SimpleExpression>(relational, addedExpr));
+                expr.Add(new OperatorPair<IExpression>(relational, addedExpr));
             }
             return expr;
         }
 
-        private SimpleExpression ReadSimpleExpression()
+        private IExpression ReadSimpleExpression()
         {
             OperatorType sign = Sign();
-            Term term = ReadTerm();
+            IExpression term = ReadTerm();
             if (term == null)
             {
                 return null;
             }
-            SimpleExpression addExpr = new SimpleExpression(sign, term);
+            SignedExpression addExpr = new SignedExpression(sign, term);
             while (true)
             {
                 OperatorType adding = AddingOperator();
@@ -48,24 +48,24 @@ namespace MiniPascal.Parser
                 {
                     break;
                 }
-                Term addedTerm = ReadTerm();
+                IExpression addedTerm = ReadTerm();
                 if (addedTerm == null)
                 {
                     throw new SyntaxException("term", symbol);
                 }
-                addExpr.Add(new OperatorPair<Term>(adding, addedTerm));
+                addExpr.Add(new OperatorPair<IExpression>(adding, addedTerm));
             }
             return addExpr;
         }
 
-        private Term ReadTerm()
+        private IExpression ReadTerm()
         {
             IOperand factor = Factor();
             if (factor == null)
             {
                 return null;
             }
-            Term term = new Term(factor);
+            Expression<IOperand> term = new Expression<IOperand>(factor);
             while (true)
             {
                 OperatorType multiplication = MultiplyingOperator();
@@ -115,7 +115,7 @@ namespace MiniPascal.Parser
             string lex;
             if (AcceptWithLexeme(Symbol.Identifier, out lex))
             {
-                return new VariableOperand(new Identifier(lex));
+                return new VariableOperand(ReadVariableReference(new Identifier(lex)));
             }
             return null;
         }

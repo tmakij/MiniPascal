@@ -7,16 +7,15 @@ namespace MiniPascal.Parser.AST
 {
     public sealed class CILEmitter
     {
-        //public CILEmitter Previous { get; }
-
         private static readonly Type[] stringTypes = new[] { typeof(string), typeof(string) };
+
         private readonly Dictionary<Identifier, LocalBuilder> localValueVariables = new Dictionary<Identifier, LocalBuilder>();
         private readonly Dictionary<Identifier, MethodBuilder> procedures = new Dictionary<Identifier, MethodBuilder>();
         private readonly ILGenerator generator;
         private readonly TypeBuilder mainType;
         private readonly Parameters parameters;
         private readonly Scope scope;
-        private MethodBuilder currentMethod;
+        private readonly MethodBuilder currentMethod;
 
         public CILEmitter(ILGenerator Generator, TypeBuilder MainType, MethodBuilder Current, Scope Scope, Parameters Parameters)
         {
@@ -27,25 +26,35 @@ namespace MiniPascal.Parser.AST
             parameters = Parameters;
         }
 
-        public void CreateVariable(Identifier Identifier, MiniPascalType Type)
+        public void CreateArrayVariable(Identifier Identifier, MiniPascalType Type)
         {
-            LocalBuilder variable = generator.DeclareLocal(Type.CLRType);
+            CreateVariable(Identifier, Type.SimpleType.CLRType.MakeArrayType());
+        }
+
+        public void CreateSimpleVariable(Identifier Identifier, MiniPascalType Type)
+        {
+            CreateVariable(Identifier, Type.SimpleType.CLRType);
+        }
+
+        private void CreateVariable(Identifier Identifier, Type Type)
+        {
+            LocalBuilder variable = generator.DeclareLocal(Type);
             localValueVariables.Add(Identifier, variable);
         }
 
         public void SaveReferenceVariable(Variable Variable)
         {
             ushort loc = parameters.Index(Variable.Identifier);
-            MiniPascalType varType = Variable.Type;
-            if (varType.Equals(MiniPascalType.Integer) || varType.Equals(MiniPascalType.Boolean))
+            SimpleType varType = Variable.Type.SimpleType;
+            if (varType.Equals(SimpleType.Integer) || varType.Equals(SimpleType.Boolean))
             {
                 generator.Emit(OpCodes.Stind_I4);
             }
-            else if (varType.Equals(MiniPascalType.Real))
+            else if (varType.Equals(SimpleType.Real))
             {
                 generator.Emit(OpCodes.Stind_R4);
             }
-            else if (varType.Equals(MiniPascalType.String))
+            else if (varType.Equals(SimpleType.String))
             {
                 generator.Emit(OpCodes.Stind_Ref);
             }
@@ -55,6 +64,29 @@ namespace MiniPascal.Parser.AST
                 throw new InvalidOperationException();
             }
 #endif
+        }
+
+        public void SaveArray(Variable Variable)
+        {
+            SimpleType type = Variable.Type.SimpleType;
+            OpCode code;
+            if (type.Equals(SimpleType.Integer) || type.Equals(SimpleType.Boolean))
+            {
+                code = OpCodes.Stelem_I4;
+            }
+            else if (type.Equals(SimpleType.Real))
+            {
+                code = OpCodes.Stelem_R4;
+            }
+            else if (type.Equals(SimpleType.String))
+            {
+                code = OpCodes.Stelem_Ref;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+            generator.Emit(code);
         }
 
         public void SaveVariable(Identifier Variable)
@@ -83,19 +115,49 @@ namespace MiniPascal.Parser.AST
         {
             ushort loc = parameters.Index(Variable.Identifier);
             generator.Emit(OpCodes.Ldarg, loc);
-            MiniPascalType varType = Variable.Type;
-            if (varType.Equals(MiniPascalType.Integer) || varType.Equals(MiniPascalType.Boolean))
-            {
-                generator.Emit(OpCodes.Ldind_I4);
-            }
-            else if (varType.Equals(MiniPascalType.Real))
-            {
-                generator.Emit(OpCodes.Ldind_R4);
-            }
-            else if (varType.Equals(MiniPascalType.String))
+            if (Variable.Type.IsArray)
             {
                 generator.Emit(OpCodes.Ldind_Ref);
             }
+            else
+            {
+                SimpleType varType = Variable.Type.SimpleType;
+                if (varType.Equals(SimpleType.Integer) || varType.Equals(SimpleType.Boolean))
+                {
+                    generator.Emit(OpCodes.Ldind_I4);
+                }
+                else if (varType.Equals(SimpleType.Real))
+                {
+                    generator.Emit(OpCodes.Ldind_R4);
+                }
+                else if (varType.Equals(SimpleType.String))
+                {
+                    generator.Emit(OpCodes.Ldind_Ref);
+                }
+            }
+        }
+
+        public void LoadArrayVariable(Variable Variable)
+        {
+            SimpleType type = Variable.Type.SimpleType;
+            OpCode code;
+            if (type.Equals(SimpleType.Integer) || type.Equals(SimpleType.Boolean))
+            {
+                code = OpCodes.Ldelem_I4;
+            }
+            else if (type.Equals(SimpleType.Real))
+            {
+                code = OpCodes.Ldelem_R4;
+            }
+            else if (type.Equals(SimpleType.String))
+            {
+                code = OpCodes.Ldelem_Ref;
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+            generator.Emit(code);
         }
 
         public void LoadVariable(Identifier Variable)
@@ -140,6 +202,11 @@ namespace MiniPascal.Parser.AST
                 throw new InvalidOperationException();
             }
 #endif
+        }
+
+        public void PushArray(MiniPascalType Type)
+        {
+            generator.Emit(OpCodes.Newarr, Type.SimpleType.CLRType.MakeArrayType());
         }
 
         public void PushString(string Value)
@@ -244,8 +311,16 @@ namespace MiniPascal.Parser.AST
             List<Type> types = new List<Type>();
             foreach (Variable variable in Parameters.All)
             {
+                Type original = variable.Type.SimpleType.CLRType;
+                Type type;
                 bool byRef = variable.IsReference;
-                types.Add(byRef ? variable.Type.CLRType.MakeByRefType() : variable.Type.CLRType);
+                bool array = variable.Type.IsArray;
+                type = array ? original.MakeArrayType() : original;
+                if (byRef)
+                {
+                    type = type.MakeByRefType();
+                }
+                types.Add(type);
             }
             /*
             for (int i = 0; i < Parameters.DeclaredCount; i++)
@@ -286,11 +361,11 @@ namespace MiniPascal.Parser.AST
                 PushString(bool.TrueString);
                 generator.MarkLabel(end);
                 generator.Emit(OpCodes.Nop);
-                generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Write), MiniPascalType.String.CLRTypeArray));
+                generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Write), SimpleType.String.CLRTypeArray));
             }
             else
             {
-                generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Write), Type.CLRTypeArray));
+                generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Write), Type.SimpleType.CLRTypeArray));
             }
         }
 

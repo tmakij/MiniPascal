@@ -72,13 +72,12 @@
     <Compile Include="Lexer\ScannerStates\RealLiteral.cs" />
     <Compile Include="Parser\AST\AbstractSyntaxTree.cs" />
     <Compile Include="Parser\AST\Arguments.cs" />
-    <Compile Include="Parser\AST\Expressions\ILowerExpression.cs" />
+    <Compile Include="Parser\AST\Expressions\Expression.cs" />
+    <Compile Include="Parser\AST\Expressions\SignedExpression.cs" />
+    <Compile Include="Parser\AST\MiniPascalType.cs" />
     <Compile Include="Parser\AST\Operands\BooleanLiteral.cs" />
     <Compile Include="Parser\AST\Operators\BooleanOr.cs" />
-    <Compile Include="Parser\AST\Expressions\Expression.cs" />
-    <Compile Include="Parser\AST\Expressions\SimpleExpression.cs" />
     <Compile Include="Parser\AST\CILEmitter.cs" />
-    <Compile Include="Parser\AST\Expressions\Term.cs" />
     <Compile Include="Parser\AST\Operands\RealLiteral.cs" />
     <Compile Include="Parser\AST\OperatorPair.cs" />
     <Compile Include="Parser\AST\Operators\Comparision\NumericalGreaterThan.cs" />
@@ -104,7 +103,6 @@
     <Compile Include="Parser\AST\Operators\StringConcatenation.cs" />
     <Compile Include="Parser\AST\ITypedNode.cs" />
     <Compile Include="Parser\AST\IIdentifierHolder.cs" />
-    <Compile Include="Parser\AST\Identifiers\ImmutableVariableException.cs" />
     <Compile Include="Parser\AST\Statements\Call.cs" />
     <Compile Include="Parser\AST\Statements\If.cs" />
     <Compile Include="Parser\AST\Statements\Procedure.cs" />
@@ -126,7 +124,7 @@
     <Compile Include="Parser\AST\OperatorType.cs" />
     <Compile Include="Parser\AST\Operands\StringLiteralOperand.cs" />
     <Compile Include="Parser\AST\Statements\PrintStatement.cs" />
-    <Compile Include="Parser\AST\MiniPascalType.cs" />
+    <Compile Include="Parser\AST\SimpleType.cs" />
     <Compile Include="Parser\AST\Identifiers\UndefinedOperatorException.cs" />
     <Compile Include="Parser\AST\Identifiers\UninitializedVariableException.cs" />
     <Compile Include="Parser\AST\Identifiers\UsedIdentifiers.cs" />
@@ -137,6 +135,7 @@
     <Compile Include="Lexer\LexerException.cs" />
     <Compile Include="Parser\AST\Parameters.cs" />
     <Compile Include="Parser\AST\Variable.cs" />
+    <Compile Include="Parser\AST\VariableReference.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserExpressions.cs" />
     <Compile Include="Parser\ParserStatements.cs" />
@@ -165,6 +164,7 @@
     <Compile Include="Lexer\Token.cs" />
     <Compile Include="Lexer\TokenConstruction.cs" />
     <Compile Include="Lexer\TokenStream.cs" />
+    <Compile Include="TestSuite\ArrayTest.cs" />
     <Compile Include="TestSuite\AssigmentTest.cs" />
     <Compile Include="TestSuite\HelloWorldTest.cs" />
     <Compile Include="TestSuite\IfTest.cs" />

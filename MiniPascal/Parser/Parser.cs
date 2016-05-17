@@ -76,25 +76,94 @@ namespace MiniPascal.Parser
             return block;
         }
 
-        private MiniPascalType Type()
+        private MiniPascalType ReadType()
+        {
+            if (Accept(Symbol.Array))
+            {
+                Require(Symbol.IndexOpen);
+                IOperand intLiteral = ReadIntegerLiteral();
+                if (intLiteral == null)
+                {
+                    throw new SyntaxException("integer literal", symbol);
+                }
+                Require(Symbol.IndexClose);
+                Require(Symbol.Of);
+                SimpleType type = ReadSimpleType();
+                if (type == null)
+                {
+                    throw new SyntaxException(expType, symbol);
+                }
+                return new MiniPascalType(type, intLiteral);
+                /*if (type.Equals(SimpleType.Integer))
+                {
+                    return MiniPascalType.IntegerArray;
+                }
+                else if (type.Equals(SimpleType.Boolean))
+                {
+                    return MiniPascalType.BooleanArray;
+                }
+                else if (type.Equals(SimpleType.Real))
+                {
+                    return MiniPascalType.RealArray;
+                }
+                else if (type.Equals(SimpleType.String))
+                {
+                    return MiniPascalType.StringArray;
+                }*/
+            }
+            SimpleType simple = ReadSimpleType();
+            if (simple != null)
+            {
+                if (simple.Equals(SimpleType.Integer))
+                {
+                    return MiniPascalType.Integer;
+                }
+                else if (simple.Equals(SimpleType.Boolean))
+                {
+                    return MiniPascalType.Boolean;
+                }
+                else if (simple.Equals(SimpleType.Real))
+                {
+                    return MiniPascalType.Real;
+                }
+                else if (simple.Equals(SimpleType.String))
+                {
+                    return MiniPascalType.String;
+                }
+            }
+            return null;
+        }
+
+        private SimpleType ReadSimpleType()
         {
             if (Accept(Symbol.IntegerType))
             {
-                return MiniPascalType.Integer;
+                return SimpleType.Integer;
             }
             if (Accept(Symbol.StringType))
             {
-                return MiniPascalType.String;
+                return SimpleType.String;
             }
             if (Accept(Symbol.BooleanType))
             {
-                return MiniPascalType.Boolean;
+                return SimpleType.Boolean;
             }
             if (Accept(Symbol.RealType))
             {
-                return MiniPascalType.Real;
+                return SimpleType.Real;
             }
             return null;
+        }
+
+        private VariableReference ReadVariableReference(Identifier Name)
+        {
+            if (Accept(Symbol.IndexOpen))
+            {
+                IExpression arrayIndex = ReadExpression();
+                Require(Symbol.IndexClose);
+                return new VariableReference(Name, arrayIndex);
+            }
+            return new VariableReference(Name, null);
         }
 
         private Identifier Identifier()

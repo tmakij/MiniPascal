@@ -1,120 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace MiniPascal.Parser.AST
 {
     public sealed class MiniPascalType : IEquatable<MiniPascalType>
     {
-        public static MiniPascalType Integer { get; } = new MiniPascalType("Integer", typeof(int));
-        public static MiniPascalType String { get; } = new MiniPascalType("String", typeof(string));
-        public static MiniPascalType Boolean { get; } = new MiniPascalType("Boolean", typeof(int));
-        public static MiniPascalType Real { get; } = new MiniPascalType("Real", typeof(float));
+        public static MiniPascalType Boolean { get; } = new MiniPascalType(SimpleType.Boolean, null, false);
+        public static MiniPascalType Real { get; } = new MiniPascalType(SimpleType.Real, null, false);
+        public static MiniPascalType Integer { get; } = new MiniPascalType(SimpleType.Integer, null, false);
+        public static MiniPascalType String { get; } = new MiniPascalType(SimpleType.String, null, false);
 
-        static MiniPascalType()
+        public SimpleType SimpleType { get; }
+        public IOperand Size { get; }
+        public bool IsArray { get; }
+
+        public MiniPascalType(SimpleType Type, IOperand ArraySize)
+            : this(Type, ArraySize, true)
         {
-            NumericalAddition add = new NumericalAddition();
-            NumericalMultiplication mul = new NumericalMultiplication();
-            NumericalSubstraction sub = new NumericalSubstraction();
-            NumericalDivision div = new NumericalDivision();
-
-            NumericalEquals eq = new NumericalEquals();
-            NumericalNotEquals noteq = new NumericalNotEquals();
-
-            NumericalGreaterOrEqualThan greq = new NumericalGreaterOrEqualThan();
-            NumericalLessOrEqualThan leeq = new NumericalLessOrEqualThan();
-            NumericalGreaterThan gre = new NumericalGreaterThan();
-            NumericalLessThan leq = new NumericalLessThan();
-
-            Integer.AddBinaryOperator(OperatorType.Addition, add);
-            Integer.AddBinaryOperator(OperatorType.Multiplication, mul);
-            Integer.AddBinaryOperator(OperatorType.Substraction, sub);
-            Integer.AddBinaryOperator(OperatorType.Division, div);
-
-            Integer.AddBinaryOperator(OperatorType.Equals, eq);
-            Integer.AddBinaryOperator(OperatorType.NotEquals, noteq);
-            Integer.AddBinaryOperator(OperatorType.Modulo, new IntegerModulo());
-
-            Integer.AddBinaryOperator(OperatorType.GreaterOrEqualThan, greq);
-            Integer.AddBinaryOperator(OperatorType.GreaterThan, gre);
-            Integer.AddBinaryOperator(OperatorType.LessOrEqualThan, leeq);
-            Integer.AddBinaryOperator(OperatorType.LessThan, leq);
-
-            Real.AddBinaryOperator(OperatorType.Addition, add);
-            Real.AddBinaryOperator(OperatorType.Multiplication, mul);
-            Real.AddBinaryOperator(OperatorType.Substraction, sub);
-            Real.AddBinaryOperator(OperatorType.Division, div);
-
-            Real.AddBinaryOperator(OperatorType.Equals, eq);
-            Real.AddBinaryOperator(OperatorType.NotEquals, noteq);
-
-            Real.AddBinaryOperator(OperatorType.GreaterOrEqualThan, greq);
-            Real.AddBinaryOperator(OperatorType.GreaterThan, gre);
-            Real.AddBinaryOperator(OperatorType.LessOrEqualThan, leeq);
-            Real.AddBinaryOperator(OperatorType.LessThan, leq);
-
-            String.AddBinaryOperator(OperatorType.Addition, new StringConcatenation());
-            String.AddBinaryOperator(OperatorType.Equals, new StringEquals());
-            String.AddBinaryOperator(OperatorType.NotEquals, new StringNotEquals());
-            String.AddBinaryOperator(OperatorType.LessThan, new StringLessThan());
-
-            Boolean.AddUnaryOperator(OperatorType.Negation, new BooleanNegation());
-            Boolean.AddBinaryOperator(OperatorType.And, new BooleanAnd());
-            Boolean.AddBinaryOperator(OperatorType.Or, new BooleanOr());
-
-            Boolean.AddBinaryOperator(OperatorType.Equals, eq);
-            Boolean.AddBinaryOperator(OperatorType.NotEquals, noteq);
-
-            Boolean.AddBinaryOperator(OperatorType.GreaterOrEqualThan, greq);
-            Boolean.AddBinaryOperator(OperatorType.GreaterThan, gre);
-            Boolean.AddBinaryOperator(OperatorType.LessOrEqualThan, leeq);
-            Boolean.AddBinaryOperator(OperatorType.LessThan, leq);
         }
 
-        public Type[] CLRTypeArray { get; }
-        public Type CLRType { get { return CLRTypeArray[0]; } }
-        private readonly Dictionary<OperatorType, IBinaryOperator> binaryOperators = new Dictionary<OperatorType, IBinaryOperator>();
-        private readonly Dictionary<OperatorType, IUnaryOperator> unaryOperators = new Dictionary<OperatorType, IUnaryOperator>();
-        private readonly string name;
-
-        private MiniPascalType(string Name, Type CLRType)
+        private MiniPascalType(SimpleType Type, IOperand ArraySize, bool Array)
         {
-            name = Name;
-            CLRTypeArray = new[] { CLRType };
-        }
-
-        private void AddBinaryOperator(OperatorType Type, IBinaryOperator Operator)
-        {
-            binaryOperators.Add(Type, Operator);
-        }
-
-        private void AddUnaryOperator(OperatorType Type, IUnaryOperator Operator)
-        {
-            unaryOperators.Add(Type, Operator);
-        }
-
-        public IBinaryOperator BinaryOperation(OperatorType Operator)
-        {
-            return binaryOperators[Operator];
-        }
-
-        public IUnaryOperator UnaryOperation(OperatorType Operator)
-        {
-            return unaryOperators[Operator];
+            SimpleType = Type;
+            Size = ArraySize;
+            IsArray = Array;
         }
 
         public bool HasOperatorDefined(OperatorType Operator)
         {
-            return unaryOperators.ContainsKey(Operator) || binaryOperators.ContainsKey(Operator);
+            if (IsArray)
+            {
+                return false;
+            }
+            return SimpleType.HasOperatorDefined(Operator);
         }
 
-        public override string ToString()
+        public IBinaryOperator BinaryOperation(OperatorType Operator)
         {
-            return name;
+            return SimpleType.BinaryOperation(Operator);
+        }
+
+        public IUnaryOperator UnaryOperation(OperatorType Operator)
+        {
+            return SimpleType.UnaryOperation(Operator);
         }
 
         public override int GetHashCode()
         {
-            return name.GetHashCode();
+            return SimpleType.GetHashCode() * (IsArray ? 7 : 13);
+        }
+
+        public bool Equals(MiniPascalType Other)
+        {
+            return IsArray == Other.IsArray && SimpleType.Equals(Other.SimpleType);
         }
 
         public override bool Equals(object obj)
@@ -122,9 +59,13 @@ namespace MiniPascal.Parser.AST
             return Equals((MiniPascalType)obj);
         }
 
-        public bool Equals(MiniPascalType other)
+        public override string ToString()
         {
-            return name == other.name;
+            if (IsArray)
+            {
+                return "Array of " + SimpleType;
+            }
+            return SimpleType.ToString();
         }
     }
 }

@@ -9,15 +9,17 @@ namespace MiniPascal
 {
     public static class Program
     {
-        /*
-        private static void load(ref int i)
+        private static void load(ref int[] i)
         {
-            i = 0;
+            i[0] = 1;
         }
-        */
+        
 
         private static int Main(string[] args)
         {
+            int[] dd = new int[5];
+            load(ref dd);
+            Console.WriteLine(dd[0]);
             /*
             int a = 1;
             load(ref a);
@@ -86,10 +88,6 @@ namespace MiniPascal
             catch (IntegerFormatException ex)
             {
                 return Error("Given value \"" + ex.ParseAttempt + "\" is not an integer");
-            }
-            catch (ImmutableVariableException ex)
-            {
-                return Error("Identifier \"" + ex.Identifier + "\" cannot be changed, when it is Current as iterator");
             }
             catch (InvalidTypeException ex)
             {

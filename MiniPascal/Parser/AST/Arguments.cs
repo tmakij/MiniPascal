@@ -5,17 +5,17 @@ namespace MiniPascal.Parser.AST
     public sealed class Arguments
     {
         public int Count { get { return arguments.Count; } }
-        private readonly List<Expression> arguments = new List<Expression>();
+        private readonly List<IExpression> arguments = new List<IExpression>();
         private readonly List<MiniPascalType> types = new List<MiniPascalType>();
 
-        public void Add(Expression Argument)
+        public void Add(IExpression Argument)
         {
             arguments.Add(Argument);
         }
 
         public void CheckIdentifiers(Scope Current)
         {
-            foreach (Expression exp in arguments)
+            foreach (IExpression exp in arguments)
             {
                 exp.CheckIdentifiers(Current);
             }
@@ -23,7 +23,7 @@ namespace MiniPascal.Parser.AST
 
         public void CheckType(Scope Current)
         {
-            foreach (Expression exp in arguments)
+            foreach (IExpression exp in arguments)
             {
                 types.Add(exp.NodeType(Current));
             }
@@ -38,7 +38,7 @@ namespace MiniPascal.Parser.AST
             return types[Index];
         }
 
-        public Expression Expression(int Index)
+        public IExpression Expression(int Index)
         {
             return arguments[Index];
         }

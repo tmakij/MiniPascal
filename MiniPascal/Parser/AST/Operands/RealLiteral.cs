@@ -2,6 +2,7 @@
 {
     public sealed class RealLiteral : IOperand
     {
+        public MiniPascalType Type { get { return MiniPascalType.Real; } }
         private readonly float literal;
 
         public RealLiteral(float Literal)

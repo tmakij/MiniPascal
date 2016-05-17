@@ -2,6 +2,8 @@
 {
     public sealed class BooleanLiteral : IOperand
     {
+        public MiniPascalType Type { get { return MiniPascalType.Boolean; } }
+
         private readonly bool literal;
 
         public BooleanLiteral(bool Value)

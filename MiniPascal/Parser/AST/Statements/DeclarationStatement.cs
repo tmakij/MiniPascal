@@ -7,7 +7,7 @@ namespace MiniPascal.Parser.AST
         private MiniPascalType Type { get; }
         private readonly List<Variable> variables = new List<Variable>();
 
-        public DeclarationStatement(List<Identifier> Identifiers, MiniPascalType Type, IExpression OptionalAssigment)
+        public DeclarationStatement(List<Identifier> Identifiers, MiniPascalType Type)
         {
             foreach (Identifier ident in Identifiers)
             {
@@ -26,34 +26,58 @@ namespace MiniPascal.Parser.AST
                 }
                 Current.DeclareVariable(variable);
             }
+            if (Type.IsArray)
+            {
+                Type.Size.CheckIdentifiers(Current);
+            }
         }
 
         public void CheckType(Scope Current)
         {
+            if (Type.IsArray)
+            {
+                if (!Type.SimpleType.Equals(SimpleType.Integer))
+                {
+                    throw new System.Exception("Expected integer expression, found " + Type.SimpleType);
+                }
+            }
         }
 
         public void EmitIR(CILEmitter Emitter)
         {
-            foreach (Variable variable in variables)
+            if (Type.IsArray)
             {
-                Emitter.CreateVariable(variable.Identifier, Type);
-                if (Type.Equals(MiniPascalType.Integer))
+                foreach (Variable variable in variables)
                 {
-                    Emitter.PushInt32(0);
+                    Emitter.CreateArrayVariable(variable.Identifier, Type);
+                    Type.Size.EmitIR(Emitter, false);
+                    Emitter.PushArray(Type);
+                    Emitter.SaveVariable(variable.Identifier);
                 }
-                else if (Type.Equals(MiniPascalType.Real))
+            }
+            else
+            {
+                foreach (Variable variable in variables)
                 {
-                    Emitter.PushSingle(0f);
+                    Emitter.CreateSimpleVariable(variable.Identifier, Type);
+                    if (Type.Equals(MiniPascalType.Integer))
+                    {
+                        Emitter.PushInt32(0);
+                    }
+                    else if (Type.Equals(MiniPascalType.Real))
+                    {
+                        Emitter.PushSingle(0f);
+                    }
+                    else if (Type.Equals(MiniPascalType.String))
+                    {
+                        Emitter.PushString("");
+                    }
+                    else if (Type.Equals(MiniPascalType.Boolean))
+                    {
+                        Emitter.PushInt32(0);
+                    }
+                    Emitter.SaveVariable(variable.Identifier);
                 }
-                else if (Type.Equals(MiniPascalType.String))
-                {
-                    Emitter.PushString("");
-                }
-                else if (Type.Equals(MiniPascalType.Boolean))
-                {
-                    Emitter.PushInt32(0);
-                }
-                Emitter.SaveVariable(variable.Identifier);
             }
         }
     }

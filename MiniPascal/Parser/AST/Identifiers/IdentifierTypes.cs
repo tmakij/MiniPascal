@@ -4,10 +4,10 @@ namespace MiniPascal.Parser.AST
 {
     public sealed class IdentifierTypes
     {
-        private readonly Dictionary<Identifier, MiniPascalType> types = new Dictionary<Identifier, MiniPascalType>();
+        private readonly Dictionary<Identifier, SimpleType> types = new Dictionary<Identifier, SimpleType>();
         private readonly Dictionary<Identifier, Procedure> procedureTypes = new Dictionary<Identifier, Procedure>();
 
-        public void SetIdentifierType(Identifier Identifier, MiniPascalType Type)
+        public void SetIdentifierType(Identifier Identifier, SimpleType Type)
         {
             if (!types.ContainsKey(Identifier))
             {
@@ -21,7 +21,7 @@ namespace MiniPascal.Parser.AST
             procedureTypes.Add(Identifier, Procedure);
         }
 
-        public MiniPascalType GetIdentifierType(Identifier Identifier)
+        public SimpleType GetIdentifierType(Identifier Identifier)
         {
             return types[Identifier];
         }

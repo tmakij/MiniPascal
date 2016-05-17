@@ -2,6 +2,7 @@
 {
     public sealed class ExpressionOperand : IOperand
     {
+        public MiniPascalType Type { get { return expression.Type; } }
         private readonly IExpression expression;
 
         public ExpressionOperand(IExpression Expression)
@@ -21,7 +22,7 @@
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
-            expression.EmitIR(Emitter);
+            expression.EmitIR(Emitter, Reference);
         }
     }
 }

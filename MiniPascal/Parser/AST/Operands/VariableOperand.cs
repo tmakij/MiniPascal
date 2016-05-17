@@ -2,41 +2,79 @@
 {
     public sealed class VariableOperand : IOperand
     {
-        private readonly Identifier identifier;
+        public MiniPascalType Type { get; private set; }
+        private readonly VariableReference reference;
         private Variable variable;
 
-        public VariableOperand(Identifier Variable)
+        public VariableOperand(VariableReference Variable)
         {
-            identifier = Variable;
+            reference = Variable;
         }
 
         public void CheckIdentifiers(Scope Current)
         {
-            if (!Current.IsUsed(identifier))
+            if (!Current.IsUsed(reference.Name))
             {
-                throw new UninitializedVariableException(identifier);
+                throw new UninitializedVariableException(reference.Name);
             }
-            variable = Current.Variable(identifier);
+            variable = Current.Variable(reference.Name);
+            if (reference.ArrayIndex != null)
+            {
+                reference.ArrayIndex.CheckIdentifiers(Current);
+            }
         }
 
         public MiniPascalType NodeType(Scope Current)
         {
-            return Current.Variable(identifier).Type;
+            Type = variable.Type;
+            if (reference.ArrayIndex != null)
+            {
+                if (!reference.ArrayIndex.NodeType(Current).Equals(MiniPascalType.Integer))
+                {
+                    throw new System.Exception("Expected " + MiniPascalType.Integer);
+                }
+                if (Type.SimpleType.Equals(SimpleType.Boolean))
+                {
+                    return MiniPascalType.Boolean;
+                }
+                else if (Type.SimpleType.Equals(SimpleType.Integer))
+                {
+                    return MiniPascalType.Integer;
+                }
+                else if (Type.SimpleType.Equals(SimpleType.String))
+                {
+                    return MiniPascalType.String;
+                }
+                else if (Type.SimpleType.Equals(SimpleType.Real))
+                {
+                    return MiniPascalType.Real;
+                }
+            }
+            return Type;
         }
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
             if (Reference)
             {
-                Emitter.LoadVariableAddress(identifier);
+                Emitter.LoadVariableAddress(reference.Name);
             }
             else if (variable.IsReference)
             {
                 Emitter.LoadReferenceVariable(variable);
+                if (reference.ArrayIndex != null)
+                {
+                    throw new System.NotSupportedException();
+                }
             }
             else
             {
-                Emitter.LoadVariable(identifier);
+                Emitter.LoadVariable(reference.Name);
+                if (reference.ArrayIndex != null)
+                {
+                    reference.ArrayIndex.EmitIR(Emitter, false);
+                    Emitter.LoadArrayVariable(variable);
+                }
             }
         }
     }

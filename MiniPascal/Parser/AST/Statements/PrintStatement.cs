@@ -23,7 +23,7 @@
         {
             for (int i = 0; i < toPrint.Count; i++)
             {
-                Expression expr = toPrint.Expression(i);
+                IExpression expr = toPrint.Expression(i);
                 MiniPascalType exprType = toPrint.Type(i);
                 expr.EmitIR(Emitter, false);
                 Emitter.CallPrint(exprType);

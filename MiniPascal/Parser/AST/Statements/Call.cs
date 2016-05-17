@@ -47,7 +47,7 @@
         {
             for (int i = 0; i < arguments.Count; i++)
             {
-                Expression expr = arguments.Expression(i);
+                IExpression expr = arguments.Expression(i);
                 bool loadReference = proc.Parameters.At(i).IsReference;
                 expr.EmitIR(Emitter, loadReference);
             }

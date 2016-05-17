@@ -2,62 +2,63 @@
 
 namespace MiniPascal.Parser.AST
 {
-    public class Expression
+    public class Expression<T> : IExpression where T : ITypedNode
     {
-        private readonly List<OperatorPair<SimpleExpression>> simpleExpressions = new List<OperatorPair<SimpleExpression>>();
-        private readonly SimpleExpression firstExpression;
+        public MiniPascalType Type { get; private set; }
+        private readonly List<OperatorPair<T>> simpleExpressions = new List<OperatorPair<T>>();
+        private readonly T firstExpression;
 
-        public Expression(SimpleExpression FirstExpression)
+        public Expression(T FirstExpression)
         {
             firstExpression = FirstExpression;
         }
 
-        public void Add(OperatorPair<SimpleExpression> SimpleExpression)
+        public void Add(OperatorPair<T> AdditionalExpression)
         {
-            simpleExpressions.Add(SimpleExpression);
+            simpleExpressions.Add(AdditionalExpression);
         }
 
         public void CheckIdentifiers(Scope Current)
         {
-            //System.Console.WriteLine("Expr ident");
             firstExpression.CheckIdentifiers(Current);
-            foreach (OperatorPair<SimpleExpression> opr in simpleExpressions)
+            foreach (OperatorPair<T> opr in simpleExpressions)
             {
                 opr.Operand.CheckIdentifiers(Current);
             }
         }
 
-        public MiniPascalType NodeType(Scope Current)
+        public virtual MiniPascalType NodeType(Scope Current)
         {
-            MiniPascalType type = firstExpression.NodeType(Current);
-            foreach (OperatorPair<SimpleExpression> expr in simpleExpressions)
+            Type = firstExpression.NodeType(Current);
+            foreach (OperatorPair<T> expr in simpleExpressions)
             {
                 MiniPascalType anotherType = expr.Operand.NodeType(Current);
-                if (!type.Equals(anotherType))
+                if (!Type.Equals(anotherType))
                 {
-                    throw new InvalidTypeException(anotherType, type);
+                    throw new InvalidTypeException(anotherType, Type);
                 }
-                if (!type.HasOperatorDefined(expr.Operator))
+                if (!Type.HasOperatorDefined(expr.Operator))
                 {
-                    throw new UndefinedOperatorException(type, expr.Operator);
+                    throw new UndefinedOperatorException(Type, expr.Operator);
                 }
-                type = anotherType.BinaryOperation(expr.Operator).ReturnType;
-                /*if (!type.Equals(operationResultType))
-                {
-                    throw new InvalidTypeException(operationResultType, type);
-                }*/
+                Type = anotherType.BinaryOperation(expr.Operator).ReturnType;
             }
-            return type;
+            return Type;
         }
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
-            firstExpression.EmitIR(Emitter, Reference);
-            foreach (OperatorPair<SimpleExpression> expr in simpleExpressions)
+            LoadFirst(Emitter, Reference);
+            foreach (OperatorPair<T> expr in simpleExpressions)
             {
                 expr.Operand.EmitIR(Emitter, Reference);
                 expr.Operand.Type.BinaryOperation(expr.Operator).EmitIR(Emitter);
             }
+        }
+
+        protected virtual void LoadFirst(CILEmitter Emitter, bool Reference)
+        {
+            firstExpression.EmitIR(Emitter, Reference);
         }
     }
 }
