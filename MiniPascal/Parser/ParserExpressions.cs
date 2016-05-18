@@ -25,7 +25,7 @@ namespace MiniPascal.Parser
                 IExpression addedExpr = ReadSimpleExpression();
                 if (addedExpr == null)
                 {
-                    throw new SyntaxException("expression", symbol);
+                    throw new SyntaxException("expression", current);
                 }
                 expr.Add(new OperatorPair<IExpression>(relational, addedExpr));
             }
@@ -51,7 +51,7 @@ namespace MiniPascal.Parser
                 IExpression addedTerm = ReadTerm();
                 if (addedTerm == null)
                 {
-                    throw new SyntaxException("term", symbol);
+                    throw new SyntaxException("term", current);
                 }
                 addExpr.Add(new OperatorPair<IExpression>(adding, addedTerm));
             }
@@ -76,7 +76,7 @@ namespace MiniPascal.Parser
                 IOperand addedFactor = Factor();
                 if (addedFactor == null)
                 {
-                    throw new SyntaxException("factor", symbol);
+                    throw new SyntaxException("factor", current);
                 }
                 term.Add(new OperatorPair<IOperand>(multiplication, addedFactor));
             }
@@ -173,7 +173,7 @@ namespace MiniPascal.Parser
                 IOperand factor = Factor();
                 if (factor == null)
                 {
-                    throw new SyntaxException(expOperand, symbol);
+                    throw new SyntaxException(expOperand, current);
                 }
                 return new Unary(OperatorType.Not, factor);
             }

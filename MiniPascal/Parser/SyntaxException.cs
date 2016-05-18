@@ -10,8 +10,8 @@ namespace MiniPascal.Parser
         {
         }
 
-        public SyntaxException(string Expected, Symbol Found)
-            : this("Expected " + Expected + ", but " + Found + " was found")
+        public SyntaxException(string Expected, Token Found)
+            : this("Expected " + Expected + ", but " + Found.Symbol + " was found at line " + Found.Line)
         {
         }
     }

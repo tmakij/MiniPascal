@@ -38,7 +38,7 @@ namespace MiniPascal.Parser
             IExpression expr = ReadExpression();
             if (expr == null)
             {
-                throw new SyntaxException(expExpression, symbol);
+                throw new SyntaxException(expExpression, current);
             }
             return new AssigmentStatement(varRef, expr);
         }
@@ -79,7 +79,7 @@ namespace MiniPascal.Parser
                 IExpression expr = ReadExpression();
                 if (expr == null)
                 {
-                    throw new SyntaxException(expExpression, symbol);
+                    throw new SyntaxException(expExpression, current);
                 }
                 throw new System.NotImplementedException();
             }
@@ -110,13 +110,13 @@ namespace MiniPascal.Parser
                 Require(Symbol.ClosureClose);
                 if (condition == null)
                 {
-                    throw new SyntaxException(expExpression, symbol);
+                    throw new SyntaxException(expExpression, current);
                 }
                 Require(Symbol.Then);
                 IStatement then = Statement();
                 if (then == null)
                 {
-                    throw new SyntaxException("statement", symbol);
+                    throw new SyntaxException("statement", current);
                 }
                 IStatement elseStatement = null;
                 if (Accept(Symbol.Else))
@@ -124,7 +124,7 @@ namespace MiniPascal.Parser
                     elseStatement = Statement();
                     if (elseStatement == null)
                     {
-                        throw new SyntaxException("statement", symbol);
+                        throw new SyntaxException("statement", current);
                     }
                 }
                 return new If(condition, then, elseStatement);
@@ -173,7 +173,7 @@ namespace MiniPascal.Parser
                     Identifier identifier = Identifier();
                     if (identifier == null)
                     {
-                        throw new SyntaxException(expIdentifier, symbol);
+                        throw new SyntaxException(expIdentifier, current);
                     }
                     ids.Add(identifier);
                 } while (Accept(Symbol.Comma));
@@ -182,9 +182,8 @@ namespace MiniPascal.Parser
                 MiniPascalType type = ReadType();
                 if (type == null)
                 {
-                    throw new SyntaxException(expType, symbol);
+                    throw new SyntaxException(expType, current);
                 }
-                //Require(Symbol.SemiColon);
                 return new DeclarationStatement(ids, type);
             }
             return null;
@@ -198,7 +197,7 @@ namespace MiniPascal.Parser
                 IExpression ident = ReadExpression();
                 if (ident == null)
                 {
-                    throw new SyntaxException(expExpression, symbol);
+                    throw new SyntaxException(expExpression, current);
                 }
                 args.Add(ident);
             } while (Accept(Symbol.Comma));
@@ -213,14 +212,14 @@ namespace MiniPascal.Parser
             Identifier identifier = Identifier();
             if (identifier == null)
             {
-                throw new SyntaxException(expIdentifier, symbol);
+                throw new SyntaxException(expIdentifier, current);
             }
 
             Require(Symbol.Colon);
             MiniPascalType type = ReadType();
             if (type == null)
             {
-                throw new SyntaxException(expType, symbol);
+                throw new SyntaxException(expType, current);
             }
             return new Variable(identifier, type, isReference);
         }

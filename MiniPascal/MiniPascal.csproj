@@ -72,6 +72,7 @@
     <Compile Include="Lexer\ScannerStates\RealLiteral.cs" />
     <Compile Include="Parser\AST\AbstractSyntaxTree.cs" />
     <Compile Include="Parser\AST\Arguments.cs" />
+    <Compile Include="Parser\AST\EndOfStreamException.cs" />
     <Compile Include="Parser\AST\Expressions\Expression.cs" />
     <Compile Include="Parser\AST\Expressions\SignedExpression.cs" />
     <Compile Include="Parser\AST\MiniPascalType.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Parser\AST\Operators\Real\RealDivision.cs" />
     <Compile Include="Parser\AST\Operators\Real\RealMultiplication.cs" />
     <Compile Include="Parser\AST\Operators\Real\RealSubstraction.cs" />
+    <Compile Include="Parser\AST\ParserException.cs" />
     <Compile Include="Parser\AST\Scope.cs" />
     <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
     <Compile Include="Parser\AST\Operators\BooleanAnd.cs" />

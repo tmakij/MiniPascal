@@ -8,10 +8,11 @@ namespace MiniPascal.Parser
     {
         private readonly TokenStream tokens;
         private Symbol symbol { get { return tokens.Symbol; } }
+        private Token current { get { return tokens.Current; } }
 
         private const string expExpression = "expression (operand-operator-operand or (unary operator)-operand)";
         private const string expOperand = "operand (variable, literal or expression between closures)";
-        private const string expType = "int, string or bool";
+        private const string expType = "int, real, string or bool";
         private const string expIdentifier = "identifier";
 
         public Parser(TokenStream Tokens)
@@ -56,19 +57,16 @@ namespace MiniPascal.Parser
                 IStatement stm = Statement();
                 if (stm == null)
                 {
-                    throw new SyntaxException("beginning of a statement", symbol);
+                    throw new SyntaxException("beginning of a statement", current);
                 }
                 block.Add(stm);
                 if (!Accept(Symbol.SemiColon))
                 {
-                    //Console.WriteLine(Environment.StackTrace);
-                    //Console.WriteLine(tokens.Current.Lexeme);
                     Require(Symbol.End);
                     break;
                 }
                 if (Accept(Symbol.End))
                 {
-                    //Console.WriteLine(Environment.StackTrace);
                     break;
                 }
             }
@@ -84,14 +82,14 @@ namespace MiniPascal.Parser
                 IOperand intLiteral = ReadIntegerLiteral();
                 if (intLiteral == null)
                 {
-                    throw new SyntaxException("integer literal", symbol);
+                    throw new SyntaxException("integer literal", current);
                 }
                 Require(Symbol.IndexClose);
                 Require(Symbol.Of);
                 SimpleType type = ReadSimpleType();
                 if (type == null)
                 {
-                    throw new SyntaxException(expType, symbol);
+                    throw new SyntaxException(expType, current);
                 }
                 return new MiniPascalType(type, intLiteral);
                 /*if (type.Equals(SimpleType.Integer))
@@ -202,7 +200,7 @@ namespace MiniPascal.Parser
         {
             if (!Accept(Expected))
             {
-                throw new SyntaxException(Expected.ToString(), symbol);
+                throw new SyntaxException(Expected.ToString(), current);
             }
         }
     }

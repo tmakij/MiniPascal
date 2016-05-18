@@ -7,6 +7,12 @@ namespace MiniPascal.Lexer
     {
         private readonly StringBuilder curr = new StringBuilder();
         private readonly List<Token> tokens = new List<Token>();
+        private int line = 1;
+
+        public void IncrementLines()
+        {
+            line++;
+        }
 
         public TokenStream CreateStream()
         {
@@ -26,9 +32,9 @@ namespace MiniPascal.Lexer
         public void End(Symbol ID)
         {
             string res = TokenText(ID);
-            Token t = new Token(res, ID);
+            Token t = new Token(res, ID, line);
             tokens.Add(t);
-            
+            /*
             string dbg;
             if (ID == Symbol.IntegerLiteral || ID == Symbol.Identifier)
             {
@@ -39,7 +45,7 @@ namespace MiniPascal.Lexer
                 dbg = ID.ToString();
             }
             System.Console.Error.WriteLine("Read token: " + dbg);
-            
+            */
         }
 
         private string TokenText(Symbol ID)
@@ -56,7 +62,8 @@ namespace MiniPascal.Lexer
                     return text;
                 default:
                     curr.Clear();
-                    return ID.ToString();
+                    return string.Empty;
+                    //return ID.ToString();
             }
         }
     }
