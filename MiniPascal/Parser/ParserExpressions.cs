@@ -85,7 +85,7 @@ namespace MiniPascal.Parser
 
         private IOperand Factor()
         {
-            IOperand opr = ReadVariableOperand() ?? ReadIntegerLiteral() ?? ReadRealLiteral()
+            IOperand opr = VariableStartOpr() ?? ReadIntegerLiteral() ?? ReadRealLiteral()
                 ?? ReadStringLiteral() ?? ReadBooleanLiteral() ?? LogicalNot();
             if (opr == null)
             {
@@ -97,6 +97,33 @@ namespace MiniPascal.Parser
                 return new Size(opr);
             }
             return opr;
+        }
+
+        private IOperand VariableStartOpr()
+        {
+            Identifier methodName = Identifier();
+            if (methodName == null)
+            {
+                return null;
+            }
+            IOperand call = ReadCall(methodName);
+            if (call != null)
+            {
+                return call;
+            }
+            return new VariableOperand(ReadVariableReference(methodName));
+        }
+
+        private IOperand ReadCall(Identifier Identifier)
+        {
+
+            if (Accept(Symbol.ClosureOpen))
+            {
+                Arguments args = ReadArguments();
+                Require(Symbol.ClosureClose);
+                return new Call(Identifier, args);
+            }
+            return null;
         }
 
         private IOperand ReadBooleanLiteral()
@@ -116,16 +143,6 @@ namespace MiniPascal.Parser
             if (AcceptWithLexeme(Symbol.StringLiteral, out lex))
             {
                 return new StringLiteralOperand(lex);
-            }
-            return null;
-        }
-
-        private IOperand ReadVariableOperand()
-        {
-            string lex;
-            if (AcceptWithLexeme(Symbol.Identifier, out lex))
-            {
-                return new VariableOperand(ReadVariableReference(new Identifier(lex)));
             }
             return null;
         }

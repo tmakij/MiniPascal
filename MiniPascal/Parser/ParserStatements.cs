@@ -49,7 +49,7 @@ namespace MiniPascal.Parser
             {
                 Arguments args = ReadArguments();
                 Require(Symbol.ClosureClose);
-                return new Call(Identifier, args);
+                return new NoReturnCall(new Call(Identifier, args));
             }
             return null;
         }
@@ -62,13 +62,7 @@ namespace MiniPascal.Parser
                 Arguments args = ReadArguments();
                 Require(Symbol.ClosureClose);
                 return new PrintStatement(args);
-                //return new PrintStatement(new UnaryExpression(OperatorType.None, new VariableOperand(i)));
-                //throw new NotImplementedException();
             }
-            /*Identifier ident = Identifier();
-            if (ident != null)
-            {
-            }*/
             return null;
         }
 
@@ -77,11 +71,7 @@ namespace MiniPascal.Parser
             if (Accept(Symbol.Return))
             {
                 IExpression expr = ReadExpression();
-                if (expr == null)
-                {
-                    throw new SyntaxException(expExpression, current);
-                }
-                throw new System.NotImplementedException();
+                return new Return(expr);
             }
             return null;
         }
@@ -118,7 +108,7 @@ namespace MiniPascal.Parser
                 {
                     throw new SyntaxException("statement", current);
                 }
-                IStatement elseStatement = null;
+                IStatement elseStatement;
                 if (Accept(Symbol.Else))
                 {
                     elseStatement = Statement();
@@ -126,6 +116,10 @@ namespace MiniPascal.Parser
                     {
                         throw new SyntaxException("statement", current);
                     }
+                }
+                else
+                {
+                    elseStatement = null;
                 }
                 return new If(condition, then, elseStatement);
             }
@@ -144,7 +138,7 @@ namespace MiniPascal.Parser
             {
                 return procDecl;
             }
-            return null;
+            return ReadFunction();
         }
 
         private Procedure ProcedureStatement()
@@ -158,7 +152,29 @@ namespace MiniPascal.Parser
                 Require(Symbol.SemiColon);
                 ScopedProgram block = Block();
                 block.AddParameters(parameters);
-                return new Procedure(ident, parameters, block);
+                return new Procedure(ident, parameters, block, null);
+            }
+            return null;
+        }
+
+        private Procedure ReadFunction()
+        {
+            if (Accept(Symbol.Function))
+            {
+                Identifier ident = Identifier();
+                Require(Symbol.ClosureOpen);
+                Parameters parameters = ReadParameters();
+                Require(Symbol.ClosureClose);
+                Require(Symbol.Colon);
+                MiniPascalType type = ReadType();
+                if (type == null)
+                {
+                    throw new SyntaxException(expType, current);
+                }
+                Require(Symbol.SemiColon);
+                ScopedProgram block = Block();
+                block.AddParameters(parameters);
+                return new Procedure(ident, parameters, block, type);
             }
             return null;
         }

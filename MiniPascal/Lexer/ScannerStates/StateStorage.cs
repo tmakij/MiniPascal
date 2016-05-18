@@ -36,6 +36,7 @@ namespace MiniPascal.Lexer.ScannerStates
         public IScannerState S { get; }
         public IScannerState O { get; }
         public IScannerState A { get; }
+        public IScannerState R { get; }
 
         public IScannerState If { get; } = new SingleStateEnd(Symbol.If);
         public IScannerState Integer { get; }
@@ -81,6 +82,8 @@ namespace MiniPascal.Lexer.ScannerStates
 
             IScannerState pro = new Pro();
             P = Scanner(pro, "pro");
+
+            R = new SingleState('e', new CharacterSplit(Value("turn", Symbol.Return), Tuple.Create<char, IScannerState>('a', new CharacterSplit(Value("l", Symbol.RealType), Value("d", Symbol.ReadProcedure)))));
 
             IScannerState realRead = new CharacterSplit(Value("l", Symbol.RealType), Value("d", Symbol.ReadProcedure));
             REA = Scanner(realRead, "rea");

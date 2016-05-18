@@ -9,24 +9,15 @@ namespace MiniPascal
 {
     public static class Program
     {
-        private static void load(ref string[] i)
+        private static int load()
         {
-            i[0] = "asd";
+            return 1;
         }
-
 
         private static int Main(string[] args)
         {
-            string[] dd = new string[5];
-            int[] f = new int[4];
-            dd[1] = "oooo";
-            //load(ref dd);
-            Console.WriteLine(dd[0]);
-            /*
-            int a = 1;
-            load(ref a);
-            Console.WriteLine(a);
-            */
+            load();
+            //Console.WriteLine();
 #if !DEBUG
             if (args.Length != 1)
             {

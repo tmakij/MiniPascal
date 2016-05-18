@@ -72,7 +72,6 @@
     <Compile Include="Lexer\ScannerStates\RealLiteral.cs" />
     <Compile Include="Parser\AST\AbstractSyntaxTree.cs" />
     <Compile Include="Parser\AST\Arguments.cs" />
-    <Compile Include="Parser\AST\EndOfStreamException.cs" />
     <Compile Include="Parser\AST\Expressions\Expression.cs" />
     <Compile Include="Parser\AST\Expressions\SignedExpression.cs" />
     <Compile Include="Parser\AST\MiniPascalType.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="Parser\AST\Operators\Real\RealDivision.cs" />
     <Compile Include="Parser\AST\Operators\Real\RealMultiplication.cs" />
     <Compile Include="Parser\AST\Operators\Real\RealSubstraction.cs" />
-    <Compile Include="Parser\AST\ParserException.cs" />
     <Compile Include="Parser\AST\Scope.cs" />
     <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
     <Compile Include="Parser\AST\Operators\BooleanAnd.cs" />
@@ -113,6 +111,7 @@
     <Compile Include="Parser\AST\IIdentifierHolder.cs" />
     <Compile Include="Parser\AST\Statements\Call.cs" />
     <Compile Include="Parser\AST\Statements\If.cs" />
+    <Compile Include="Parser\AST\Statements\NoReturnCall.cs" />
     <Compile Include="Parser\AST\Statements\Procedure.cs" />
     <Compile Include="Parser\AST\Statements\Read\IntegerFormatException.cs" />
     <Compile Include="Parser\AST\Statements\Read\IntegerOverflowException.cs" />
@@ -142,6 +141,7 @@
     <Compile Include="Parser\AST\Identifiers\VariableNameDefinedException.cs" />
     <Compile Include="Lexer\LexerException.cs" />
     <Compile Include="Parser\AST\Parameters.cs" />
+    <Compile Include="Parser\AST\Statements\Return.cs" />
     <Compile Include="Parser\AST\Variable.cs" />
     <Compile Include="Parser\AST\VariableReference.cs" />
     <Compile Include="Parser\Parser.cs" />
@@ -174,6 +174,7 @@
     <Compile Include="Lexer\TokenStream.cs" />
     <Compile Include="TestSuite\ArrayTest.cs" />
     <Compile Include="TestSuite\AssigmentTest.cs" />
+    <Compile Include="TestSuite\FunctionTest.cs" />
     <Compile Include="TestSuite\HelloWorldTest.cs" />
     <Compile Include="TestSuite\IfTest.cs" />
     <Compile Include="TestSuite\OperatorTest.cs" />

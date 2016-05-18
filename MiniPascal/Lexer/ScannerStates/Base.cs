@@ -39,7 +39,7 @@
                         return States.P;
                     case 'r':
                         /* real, read*/
-                        return States.REA;
+                        return States.R;
                     case 's':
                         /* size, string*/
                         return States.S;

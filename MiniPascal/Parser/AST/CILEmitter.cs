@@ -44,7 +44,6 @@ namespace MiniPascal.Parser.AST
 
         public void SaveReferenceVariable(Variable Variable)
         {
-            //ushort loc = parameters.Index(Variable.Identifier);
             SimpleType varType = Variable.Type.SimpleType;
             if (varType.Equals(SimpleType.Integer) || varType.Equals(SimpleType.Boolean))
             {
@@ -339,6 +338,16 @@ namespace MiniPascal.Parser.AST
             generator.Emit(OpCodes.Ldlen);
         }
 
+        public void Return()
+        {
+            generator.Emit(OpCodes.Ret);
+        }
+
+        public void Pop()
+        {
+            generator.Emit(OpCodes.Pop);
+        }
+
         public void If(Action Result)
         {
             Label end = generator.DefineLabel();
@@ -365,7 +374,7 @@ namespace MiniPascal.Parser.AST
             return next;
         }
 
-        public CILEmitter StartProcedure(Identifier Identifier, Parameters Parameters)
+        public CILEmitter StartProcedure(Identifier Identifier, Parameters Parameters, MiniPascalType ReturnType)
         {
             List<Type> types = new List<Type>();
             foreach (Variable variable in Parameters.All)
@@ -381,22 +390,10 @@ namespace MiniPascal.Parser.AST
                 }
                 types.Add(type);
             }
-            /*
-            for (int i = 0; i < Parameters.DeclaredCount; i++)
-            {
-                Type curr = Parameters.Types[i];
-                bool byRef = Parameters.At(i).IsReference;
-                types.Add(byRef ? curr.MakeByRefType() : curr);
-            }
-            */
-            MethodBuilder mb = mainType.DefineMethod(Identifier.ToString(), MethodAttributes.Private | MethodAttributes.Static, null, types.ToArray());
+            Type ret = ReturnType == null ? null : ReturnType.SimpleType.CLRType;
+            MethodBuilder mb = mainType.DefineMethod(Identifier.ToString(), MethodAttributes.Private | MethodAttributes.Static, ret, types.ToArray());
             procedures.Add(Identifier, mb);
             return new CILEmitter(mb.GetILGenerator(), mainType, mb, scope, Parameters);
-        }
-
-        public void EndProcedure()
-        {
-            generator.Emit(OpCodes.Ret);
         }
 
         public void Call(Identifier ProcedureId)

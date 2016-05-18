@@ -46,7 +46,7 @@ namespace MiniPascal.Parser.AST
 
             CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main, null, null);
             statements.EmitIR(cilEmitter);
-            cilEmitter.EndProcedure();
+            cilEmitter.Return();
 
             Type mainTypeFinal = MainType.CreateType();
 

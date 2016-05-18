@@ -1,10 +1,11 @@
 ﻿namespace MiniPascal.Parser.AST
 {
-    public sealed class Call : IStatement
+    public sealed class Call : IOperand
     {
+        public Procedure ToCall { get; private set; }
+        public MiniPascalType Type { get; private set; }
         private readonly Arguments arguments;
         private readonly Identifier toBeCalled;
-        private Procedure proc;
         private Scope current;
 
         public Call(Identifier ToBeCalled, Arguments Arguments)
@@ -23,15 +24,15 @@
             arguments.CheckIdentifiers(Current);
         }
 
-        public void CheckType(Scope Current)
+        public MiniPascalType NodeType(Scope Current)
         {
             arguments.CheckType(Current);
-            proc = Current.Procedure(toBeCalled);
-            if (arguments.Count != proc.Parameters.DeclaredCount)
+            ToCall = Current.Procedure(toBeCalled);
+            if (arguments.Count != ToCall.Parameters.DeclaredCount)
             {
                 throw new System.Exception("Invalid parameter count");
             }
-            Parameters parameters = proc.Parameters;
+            Parameters parameters = ToCall.Parameters;
             for (int i = 0; i < arguments.Count; i++)
             {
                 MiniPascalType argType = arguments.Type(i);
@@ -41,17 +42,19 @@
                     throw new TypeMismatchException(parType, argType);
                 }
             }
+            Type = ToCall.ReturnType;
+            return Type;
         }
 
-        public void EmitIR(CILEmitter Emitter)
+        public void EmitIR(CILEmitter Emitter, bool Reference)
         {
             for (int i = 0; i < arguments.Count; i++)
             {
                 IExpression expr = arguments.Expression(i);
-                bool loadReference = proc.Parameters.At(i).IsReference;
+                bool loadReference = ToCall.Parameters.At(i).IsReference;
                 expr.EmitIR(Emitter, loadReference);
             }
-            foreach (Variable prevVar in proc.Parameters.PreviousVariables)
+            foreach (Variable prevVar in ToCall.Parameters.PreviousVariables)
             {
                 if (current.Variable(prevVar.Identifier).IsReference)
                 {

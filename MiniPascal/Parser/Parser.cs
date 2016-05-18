@@ -92,22 +92,6 @@ namespace MiniPascal.Parser
                     throw new SyntaxException(expType, current);
                 }
                 return new MiniPascalType(type, intLiteral);
-                /*if (type.Equals(SimpleType.Integer))
-                {
-                    return MiniPascalType.IntegerArray;
-                }
-                else if (type.Equals(SimpleType.Boolean))
-                {
-                    return MiniPascalType.BooleanArray;
-                }
-                else if (type.Equals(SimpleType.Real))
-                {
-                    return MiniPascalType.RealArray;
-                }
-                else if (type.Equals(SimpleType.String))
-                {
-                    return MiniPascalType.StringArray;
-                }*/
             }
             SimpleType simple = ReadSimpleType();
             if (simple != null)
