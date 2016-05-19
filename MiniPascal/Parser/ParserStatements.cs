@@ -13,7 +13,7 @@ namespace MiniPascal.Parser
 
         private IStatement SimpleStatement()
         {
-            return IdentifierStart() ?? CallPrint() ?? ReturnStatement();
+            return IdentifierStart() ?? CallPrint() ?? ReturnStatement() ?? CallAssert();
         }
 
         private IStatement IdentifierStart()
@@ -62,6 +62,18 @@ namespace MiniPascal.Parser
                 Arguments args = ReadArguments();
                 Require(Symbol.ClosureClose);
                 return new PrintStatement(args);
+            }
+            return null;
+        }
+
+        private IStatement CallAssert()
+        {
+            if (Accept(Symbol.Assert))
+            {
+                Require(Symbol.ClosureOpen);
+                IExpression toAssert = ReadExpression();
+                Require(Symbol.ClosureClose);
+                return new Assert(toAssert);
             }
             return null;
         }

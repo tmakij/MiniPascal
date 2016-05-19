@@ -100,6 +100,7 @@
     <Compile Include="Parser\AST\Operators\Real\RealMultiplication.cs" />
     <Compile Include="Parser\AST\Operators\Real\RealSubstraction.cs" />
     <Compile Include="Parser\AST\Scope.cs" />
+    <Compile Include="Parser\AST\Statements\Assert.cs" />
     <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
     <Compile Include="Parser\AST\Operators\BooleanAnd.cs" />
     <Compile Include="Parser\AST\Operators\BooleanNegation.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Lexer\TokenConstruction.cs" />
     <Compile Include="Lexer\TokenStream.cs" />
     <Compile Include="TestSuite\ArrayTest.cs" />
+    <Compile Include="TestSuite\AssertTest.cs" />
     <Compile Include="TestSuite\AssigmentTest.cs" />
     <Compile Include="TestSuite\FunctionTest.cs" />
     <Compile Include="TestSuite\HelloWorldTest.cs" />

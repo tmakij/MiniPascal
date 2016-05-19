@@ -230,6 +230,7 @@ namespace MiniPascal.Parser.AST
         {
             generator.Emit(OpCodes.Ldstr, Value);
         }
+
         private static OpCode IntCode(int Value)
         {
             switch (Value)
@@ -373,6 +374,20 @@ namespace MiniPascal.Parser.AST
             generator.Emit(OpCodes.Brtrue_S, start);
         }
 
+        public void Assert()
+        {
+            Label pass = generator.DefineLabel();
+            generator.Emit(OpCodes.Brtrue_S, pass);
+            /*ConstructorInfo c = typeof(Exception).GetConstructor(Type.EmptyTypes);
+            generator.Emit(OpCodes.Newobj, c);
+            generator.Emit(OpCodes.Throw);*/
+            PushString(Environment.NewLine + "Assert failure" + Environment.NewLine);
+            generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Error.Write), MiniPascalType.String.SimpleType.CLRTypeArray));
+            PushInt32(-1);
+            generator.Emit(OpCodes.Call, typeof(Environment).GetMethod(nameof(Environment.Exit)));
+            generator.MarkLabel(pass);
+        }
+
         public void StartBlock(Scope Scope, Action<CILEmitter> ScopeCode)
         {
             generator.BeginScope();
@@ -386,11 +401,13 @@ namespace MiniPascal.Parser.AST
             List<Type> types = new List<Type>();
             foreach (Variable variable in Parameters.All)
             {
-                Type original = variable.Type.SimpleType.CLRType;
-                Type type;
+                Type type = variable.Type.SimpleType.CLRType;
                 bool byRef = variable.IsReference;
                 bool array = variable.Type.IsArray;
-                type = array ? original.MakeArrayType() : original;
+                if (array)
+                {
+                    type = type.MakeArrayType();
+                }
                 if (byRef)
                 {
                     type = type.MakeByRefType();

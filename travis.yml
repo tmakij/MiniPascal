@@ -1,0 +1,9 @@
+language: csharp
+solution: MiniPascal.sln
+
+install:
+  - nuget restore MiniPascal.sln
+  - nuget install NUnit.Runners -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release MiniPascal.sln
+  - mono ./testrunner/NUnit.Runners/tools/nunit-console.exe ./MyPoject.Tests/bin/Release/MyProject.Tests.dll

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using MiniPascal.Parser.AST;
+using Assert = NUnit.Framework.Assert;
 
 namespace MiniPascal.TestSuite
 {
