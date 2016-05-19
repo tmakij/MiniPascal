@@ -20,12 +20,10 @@ namespace MiniPascal.Parser.AST
         public void CheckIdentifiers(Scope Current)
         {
             Scope = new Scope(Current);
-            //System.Console.WriteLine("New Scope");
             foreach (IStatement item in statements)
             {
                 item.CheckIdentifiers(Scope);
             }
-            //System.Console.WriteLine("End Scope");
         }
 
         public void CheckType(Scope Current)
@@ -38,11 +36,15 @@ namespace MiniPascal.Parser.AST
 
         public void EmitIR(CILEmitter Emitter)
         {
-            CILEmitter blockScope = Emitter.StartBlock(Scope);
-            foreach (IStatement item in statements)
-            {
-                item.EmitIR(blockScope);
-            }
+            Emitter.StartBlock(Scope,
+                (emitter) =>
+                {
+                    foreach (IStatement item in statements)
+                    {
+                        item.EmitIR(emitter);
+                    }
+                }
+            );
         }
     }
 }

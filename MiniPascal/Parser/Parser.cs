@@ -79,11 +79,7 @@ namespace MiniPascal.Parser
             if (Accept(Symbol.Array))
             {
                 Require(Symbol.IndexOpen);
-                IOperand intLiteral = ReadIntegerLiteral();
-                if (intLiteral == null)
-                {
-                    throw new SyntaxException("integer literal", current);
-                }
+                IExpression intLiteral = ReadExpression();
                 Require(Symbol.IndexClose);
                 Require(Symbol.Of);
                 SimpleType type = ReadSimpleType();

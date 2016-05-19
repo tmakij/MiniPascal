@@ -44,7 +44,7 @@ namespace MiniPascal.Parser.AST
             MethodBuilder main = MainType.DefineMethod("Main", MethodAttributes.Private | MethodAttributes.Static);
             ILGenerator emitter = main.GetILGenerator();
 
-            CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main, null, null);
+            CILEmitter cilEmitter = new CILEmitter(emitter, MainType, main, null, null, null);
             statements.EmitIR(cilEmitter);
             cilEmitter.Return();
 

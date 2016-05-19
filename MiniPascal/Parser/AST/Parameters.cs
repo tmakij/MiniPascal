@@ -58,19 +58,11 @@ namespace MiniPascal.Parser.AST
                 }
                 parametersFromPreviousScope.Add(paraVar);
                 allParameters.Add(paraVar);
-                //Console.WriteLine("Prep Prev Params decl " + paraVar.Identifier);
                 Current.DeclareVariable(paraVar);
-                //Console.WriteLine("Prev Params decl " + paraVar.Identifier);
             }
             foreach (Variable variable in parameters)
             {
-                /*if (Current.IsCurrent(variable.Identifier))
-                {
-                    throw new VariableNameDefinedException(variable.Identifier);
-                }*/
-                //Console.WriteLine("Prep Params decl " + variable.Identifier);
                 Current.DeclareVariable(variable);
-                //Console.WriteLine("Params decl " + variable.Identifier);
             }
         }
 

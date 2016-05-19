@@ -39,7 +39,21 @@ namespace MiniPascal.Parser.AST
 
         public void DeclareVariable(Variable Variable)
         {
-            variables.Add(Variable.Identifier, Variable);
+            Identifier id = Variable.Identifier;
+            if (variables.ContainsKey(id))
+            {
+#if DEBUG
+                if (!variables[id].IsReference)
+                {
+                    throw new System.InvalidOperationException();
+                }
+#endif
+                variables[id] = Variable;
+            }
+            else
+            {
+                variables.Add(id, Variable);
+            }
         }
 
         public bool IsUsed(Variable Variable)
@@ -47,19 +61,40 @@ namespace MiniPascal.Parser.AST
             return IsUsed(Variable.Identifier);
         }
 
-        public bool IsUsed(Identifier Identifier)
+        public bool IsUsedInScope(Identifier Identifier)
         {
             return variables.ContainsKey(Identifier) || procedures.ContainsKey(Identifier);
         }
 
+        public bool IsUsed(Identifier Identifier)
+        {
+            if (IsUsedInScope(Identifier))
+            {
+                return true;
+            }
+            if (previous != null)
+            {
+                return previous.IsUsed(Identifier);
+            }
+            return false;
+        }
+
         public Variable Variable(Identifier Name)
         {
-            return variables[Name];
+            if (variables.ContainsKey(Name))
+            {
+                return variables[Name];
+            }
+            return previous.variables[Name];
         }
 
         public Procedure Procedure(Identifier Name)
         {
-            return procedures[Name];
+            if (procedures.ContainsKey(Name))
+            {
+                return procedures[Name];
+            }
+            return previous.procedures[Name];
         }
     }
 }

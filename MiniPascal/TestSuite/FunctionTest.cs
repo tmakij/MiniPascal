@@ -6,7 +6,7 @@ namespace MiniPascal.TestSuite
     public sealed class FunctionTest : RedirectedOutputTest
     {
         [Test]
-        public void TestSimpleCall()
+        public void FunctionSimpleCall()
         {
             Redirect(@"begin
                         function pr(i:boolean) : real;
@@ -21,7 +21,7 @@ namespace MiniPascal.TestSuite
         }
 
         [Test]
-        public void TestComplexCall()
+        public void FunctionComplexCall()
         {
             Redirect(@"begin
                         var t : integer;
@@ -40,6 +40,20 @@ namespace MiniPascal.TestSuite
                          writeln(t, b, a, pr(1,a) / 10.0);
                          end.");
             Assert.AreEqual(15 + "" + -2f + "" + 50005f + "" + -0.7f, output);
+        }
+
+        [Test]
+        public void FunctionStringConcat()
+        {
+            Redirect(@"begin
+                        function concat(i:integer) : string;
+                            begin
+                                if (i = 0) then return """"
+                                else return concat(i -1) + ""CBA""
+                            end;
+                         writeln(concat(6));
+                         end.");
+            Assert.AreEqual("CBACBACBACBACBACBA", output);
         }
     }
 }

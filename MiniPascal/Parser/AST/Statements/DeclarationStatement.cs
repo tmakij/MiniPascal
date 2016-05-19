@@ -28,6 +28,10 @@ namespace MiniPascal.Parser.AST
             }
             if (Type.IsArray)
             {
+                if (Type.Size == null)
+                {
+                    throw new System.Exception("No array size has been given");
+                }
                 Type.Size.CheckIdentifiers(Current);
             }
         }

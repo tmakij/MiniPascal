@@ -86,7 +86,7 @@ namespace MiniPascal.Parser
         private IOperand Factor()
         {
             IOperand opr = VariableStartOpr() ?? ReadIntegerLiteral() ?? ReadRealLiteral()
-                ?? ReadStringLiteral() ?? ReadBooleanLiteral() ?? LogicalNot();
+                ?? ReadStringLiteral() ?? ReadBooleanLiteral() ?? Closures() ?? LogicalNot();
             if (opr == null)
             {
                 return null;
@@ -179,6 +179,21 @@ namespace MiniPascal.Parser
                 {
                     throw new IntegerParseOverflowException(lex);
                 }
+            }
+            return null;
+        }
+
+        private IOperand Closures()
+        {
+            if (Accept(Symbol.ClosureOpen))
+            {
+                IExpression expr = ReadExpression();
+                if (expr == null)
+                {
+                    throw new SyntaxException(expExpression, current);
+                }
+                Require(Symbol.ClosureClose);
+                return new ExpressionOperand(expr);
             }
             return null;
         }

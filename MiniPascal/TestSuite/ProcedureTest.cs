@@ -7,27 +7,27 @@ namespace MiniPascal.TestSuite
     public sealed class ProcedureTest : RedirectedOutputTest
     {
         [Test]
-        public void CallBoolean()
+        public void ProcedureCallBoolean()
         {
             Redirect("begin procedure hello(i:boolean);begin writeln(\"HelloWorld\",i);end; hello(false);hello(true) end.");
             Assert.AreEqual("HelloWorldFalseHelloWorldTrue", output);
         }
 
         [Test]
-        public void CallBooleanFalse()
+        public void ProcedureCallBooleanFalse()
         {
             Assert.Catch<TypeMismatchException>(() => Redirect("begin procedure hello(i:boolean);begin writeln(\"HelloWorld\",i);end; hello(1); end."));
         }
 
         [Test]
-        public void CallString()
+        public void ProcedureCallString()
         {
             Redirect("begin procedure hello(i:string);begin writeln(i);end; hello(\"Hello World!\");hello(\"Hello you too!\") end.");
             Assert.AreEqual("Hello World!Hello you too!", output);
         }
 
         [Test]
-        public void CallManyParameters()
+        public void ProcedureCallManyParameters()
         {
             Redirect(
                 @"
@@ -42,7 +42,7 @@ namespace MiniPascal.TestSuite
         }
 
         [Test]
-        public void CallAndAssign()
+        public void ProcedureCallAndAssign()
         {
             Redirect(
                 @"
@@ -58,11 +58,36 @@ namespace MiniPascal.TestSuite
                     mul(j);
                     writeln(j, "" "", i);
                 end.");
-            Assert.AreEqual("10 4", output);
+            Assert.AreEqual(10 + " " + 4, output);
         }
 
         [Test]
-        public void CallAndAssignEveryType()
+        public void ProcedureCallAndAssignArray()
+        {
+            Redirect(
+                @"
+                begin
+                    var arr : array[1] of integer;
+                    var arr3 : array[3] of integer;
+                    var arrByRef : array[9] of boolean;
+                    procedure assign( a: array[] of integer,var byref : array[] of boolean);
+                        begin
+                            var arr2 : array[2] of integer;
+                            arr2[1] := 321;
+                            arr := arr2;
+                            a[2] := 515;
+                            var byrefReplacement : array[11] of boolean;
+                            byrefReplacement[10] := true;
+                            byref := byrefReplacement;
+                        end;
+                    assign(arr3, arrByRef);
+                    writeln(arr[1], "" "",arr3[2], arrByRef[10]);
+                end.");
+            Assert.AreEqual(321 + " " + 515 + bool.TrueString, output);
+        }
+
+        [Test]
+        public void ProcedureCallAndAssignEveryType()
         {
             Redirect(
                 @"
@@ -79,11 +104,11 @@ namespace MiniPascal.TestSuite
                     proc(i,r,bb,s);
                     writeln(i,r,bb,s);
                 end.");
-            Assert.AreEqual("1003,14Truetest__Addition__", output);
+            Assert.AreEqual(100 + "" + 3.14 + bool.TrueString + "test__Addition__", output);
         }
 
         [Test]
-        public void CallAndAssignPreviousScope()
+        public void ProcedureCallAndAssignPreviousScope()
         {
             Redirect(
                 @"
@@ -100,7 +125,7 @@ namespace MiniPascal.TestSuite
         }
 
         [Test]
-        public void CallAndAssignPreviousScopeMany()
+        public void ProcedureCallAndAssignPreviousScopeMany()
         {
             Redirect(
                 @"
@@ -123,6 +148,70 @@ namespace MiniPascal.TestSuite
                     writeln(b,d);
                 end.");
             Assert.AreEqual(98 + "" + 1176, output);
+        }
+
+        [Test]
+        public void ProcedureCallScopesOverrideCorrect()
+        {
+            Redirect(
+                @"
+                begin
+                    var b,c:integer;
+                    b := 1;
+                    c := -1;
+                    procedure mul(a:integer);
+                        begin
+                        procedure mul(c:integer);
+                            begin
+                                b := 5;
+                                c := 0;
+                            end;
+                        b := 2;
+                        c := 1;
+                        mul(0);
+                        end;
+                    mul(0);
+                    writeln(b,c);
+                end.");
+            Assert.AreEqual(5 + "" + 1, output);
+        }
+
+        [Test]
+        public void ProcedureCallScopesRecursively()
+        {
+            Redirect(
+                @"
+                begin
+                    var b:integer;
+                    b := 1;
+                    procedure mul(a:integer);
+                        begin
+                        b := b * 2;
+                        if (a > 0) then mul(a - 1)
+                        end;
+                    mul(6);
+                    writeln(b);
+                end.");
+            Assert.AreEqual((2 << 6).ToString(), output);
+        }
+
+        [Test]
+        public void ProcedureCallScopesRecursivelyStringConcat()
+        {
+            Redirect(
+                @"
+                begin
+                    var b:string;
+                    b := """";
+                    procedure mul(a:integer);
+                        begin
+                        b := b + ""ABC"";
+                        if (a > 0) then mul(a - 1)
+                        end;
+                    mul(6);
+                    writeln(b);
+                end.");
+            Assert.AreEqual("ABCABCABCABCABCABCABC", output);
         }
     }
 }

@@ -88,6 +88,11 @@ namespace MiniPascal.Parser
             {
                 return ifStm;
             }
+            While whileStm = ReadWhile();
+            if (whileStm != null)
+            {
+                return whileStm;
+            }
             return null;
         }
 
@@ -95,9 +100,7 @@ namespace MiniPascal.Parser
         {
             if (Accept(Symbol.If))
             {
-                Require(Symbol.ClosureOpen);
                 IExpression condition = ReadExpression();
-                Require(Symbol.ClosureClose);
                 if (condition == null)
                 {
                     throw new SyntaxException(expExpression, current);
@@ -122,6 +125,26 @@ namespace MiniPascal.Parser
                     elseStatement = null;
                 }
                 return new If(condition, then, elseStatement);
+            }
+            return null;
+        }
+
+        private While ReadWhile()
+        {
+            if (Accept(Symbol.While))
+            {
+                IExpression cond = ReadExpression();
+                if (cond == null)
+                {
+                    throw new SyntaxException(expExpression, current);
+                }
+                Require(Symbol.Do);
+                IStatement then = Statement();
+                if (then == null)
+                {
+                    throw new SyntaxException("statement", current);
+                }
+                return new While(cond, then);
             }
             return null;
         }

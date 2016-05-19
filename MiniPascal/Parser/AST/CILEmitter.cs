@@ -16,14 +16,16 @@ namespace MiniPascal.Parser.AST
         private readonly Parameters parameters;
         private readonly Scope scope;
         private readonly MethodBuilder currentMethod;
+        private readonly CILEmitter previous;
 
-        public CILEmitter(ILGenerator Generator, TypeBuilder MainType, MethodBuilder Current, Scope Scope, Parameters Parameters)
+        public CILEmitter(ILGenerator Generator, TypeBuilder MainType, MethodBuilder Current, Scope Scope, Parameters Parameters, CILEmitter Previous)
         {
             generator = Generator;
             mainType = MainType;
             currentMethod = Current;
             scope = Scope;
             parameters = Parameters;
+            previous = Previous;
         }
 
         public void CreateArrayVariable(Identifier Identifier, MiniPascalType Type)
@@ -95,19 +97,15 @@ namespace MiniPascal.Parser.AST
                 generator.Emit(OpCodes.Stloc, localValueVariables[Variable]);
             }
             else
-#if DEBUG
-            if (parameters.HasParameter(Variable))
-#endif
+            if (parameters != null && parameters.HasParameter(Variable))
             {
                 byte loc = parameters.Index(Variable);
                 generator.Emit(OpCodes.Starg_S, loc);
             }
-#if DEBUG
             else
             {
-                throw new InvalidOperationException();
+                previous.SaveVariable(Variable);
             }
-#endif
         }
 
         public void LoadReferenceVariable(Variable Variable)
@@ -188,7 +186,7 @@ namespace MiniPascal.Parser.AST
             {
                 generator.Emit(OpCodes.Ldloc, localValueVariables[Variable]);
             }
-            else if (parameters.HasParameter(Variable))
+            else if (parameters != null && parameters.HasParameter(Variable))
             {
                 byte argIndex = parameters.Index(Variable);
                 if (argIndex >= 0 && argIndex <= 3)
@@ -202,7 +200,7 @@ namespace MiniPascal.Parser.AST
             }
             else
             {
-                throw new InvalidOperationException();
+                previous.LoadVariable(Variable);
             }
         }
 
@@ -212,20 +210,15 @@ namespace MiniPascal.Parser.AST
             {
                 generator.Emit(OpCodes.Ldloca_S, localValueVariables[Variable]);
             }
-            else
-#if DEBUG
-            if (parameters.HasParameter(Variable))
-#endif
+            else if (parameters != null && parameters.HasParameter(Variable))
             {
                 byte loc = parameters.Index(Variable);
                 generator.Emit(OpCodes.Ldarga_S, loc);
             }
-#if DEBUG
             else
             {
-                throw new InvalidOperationException();
+                previous.LoadVariable(Variable);
             }
-#endif
         }
 
         public void PushArray(MiniPascalType Type)
@@ -368,10 +361,24 @@ namespace MiniPascal.Parser.AST
             generator.MarkLabel(end);
         }
 
-        public CILEmitter StartBlock(Scope Scope)
+        public void While(Action Condition, Action Then)
         {
-            CILEmitter next = new CILEmitter(generator, mainType, currentMethod, Scope, parameters);
-            return next;
+            Label cond = generator.DefineLabel();
+            Label start = generator.DefineLabel();
+            generator.Emit(OpCodes.Br_S, cond);
+            generator.MarkLabel(start);
+            Then();
+            generator.MarkLabel(cond);
+            Condition();
+            generator.Emit(OpCodes.Brtrue_S, start);
+        }
+
+        public void StartBlock(Scope Scope, Action<CILEmitter> ScopeCode)
+        {
+            generator.BeginScope();
+            CILEmitter next = new CILEmitter(generator, mainType, currentMethod, Scope, parameters, this);
+            ScopeCode(next);
+            generator.EndScope();
         }
 
         public CILEmitter StartProcedure(Identifier Identifier, Parameters Parameters, MiniPascalType ReturnType)
@@ -393,12 +400,21 @@ namespace MiniPascal.Parser.AST
             Type ret = ReturnType == null ? null : ReturnType.SimpleType.CLRType;
             MethodBuilder mb = mainType.DefineMethod(Identifier.ToString(), MethodAttributes.Private | MethodAttributes.Static, ret, types.ToArray());
             procedures.Add(Identifier, mb);
-            return new CILEmitter(mb.GetILGenerator(), mainType, mb, scope, Parameters);
+            return new CILEmitter(mb.GetILGenerator(), mainType, mb, scope, Parameters, this);
         }
 
         public void Call(Identifier ProcedureId)
         {
-            generator.Emit(OpCodes.Call, procedures[ProcedureId]);
+            generator.Emit(OpCodes.Call, GetProcedure(ProcedureId));
+        }
+
+        private MethodBuilder GetProcedure(Identifier ProcedureId)
+        {
+            if (procedures.ContainsKey(ProcedureId))
+            {
+                return procedures[ProcedureId];
+            }
+            return previous.GetProcedure(ProcedureId);
         }
 
         public void CallPrint(MiniPascalType Type)

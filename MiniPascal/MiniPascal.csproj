@@ -142,6 +142,7 @@
     <Compile Include="Lexer\LexerException.cs" />
     <Compile Include="Parser\AST\Parameters.cs" />
     <Compile Include="Parser\AST\Statements\Return.cs" />
+    <Compile Include="Parser\AST\Statements\While.cs" />
     <Compile Include="Parser\AST\Variable.cs" />
     <Compile Include="Parser\AST\VariableReference.cs" />
     <Compile Include="Parser\Parser.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="TestSuite\OperatorTest.cs" />
     <Compile Include="TestSuite\ProcedureTest.cs" />
     <Compile Include="TestSuite\RedirectedOutputTest.cs" />
+    <Compile Include="TestSuite\WhileTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -10,15 +10,15 @@ namespace MiniPascal.Parser.AST
         public static MiniPascalType String { get; } = new MiniPascalType(SimpleType.String, null, false);
 
         public SimpleType SimpleType { get; }
-        public IOperand Size { get; }
+        public IExpression Size { get; }
         public bool IsArray { get; }
 
-        public MiniPascalType(SimpleType Type, IOperand ArraySize)
+        public MiniPascalType(SimpleType Type, IExpression ArraySize)
             : this(Type, ArraySize, true)
         {
         }
 
-        private MiniPascalType(SimpleType Type, IOperand ArraySize, bool Array)
+        private MiniPascalType(SimpleType Type, IExpression ArraySize, bool Array)
         {
             SimpleType = Type;
             Size = ArraySize;
