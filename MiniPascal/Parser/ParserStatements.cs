@@ -13,7 +13,7 @@ namespace MiniPascal.Parser
 
         private IStatement SimpleStatement()
         {
-            return IdentifierStart() ?? CallPrint() ?? ReturnStatement() ?? CallAssert();
+            return IdentifierStart() ?? ReturnStatement() ?? CallRead() ?? CallPrint() ?? CallAssert();
         }
 
         private IStatement IdentifierStart()
@@ -50,6 +50,29 @@ namespace MiniPascal.Parser
                 Arguments args = ReadArguments();
                 Require(Symbol.ClosureClose);
                 return new NoReturnCall(new Call(Identifier, args));
+            }
+            return null;
+        }
+
+        private IStatement CallRead()
+        {
+            if (Accept(Symbol.ReadProcedure))
+            {
+                Require(Symbol.ClosureOpen);
+                Read read = new Read();
+                do
+                {
+                    Identifier ident = Identifier();
+                    if (ident == null)
+                    {
+                        throw new SyntaxException(expIdentifier, current);
+                    }
+                    VariableReference varRef = ReadVariableReference(ident);
+                    AssigmentStatement assigment = new AssigmentStatement(varRef, new Reading(ident));
+                    read.Add(assigment);
+                } while (Accept(Symbol.Comma));
+                Require(Symbol.ClosureClose);
+                return read;
             }
             return null;
         }
@@ -284,6 +307,18 @@ namespace MiniPascal.Parser
                 parameters.Add(variable);
             } while (Accept(Symbol.Comma));
             return parameters;
+        }
+
+        private VariableReferences ReadVariables()
+        {
+            VariableReferences vars = new VariableReferences();
+            do
+            {
+                Identifier variable = Identifier();
+                VariableReference varRef = ReadVariableReference(variable);
+                vars.Add(varRef);
+            } while (Accept(Symbol.Comma));
+            return vars;
         }
     }
 }

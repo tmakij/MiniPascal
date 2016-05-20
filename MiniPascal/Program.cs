@@ -11,7 +11,6 @@ namespace MiniPascal
     {
         private static int Main(string[] args)
         {
-            //throw new Exception();
 #if !DEBUG
             if (args.Length != 1)
             {
@@ -28,12 +27,8 @@ namespace MiniPascal
                 using (StreamReader sr = new StreamReader(sourcePath, Encoding.UTF8))
                 {
                     SourceStream source = new SourceStream(sr);
-                    Compiler.Compile(source, Environment.CurrentDirectory).Execute();
+                    Compiler.Compile(source, Environment.CurrentDirectory);
                 }
-
-#if DEBUG
-                Console.ReadKey(false);
-#endif
                 return 0;
             }
             catch (FileNotFoundException)
@@ -94,9 +89,6 @@ namespace MiniPascal
         private static int Error(string Message)
         {
             Console.Error.WriteLine(Message);
-#if DEBUG
-            Console.ReadKey(false);
-#endif
             return -1;
         }
     }

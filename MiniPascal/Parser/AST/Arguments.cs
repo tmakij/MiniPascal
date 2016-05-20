@@ -6,7 +6,6 @@ namespace MiniPascal.Parser.AST
     {
         public int Count { get { return arguments.Count; } }
         private readonly List<IExpression> arguments = new List<IExpression>();
-        private readonly List<MiniPascalType> types = new List<MiniPascalType>();
 
         public void Add(IExpression Argument)
         {
@@ -25,17 +24,13 @@ namespace MiniPascal.Parser.AST
         {
             foreach (IExpression exp in arguments)
             {
-                types.Add(exp.NodeType(Current));
+                exp.NodeType(Current);
             }
-        }
-
-        public void EmitIR(CILEmitter Emitter)
-        {
         }
 
         public MiniPascalType Type(int Index)
         {
-            return types[Index];
+            return arguments[Index].Type;
         }
 
         public IExpression Expression(int Index)

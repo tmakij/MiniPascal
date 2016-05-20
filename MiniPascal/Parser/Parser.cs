@@ -165,9 +165,9 @@ namespace MiniPascal.Parser
             return false;
         }
 
-        private bool AcceptWithLexeme(Symbol Accepted, out String Lexeme)
+        private bool AcceptWithLexeme(Symbol Accepted, out string Lexeme)
         {
-            Lexeme = tokens.Current.Lexeme;
+            Lexeme = current.Lexeme;
             return Accept(Accepted);
         }
 

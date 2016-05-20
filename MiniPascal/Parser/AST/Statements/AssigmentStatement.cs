@@ -3,10 +3,10 @@
     public sealed class AssigmentStatement : IStatement
     {
         private readonly VariableReference reference;
-        private readonly IExpression assigment;
+        private readonly ITypedNode assigment;
         private Variable variable;
 
-        public AssigmentStatement(VariableReference Reference, IExpression Assigment)
+        public AssigmentStatement(VariableReference Reference, ITypedNode Assigment)
         {
             reference = Reference;
             assigment = Assigment;

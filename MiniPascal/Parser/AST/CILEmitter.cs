@@ -157,6 +157,11 @@ namespace MiniPascal.Parser.AST
             generator.Emit(code);
         }
 
+        public void LoadArrayIndexAddress()
+        {
+            generator.Emit(OpCodes.Ldelema);
+        }
+
         private static OpCode Ldarg(byte Value)
         {
             switch (Value)
@@ -378,9 +383,6 @@ namespace MiniPascal.Parser.AST
         {
             Label pass = generator.DefineLabel();
             generator.Emit(OpCodes.Brtrue_S, pass);
-            /*ConstructorInfo c = typeof(Exception).GetConstructor(Type.EmptyTypes);
-            generator.Emit(OpCodes.Newobj, c);
-            generator.Emit(OpCodes.Throw);*/
             PushString(Environment.NewLine + "Assert failure" + Environment.NewLine);
             generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Error.Write), MiniPascalType.String.SimpleType.CLRTypeArray));
             PushInt32(-1);
@@ -453,6 +455,23 @@ namespace MiniPascal.Parser.AST
             else
             {
                 generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.Write), Type.SimpleType.CLRTypeArray));
+            }
+        }
+
+        public void CallRead(MiniPascalType Type)
+        {
+            generator.Emit(OpCodes.Call, typeof(Console).GetMethod(nameof(Console.ReadLine)));
+            if (Type.SimpleType.Equals(SimpleType.Integer))
+            {
+                generator.Emit(OpCodes.Call, typeof(int).GetMethod(nameof(int.Parse), SimpleType.String.CLRTypeArray));
+            }
+            else if (Type.SimpleType.Equals(SimpleType.Real))
+            {
+                generator.Emit(OpCodes.Call, typeof(float).GetMethod(nameof(float.Parse), SimpleType.String.CLRTypeArray));
+            }
+            else if (Type.SimpleType.Equals(SimpleType.Boolean))
+            {
+                generator.Emit(OpCodes.Call, typeof(bool).GetMethod(nameof(bool.Parse), SimpleType.String.CLRTypeArray));
             }
         }
 
