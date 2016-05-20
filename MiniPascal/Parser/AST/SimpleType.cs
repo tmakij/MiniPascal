@@ -50,7 +50,10 @@ namespace MiniPascal.Parser.AST
             String.AddBinaryOperator(OperatorType.Addition, new StringConcatenation());
             String.AddBinaryOperator(OperatorType.Equals, new StringEquals());
             String.AddBinaryOperator(OperatorType.NotEquals, new StringNotEquals());
+            String.AddBinaryOperator(OperatorType.GreaterThan, new StringGreaterThan());
+            String.AddBinaryOperator(OperatorType.GreaterOrEqualThan, new StringGreaterOrEqualThan());
             String.AddBinaryOperator(OperatorType.LessThan, new StringLessThan());
+            String.AddBinaryOperator(OperatorType.LessOrEqualThan, new StringLessOrEqualThan());
 
             Boolean.AddUnaryOperator(OperatorType.Not, new BooleanNegation());
             Boolean.AddBinaryOperator(OperatorType.And, new BooleanAnd());

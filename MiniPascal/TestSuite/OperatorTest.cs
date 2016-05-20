@@ -8,8 +8,8 @@ namespace MiniPascal.TestSuite
         [Test]
         public void OperatorsInteger()
         {
-            Redirect(@"begin writeln(1+4, "" "", 2+7*5, "" "", 10-2, "" "", 51/10, "" "", 25 * 5 % 5, "" "", 99 % 5) end.");
-            Assert.AreEqual("5 37 8 5 0 4", output);
+            Redirect(@"begin writeln(1+4, "" "", 2+7*5, "" "", (10-2)/4, "" "", 51/10, "" "", 25 * 5 % 5, "" "", 99 % 5) end.");
+            Assert.AreEqual(5 + " " + 37 + " " + 2 + " " + 5 + " " + 0 + " " + 4, output);
         }
 
         [Test]
@@ -20,10 +20,24 @@ namespace MiniPascal.TestSuite
         }
 
         [Test]
-        public void OperatorsString()
+        public void OperatorsStringConcat()
         {
             Redirect(@"begin writeln(""hello"" + "" world!"" + """" + ""dsaasdaaaaaaaaaaaaaaaaaaaaaaaaa"") end.");
             Assert.AreEqual("hello world!dsaasdaaaaaaaaaaaaaaaaaaaaaaaaa", output);
+        }
+
+        [Test]
+        public void OperatorsStringRelation()
+        {
+            Redirect(@"begin writeln(""a"" < ""b"", ""a"" <= ""a"", ""a"" = ""a"", ""a"" <> ""a"", ""b"" > ""a"", ""a"" >= ""a"") end.");
+            Assert.AreEqual(bool.TrueString + bool.TrueString + bool.TrueString + bool.FalseString + bool.TrueString + bool.TrueString, output);
+        }
+
+        [Test]
+        public void OperatorsStringRelationReverse()
+        {
+            Redirect(@"begin writeln(""a"" > ""b"", ""b"" <= ""a"", ""b"" = ""a"", ""b"" <> ""a"", ""a"" > ""b"", ""a"" >= ""b"") end.");
+            Assert.AreEqual(bool.FalseString + bool.FalseString + bool.FalseString + bool.TrueString + bool.FalseString + bool.FalseString, output);
         }
 
         [Test]

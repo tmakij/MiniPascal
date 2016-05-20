@@ -11,19 +11,13 @@ namespace MiniPascal
     {
         private static int Main(string[] args)
         {
-#if !DEBUG
             if (args.Length != 1)
             {
                 return Error("The program accepts one, and only one, argument, which is the path to the source");
             }
-#endif
             try
             {
-#if DEBUG
-                const string sourcePath = "test.txt";
-#else
                 string sourcePath = args[0];
-#endif
                 using (StreamReader sr = new StreamReader(sourcePath, Encoding.UTF8))
                 {
                     SourceStream source = new SourceStream(sr);

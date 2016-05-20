@@ -475,25 +475,49 @@ namespace MiniPascal.Parser.AST
             }
         }
 
-        public void CallStringLessThan()
+        private void CallStringCompare()
         {
             generator.Emit(OpCodes.Call, typeof(string).GetMethod(nameof(string.Compare), stringTypes));
+        }
+
+        private void CompareStrings(int Base, OpCode Compare)
+        {
+            CallStringCompare();
             Label trueRes = generator.DefineLabel();
             Label end = generator.DefineLabel();
-            generator.Emit(OpCodes.Ldc_I4_0);
-            generator.Emit(OpCodes.Clt);
+            PushInt32(Base);
+            generator.Emit(Compare);
             generator.Emit(OpCodes.Brtrue_S, trueRes);
-            generator.Emit(OpCodes.Ldc_I4_0);
+            PushInt32(0);
             generator.Emit(OpCodes.Br, end);
             generator.MarkLabel(trueRes);
-            generator.Emit(OpCodes.Ldc_I4_1);
+            PushInt32(1);
             generator.MarkLabel(end);
-            generator.Emit(OpCodes.Nop);
+        }
+
+        public void CallStringGreaterThan()
+        {
+            CompareStrings(0, OpCodes.Cgt);
+        }
+
+        public void CallStringGreaterOrEqualThan()
+        {
+            CompareStrings(-1, OpCodes.Cgt);
+        }
+
+        public void CallStringLessThan()
+        {
+            CompareStrings(0, OpCodes.Clt);
+        }
+
+        public void CallStringLessOrEqualThan()
+        {
+            CompareStrings(1, OpCodes.Clt);
         }
 
         public void CallStringEquals()
         {
-            generator.Emit(OpCodes.Call, typeof(string).GetMethod("op_Equality"));
+            generator.Emit(OpCodes.Call, typeof(string).GetMethod(nameof(string.Equals), stringTypes));
             Label trueRes = generator.DefineLabel();
             Label end = generator.DefineLabel();
             generator.Emit(OpCodes.Brtrue_S, trueRes);
@@ -502,7 +526,6 @@ namespace MiniPascal.Parser.AST
             generator.MarkLabel(trueRes);
             generator.Emit(OpCodes.Ldc_I4_1);
             generator.MarkLabel(end);
-            generator.Emit(OpCodes.Nop);
         }
 
         public void CallStringConcat()

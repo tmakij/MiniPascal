@@ -86,6 +86,9 @@
     <Compile Include="Parser\AST\Operators\Comparision\NumericalGreaterOrEqualThan.cs" />
     <Compile Include="Parser\AST\Operators\Comparision\NumericalLessOrEqualThan.cs" />
     <Compile Include="Parser\AST\Operators\Comparision\NumericalLessThan.cs" />
+    <Compile Include="Parser\AST\Operators\Comparision\StringGreaterThan.cs" />
+    <Compile Include="Parser\AST\Operators\Comparision\StringGreaterOrEqualThan.cs" />
+    <Compile Include="Parser\AST\Operators\Comparision\StringLessThanOrEqual.cs" />
     <Compile Include="Parser\AST\Operators\Comparision\StringLessThan.cs" />
     <Compile Include="Parser\AST\Operators\IntegerModulo.cs" />
     <Compile Include="Parser\AST\Operators\Equals\NumericalNotEquals.cs" />
