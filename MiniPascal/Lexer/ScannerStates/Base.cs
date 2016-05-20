@@ -62,12 +62,14 @@
             }
             switch (Read)
             {
+                case '{':
+                    return States.CommentOpen;
                 case '/':
                     return States.ForwardSlash;
                 case ':':
                     return States.Colon;
-                case '"':
-                    return States.StringLiteral;
+                case '\\':
+                    return States.StringLiteralStart;
                 case '<':
                     return States.Less;
                 case '>':

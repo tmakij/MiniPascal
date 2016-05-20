@@ -1,14 +1,14 @@
 ﻿namespace MiniPascal.Lexer.ScannerStates
 {
-    public sealed class SingleLineComment : IScannerState
+    public sealed class StringLiteralStart : IScannerState
     {
         IScannerState IScannerState.Read(TokenConstruction Current, char Read, StateStorage States)
         {
-            if (Read == '\n')
+            if (Read == '"')
             {
-                return States.Base;
+                return States.StringLiteral;
             }
-            return this;
+            throw new LexerException("Invalid string literal start");
         }
     }
 }

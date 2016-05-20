@@ -13,8 +13,8 @@
                     Current.AppendNewLine();
                     return States.StringLiteral;
                 case '"':
-                    Current.Append('"');
-                    return States.StringLiteral;
+                    Current.End(Symbol.StringLiteral);
+                    return States.Base;
                 case '\\':
                     Current.Append('\\');
                     return States.StringLiteral;

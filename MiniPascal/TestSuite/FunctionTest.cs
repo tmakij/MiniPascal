@@ -48,8 +48,8 @@ namespace MiniPascal.TestSuite
             Redirect(@"begin
                         function concat(i:integer) : string;
                             begin
-                                if (i = 0) then return """"
-                                else return concat(i -1) + ""CBA""
+                                if (i = 0) then return \""\""
+                                else return concat(i -1) + \""CBA\""
                             end;
                          writeln(concat(6));
                          end.");

@@ -6,11 +6,11 @@
         {
             if (Read == '*')
             {
-                return States.CommentEnd;
+                return States.CommentClose;
             }
-            if (Read == '/')
+            if (Read == '{')
             {
-                return States.NestedCommentStart;
+                return States.CommentOpen;
             }
             return this;
         }

@@ -11,14 +11,17 @@ namespace MiniPascal
     {
         private static int Main(string[] args)
         {
+            /*Console.WriteLine(@"aaa \"" \"" aaa");
+            Console.ReadKey();
+            return 0;*/
             if (args.Length != 1)
             {
-                return Error("The program accepts one, and only one, argument, which is the path to the source");
+                //return Error("The program accepts one, and only one, argument, which is the path to the source");
             }
             try
             {
-                string sourcePath = args[0];
-                using (StreamReader sr = new StreamReader(sourcePath, Encoding.UTF8))
+                //string sourcePath = args[0];
+                using (StreamReader sr = new StreamReader("test.txt", Encoding.UTF8))
                 {
                     SourceStream source = new SourceStream(sr);
                     Compiler.Compile(source, Environment.CurrentDirectory);
@@ -83,6 +86,7 @@ namespace MiniPascal
         private static int Error(string Message)
         {
             Console.Error.WriteLine(Message);
+            //Console.ReadKey();
             return -1;
         }
     }

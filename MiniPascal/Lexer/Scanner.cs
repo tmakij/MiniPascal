@@ -28,7 +28,9 @@ namespace MiniPascal.Lexer
                 {
                     constr.IncrementLines();
                 }
-                if (!currentState.Equals(scannerStates.StringLiteral))
+                if (!currentState.Equals(scannerStates.StringLiteral)
+                    && !currentState.Equals(scannerStates.EscapeCharacter)
+                    && !currentState.Equals(scannerStates.StringLiteralStart))
                 {
                     curr = char.ToLowerInvariant(curr);
                 }

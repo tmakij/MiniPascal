@@ -4,29 +4,29 @@ namespace MiniPascal.Lexer.ScannerStates
 {
     public sealed class StateStorage
     {
-        public bool IsInNestedComment { get { return commentLevel > 0; } }
-        private int commentLevel;
-
         public IScannerState Base { get; } = new Base();
-        public IScannerState NestedCommentStart { get; } = new NestedCommentStart();
         public IScannerState Comment { get; } = new Comment();
-        public IScannerState CommentEnd { get; } = new CommentEnd();
         public IScannerState Identifier { get; } = new Identifier();
         public IScannerState Colon { get; } = new Colon();
         public IScannerState IntegerLiteral { get; } = new IntegerLiteral();
-        public IScannerState StringLiteral { get; } = new StringLiteral();
-        public IScannerState SingleLineComment { get; } = new SingleLineComment();
         public IScannerState ForwardSlash { get; } = new ForwardSlash();
-        public IScannerState EscapeCharacter { get; } = new EscapeCharacter();
         public IScannerState RealLiteral { get; } = new RealLiteral();
         public IScannerState ExponentSign { get; } = new ExponentSign();
         public IScannerState Exponent { get; } = new Exponent();
         public IScannerState Less { get; } = new Less();
         public IScannerState Greater { get; } = new Greater();
+
+        public IScannerState StringLiteralStart { get; } = new StringLiteralStart();
+        public IScannerState StringLiteral { get; } = new StringLiteral();
+        public IScannerState EscapeCharacter { get; } = new EscapeCharacter();
+
         public IScannerState B { get; } = new B();
         public IScannerState E { get; } = new E();
         public IScannerState I { get; } = new I();
         public IScannerState W { get; } = new W();
+
+        public IScannerState CommentOpen { get; }
+        public IScannerState CommentClose { get; }
 
         public IScannerState REA { get; }
 
@@ -60,6 +60,10 @@ namespace MiniPascal.Lexer.ScannerStates
 
         public StateStorage()
         {
+            CommentLevel level = new CommentLevel();
+            CommentOpen = new CommentOpen(level);
+            CommentClose = new CommentClose(level);
+
             Write = Scanner(Symbol.PrintProcedure, "riteln");
             Variable = Scanner(Symbol.Variable, "var");
             End = Scanner(Symbol.End, "nd");
@@ -111,16 +115,6 @@ namespace MiniPascal.Lexer.ScannerStates
         private static IScannerState Scanner(Symbol End, string Moves)
         {
             return Scanner(new SingleStateEnd(End), Moves);
-        }
-
-        public void IncreaseLevel()
-        {
-            commentLevel++;
-        }
-
-        public void DecreaseLevel()
-        {
-            commentLevel--;
         }
     }
 }

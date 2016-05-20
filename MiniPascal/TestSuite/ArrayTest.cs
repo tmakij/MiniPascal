@@ -69,7 +69,7 @@ namespace MiniPascal.TestSuite
             Redirect(@"begin
                         var arr : array[100] of real;
                         arr[5]:= 3.14;
-                        writeln(arr[5], "" "", arr[0]) end.");
+                        writeln(arr[5], \"" \"", arr[0]) end.");
             Assert.AreEqual(3.14 + " " + 0f, output);
         }
 
@@ -90,9 +90,9 @@ namespace MiniPascal.TestSuite
         {
             Redirect(@"begin
                         var arr : array[3] of string;
-                        arr[0]:= ""hello "";
-                        arr[1]:= ""world"";
-                        arr[2]:= ""!"";
+                        arr[0]:= \""hello \"";
+                        arr[1]:= \""world\"";
+                        arr[2]:= \""!\"";
                         writeln(arr[0], arr[1], arr[2]) end.");
             Assert.AreEqual("hello world!", output);
         }
@@ -102,7 +102,7 @@ namespace MiniPascal.TestSuite
         {
             Redirect(@"begin
                         var arr : array[3] of string;
-                        writeln("""" = arr[0],"""" <> arr[1], arr[2]) end.");
+                        writeln(\""\"" = arr[0],\""\"" <> arr[1], arr[2]) end.");
             Assert.AreEqual(bool.FalseString + bool.TrueString, output);
         }
     }

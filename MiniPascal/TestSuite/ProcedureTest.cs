@@ -10,20 +10,20 @@ namespace MiniPascal.TestSuite
         [Test]
         public void ProcedureCallBoolean()
         {
-            Redirect("begin procedure hello(i:boolean);begin writeln(\"HelloWorld\",i);end; hello(false);hello(true) end.");
+            Redirect(@"begin procedure hello(i:boolean);begin writeln(\""HelloWorld\"",i);end; hello(false);hello(true) end.");
             Assert.AreEqual("HelloWorldFalseHelloWorldTrue", output);
         }
 
         [Test]
         public void ProcedureCallBooleanFalse()
         {
-            Assert.Catch<TypeMismatchException>(() => Redirect("begin procedure hello(i:boolean);begin writeln(\"HelloWorld\",i);end; hello(1); end."));
+            Assert.Catch<TypeMismatchException>(() => Redirect(@"begin procedure hello(i:boolean);begin writeln(\""HelloWorld\"",i);end; hello(1); end."));
         }
 
         [Test]
         public void ProcedureCallString()
         {
-            Redirect("begin procedure hello(i:string);begin writeln(i);end; hello(\"Hello World!\");hello(\"Hello you too!\") end.");
+            Redirect(@"begin procedure hello(i:string);begin writeln(i);end; hello(\""Hello World!\"");hello(\""Hello you too!\"") end.");
             Assert.AreEqual("Hello World!Hello you too!", output);
         }
 
@@ -37,7 +37,7 @@ namespace MiniPascal.TestSuite
                         begin
                             writeln(i,k,l,o,j *2);
                         end;
-                    prt(""Hello World!"", 50, 13,false,12.556);
+                    prt(\""Hello World!\"", 50, 13,false,12.556);
                 end.");
             Assert.AreEqual("Hello World!" + 13 + "" + false + "" + 12.556f + "" + (50 * 2), output);
         }
@@ -57,7 +57,7 @@ namespace MiniPascal.TestSuite
                     j:=5;
                     mul(i);
                     mul(j);
-                    writeln(j, "" "", i);
+                    writeln(j, \"" \"", i);
                 end.");
             Assert.AreEqual(10 + " " + 4, output);
         }
@@ -82,7 +82,7 @@ namespace MiniPascal.TestSuite
                             byref := byrefReplacement;
                         end;
                     assign(arr3, arrByRef);
-                    writeln(arr[1], "" "",arr3[2], arrByRef[10]);
+                    writeln(arr[1], \"" \"",arr3[2], arrByRef[10]);
                 end.");
             Assert.AreEqual(321 + " " + 515 + bool.TrueString, output);
         }
@@ -98,10 +98,10 @@ namespace MiniPascal.TestSuite
                             a := 2 * a;
                             b := 3.14;
                             c := true;
-                            d := d + ""__Addition__""
+                            d := d + \""__Addition__\""
                         end;
                     var i : integer; var r:real;var bb:boolean; var s:string;
-                    i:= 50;r:=-1.0;bb:=false;s:=""test"";
+                    i:= 50;r:=-1.0;bb:=false;s:=\""test\"";
                     proc(i,r,bb,s);
                     writeln(i,r,bb,s);
                 end.");
@@ -203,10 +203,10 @@ namespace MiniPascal.TestSuite
                 @"
                 begin
                     var b:string;
-                    b := """";
+                    b := \""\"";
                     procedure mul(a:integer);
                         begin
-                        b := b + ""ABC"";
+                        b := b + \""ABC\"";
                         if (a > 0) then mul(a - 1)
                         end;
                     mul(6);

@@ -59,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compiler.cs" />
+    <Compile Include="Lexer\ScannerStates\Comment\CommentClose.cs" />
+    <Compile Include="Lexer\ScannerStates\Comment\CommentLevel.cs" />
+    <Compile Include="Lexer\ScannerStates\Comment\CommentOpen.cs" />
     <Compile Include="Lexer\ScannerStates\PartialState\B.cs" />
     <Compile Include="Lexer\ScannerStates\PartialState\CharacterSplit.cs" />
     <Compile Include="Lexer\ScannerStates\PartialState\E.cs" />
@@ -70,6 +73,7 @@
     <Compile Include="Lexer\ScannerStates\PartialState\W.cs" />
     <Compile Include="Lexer\ScannerStates\PartialState\Pro.cs" />
     <Compile Include="Lexer\ScannerStates\RealLiteral.cs" />
+    <Compile Include="Lexer\ScannerStates\StringLiteral\StringLiteralStart.cs" />
     <Compile Include="Parser\AST\AbstractSyntaxTree.cs" />
     <Compile Include="Parser\AST\Arguments.cs" />
     <Compile Include="Parser\AST\Expressions\Expression.cs" />
@@ -161,19 +165,16 @@
     <Compile Include="Lexer\Scanner.cs" />
     <Compile Include="Lexer\ScannerStates\Base.cs" />
     <Compile Include="Lexer\ScannerStates\Colon.cs" />
-    <Compile Include="Lexer\ScannerStates\Comment\CommentEnd.cs" />
-    <Compile Include="Lexer\ScannerStates\Comment\EscapeCharacter.cs" />
+    <Compile Include="Lexer\ScannerStates\StringLiteral\EscapeCharacter.cs" />
     <Compile Include="Lexer\ScannerStates\ForwardSlash.cs" />
     <Compile Include="Lexer\ScannerStates\IntegerLiteral.cs" />
-    <Compile Include="Lexer\ScannerStates\Comment\NestedCommentStart.cs" />
     <Compile Include="Lexer\ScannerStates\Comment\Comment.cs" />
     <Compile Include="Lexer\ScannerStates\Identifier.cs" />
     <Compile Include="Lexer\ScannerStates\IScannerState.cs" />
-    <Compile Include="Lexer\ScannerStates\SingleLineComment.cs" />
     <Compile Include="Lexer\ScannerStates\SingleState.cs" />
     <Compile Include="Lexer\ScannerStates\SingleStateEnd.cs" />
     <Compile Include="Lexer\ScannerStates\StateStorage.cs" />
-    <Compile Include="Lexer\ScannerStates\StringLiteral.cs" />
+    <Compile Include="Lexer\ScannerStates\StringLiteral\StringLiteral.cs" />
     <Compile Include="SourceStream.cs" />
     <Compile Include="Lexer\Symbol.cs" />
     <Compile Include="Parser\SyntaxException.cs" />

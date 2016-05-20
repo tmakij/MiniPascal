@@ -30,14 +30,14 @@ namespace MiniPascal.TestSuite
         [Test]
         public void AssignString()
         {
-            Redirect("begin var i:string;i:=\"hello\";writeln(i);i:=\"\\nworld!\";writeln(i) end.");
+            Redirect(@"begin var i:string;i:=\""hello\"";writeln(i);i:=\""\nworld!\"";writeln(i) end.");
             Assert.AreEqual("hello" + Environment.NewLine + "world!", output);
         }
 
         [Test]
         public void AssignStringFromVar()
         {
-            Redirect("begin var i,j,k:string;i:=\"hello\";k:=\"world!\"; j:= i + \"\\n\" +k;writeln(j) end.");
+            Redirect(@"begin var i,j,k:string;i:=\""hello\"";k:=\""world!\""; j:= i + \""\n\"" +k;writeln(j) end.");
             Assert.AreEqual("hello" + Environment.NewLine + "world!", output);
         }
     }

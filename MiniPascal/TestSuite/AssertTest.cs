@@ -11,7 +11,7 @@ namespace MiniPascal.TestSuite
         {
             Redirect(@"begin
                          assert(true);
-                         writeln(""HelloWorld!"");
+                         writeln(\""HelloWorld!\"");
                          end.");
             Assert.AreEqual("HelloWorld!", output);
         }
@@ -21,7 +21,7 @@ namespace MiniPascal.TestSuite
         {
             Redirect(@"begin
                          assert(false);
-                         writeln(""HelloWorld!"");
+                         writeln(\""HelloWorld!\"");
                          end.");
             Assert.AreEqual(Environment.NewLine + "Assert failure" + Environment.NewLine, output);
         }
@@ -30,11 +30,11 @@ namespace MiniPascal.TestSuite
         public void AssertPartialFail()
         {
             Redirect(@"begin
-                         writeln(""Hello"");
+                         writeln(\""Hello\"");
                          assert(true);
-                         writeln(""World"");
+                         writeln(\""World\"");
                          assert(false);
-                         writeln(""!"");
+                         writeln(\""!\"");
                          end.");
             Assert.AreEqual("HelloWorld" + Environment.NewLine + "Assert failure" + Environment.NewLine, output);
         }

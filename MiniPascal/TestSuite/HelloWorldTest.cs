@@ -9,7 +9,7 @@ namespace MiniPascal.TestSuite
         private void ProcessProgram<T>(T InputOutput)
         {
             string inout = InputOutput.ToString();
-            ProcessProgram('"' + inout + '"', inout);
+            ProcessProgram(@"\""" + inout + @"\""", inout);
         }
 
         private void ProcessProgram<T>(string Input, T ExpectedOutput)
@@ -22,7 +22,15 @@ namespace MiniPascal.TestSuite
         [Test]
         public void PrintHello()
         {
-            const string input = @"""Hello world""";
+            const string input = @"\""Hello world\""";
+            string expected = "Hello world";
+            ProcessProgram(input, expected);
+        }
+
+        [Test]
+        public void PrintHelloIgnoreComments()
+        {
+            const string input = @"{*asdad writeln(""asdasdad"") {* p4603å''dsf *}äää*} \""Hello\"" {* p4603å''dsf *}+ \"" world\"" {*{**}*}";
             string expected = "Hello world";
             ProcessProgram(input, expected);
         }
@@ -30,7 +38,7 @@ namespace MiniPascal.TestSuite
         [Test]
         public void PrintHelloNewLine()
         {
-            const string input = @"""Hello world!\nHello you too!\n""";
+            const string input = @"\""Hello world!\nHello you too!\n\""";
             string expected = "Hello world!" + Environment.NewLine + "Hello you too!" + Environment.NewLine;
             //Windows newline: /r/n
             ProcessProgram(input, expected);

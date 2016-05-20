@@ -1,13 +1,20 @@
 ﻿namespace MiniPascal.Lexer.ScannerStates
 {
-    public sealed class CommentEnd : IScannerState
+    public sealed class CommentClose : IScannerState
     {
+        private readonly CommentLevel level;
+
+        public CommentClose(CommentLevel Level)
+        {
+            level = Level;
+        }
+
         IScannerState IScannerState.Read(TokenConstruction Current, char Read, StateStorage States)
         {
-            if (Read == '/')
+            if (Read == '}')
             {
-                States.DecreaseLevel();
-                if (!States.IsInNestedComment)
+                level.Decrease();
+                if (!level.IsInNestedComment)
                 {
                     return States.Base;
                 }
