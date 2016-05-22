@@ -8,7 +8,7 @@
             {
                 return States.StringLiteral;
             }
-            throw new LexerException("Invalid string literal start");
+            throw new LexerException("Invalid string literal start", Current.Line);
         }
     }
 }

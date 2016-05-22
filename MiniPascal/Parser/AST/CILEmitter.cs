@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace MiniPascal.Parser.AST
 {
@@ -59,12 +60,10 @@ namespace MiniPascal.Parser.AST
             {
                 generator.Emit(OpCodes.Stind_Ref);
             }
-#if DEBUG
             else
             {
                 throw new InvalidOperationException();
             }
-#endif
         }
 
         public void SaveArray(Variable Variable)
@@ -157,31 +156,25 @@ namespace MiniPascal.Parser.AST
             generator.Emit(code);
         }
 
-        public void LoadArrayIndexAddress()
+        public void LoadArrayIndexAddress(MiniPascalType Type)
         {
-            generator.Emit(OpCodes.Ldelema);
+            generator.Emit(OpCodes.Ldelema, Type.SimpleType.CLRType);
         }
 
         private static OpCode Ldarg(byte Value)
         {
             switch (Value)
             {
+                case 0:
+                    return OpCodes.Ldarg_0;
                 case 1:
                     return OpCodes.Ldarg_1;
                 case 2:
                     return OpCodes.Ldarg_2;
                 case 3:
                     return OpCodes.Ldarg_3;
-#if DEBUG
-                case 0:
-#else
-                default:
-#endif
-                    return OpCodes.Ldarg_0;
-#if DEBUG
                 default:
                     throw new InvalidOperationException();
-#endif
             }
         }
 
@@ -347,6 +340,11 @@ namespace MiniPascal.Parser.AST
             generator.Emit(OpCodes.Pop);
         }
 
+        public void IndexAddress()
+        {
+            generator.Emit(OpCodes.Ldelema);
+        }
+
         public void If(Action Result)
         {
             Label end = generator.DefineLabel();
@@ -467,7 +465,8 @@ namespace MiniPascal.Parser.AST
             }
             else if (Type.SimpleType.Equals(SimpleType.Real))
             {
-                generator.Emit(OpCodes.Call, typeof(float).GetMethod(nameof(float.Parse), SimpleType.String.CLRTypeArray));
+                generator.Emit(OpCodes.Call, typeof(CultureInfo).GetProperty(nameof(CultureInfo.InvariantCulture)).GetGetMethod());
+                generator.Emit(OpCodes.Call, typeof(float).GetMethod(nameof(float.Parse), new[] { typeof(string), typeof(IFormatProvider) }));
             }
             else if (Type.SimpleType.Equals(SimpleType.Boolean))
             {

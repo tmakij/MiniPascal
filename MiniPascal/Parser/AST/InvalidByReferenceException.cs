@@ -2,7 +2,7 @@
 
 namespace MiniPascal.Parser.AST
 {
-    public sealed class AssertationExecption : Exception
+    public sealed class InvalidByReferenceException : Exception
     {
     }
 }

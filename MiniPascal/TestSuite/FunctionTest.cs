@@ -55,5 +55,37 @@ namespace MiniPascal.TestSuite
                          end.");
             Assert.AreEqual("CBACBACBACBACBACBA", output);
         }
+
+        [Test]
+        public void FunctionInvalidByRefCall()
+        {
+            Assert.Catch<Parser.AST.InvalidByReferenceException>(() =>
+            {
+                Redirect(@"begin
+                        function pr(var i:boolean) : real;
+                            begin
+                                  if(i) then return 1.25
+                                  else return -5.0
+                            end;
+                         writeln(pr(true));
+                         end.");
+            });
+        }
+
+        [Test]
+        public void FunctionInvalidParamCall()
+        {
+            Assert.Catch<Parser.AST.InvalidParameterCountException>(() =>
+            {
+                Redirect(@"begin
+                        function pr(i:boolean) : real;
+                            begin
+                                  if(i) then return 1.25
+                                  else return -5.0
+                            end;
+                         writeln(pr(true, false));
+                         end.");
+            });
+        }
     }
 }

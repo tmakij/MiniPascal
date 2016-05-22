@@ -1,0 +1,167 @@
+\documentclass[english]{article}
+\title{MiniPascal compiler documentation}
+\usepackage[utf8]{inputenc}
+\usepackage{babel}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\author{Timo Mäki
+\\Code generation (spring 2016)
+\\MiniPascal compiler}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Architecture}
+The program is written in C\#6, and a .NET 4.6.1 compatible environment is expected for the execution of the compiler, and the resulting CIL bytecode.
+The program is build using Visual Studio 2015, and executed on command line, eg. "MiniPascal.exe myProgram.txt".
+The compiler includes a test suite that uses NUnit test framework.
+The tests are run using NUnit3 test adapter for Visual Studio 2015.
+The test adapter must downloaded to visual studio as an extension.
+The NUnit framework can be downloaded through Nuget with package restoring.
+The tests builds an executable, which output is read by the tests.
+Note that the tests may fail sometimes, if the process read access is not released in time.
+A rerun fixes the problem.
+Tests also do not test all static analysis errors, though most tests still fail with incorrect input.
+
+The lexer is defined by three types, \emph{Scanner}, \emph{TokenConstruction}, \emph{IScannerState}.
+The Scanner keeps reading the input, the scanner state is moved according to input and the TokenConstruction holds the build tokens.
+The scanner states form a finite state machine.
+
+The input stream for the scanner is called \emph{SourceStream}.
+Its backing storage differs when run with the commandline and when run with the test runner.
+
+The parser is defined by a partial class, composed of three files.
+\emph{ParserStatements} contains grammar rules for statements, \emph{ParserExpressions} contains grammar rules for expressions.
+\emph{Parser} contains the rest, like types, blocks and helper methods.
+
+Most grammar rules contain their own class for results.
+For example, there is a class for If statement, while etc.
+
+Most of the operators (and .size) are their own classes, and are attached to their \emph{SimpleType}.
+\emph{MiniPascalType} contains the SimpleType and a flag whether the type is array.
+
+Semantic analysis involves the \emph{Scope} class.
+It contains the identifiers of the current, and the previous, scope.
+The analysis is started by a check of indentifiers, that they are declared and unique in the scope.
+Second it performs the type check of the operations.
+No operation is allowed for two different types, although certain operations may return a different type than the original types.
+The scope class is discarded after the analysis.
+
+Like semantic analysis, code generation is performed in the statement and expression classes themselves.
+The \emph{CILEmitter} class holds the necessary Reflection.Emit types for generation.
+For example, it stores the variable and procedure names.
+In general, there is no need to import Reflection namespace outside this class.
+
+\section{Known missing featurs}
+The compiler aborts when it counters an error.
+The implementation does not support using the predefined indentifiers as indentifiers.
+
+%\section{Architectural issues}
+%The CILEmitter class is not well designed for object oriented programming.
+%Many of its methods are called only once, and they should be implemented instead by %the caller.
+%Array size should not be attached to array type, instead there should be a specific %array declaration class.
+
+\section{Language implementation-level decisions}
+For all programs, the limitations of the Common Language Runtime apply.
+In variable declarations, integers and reals are set to 0, booleans to false and strings to empty string literal.
+Same applies for arrays, expect for strings which are set to null.
+Integers and reals are 32 bit.
+Booleans are internally integers.
+
+For string comparison, the BCL String.Compare is used.
+The "a" $<$ "b" comparison returns true, since a is before b in alphabetic ordering.
+For Booleans the integer comparision is used.
+String.Equals is used for string equality comparison.
+Integers, reals and booleans uses the CIL instructions for the previous.
+String.Concat for string concatenation.
+
+All arguments of method calls are evaluated left to right.
+All equal operations are also evaluated left to right (eg. in 1 + 2 + 3, the 1 + 2 is first counted).
+
+Method writeln is a series of calls to Console.Write.
+Writeln does not automatically add new line character sequence (since it is not required, and is quite easy to add).
+
+Read is treated as a series of assigments.
+It calls to Console.ReadLine, and parses the result when needed.
+Real parsing uses InvarianCulture from System.Globalisation.
+Parse failures raise an unhandled exception from the BLC library.
+
+Assert is an If statement, calling Environment.Exit(-1) when failing.
+
+Functions are static methods in the emitted code (and procedures are functions with void as return type).
+All variables are allocated to the stack, and all previously allocated variables are passed by reference to the method.
+A scope can have up to 256 variables at the same time.
+
+\section{Major problems}
+The largest implementation issue was the by-reference variables of methods.
+Particulary, the assigments, loads and arguments had to be done differently, depending wheter the variable was local stack, local parameter, array, reference parameter or reference scope.
+The solution was to ensure all possible variables are always available.
+Variables are accessed through a series of if-else statements (like in Assigment statement or variable operand).
+
+\section{Semantic analysis}
+\begin{itemize}
+\item Assigment type
+\item Operator type
+\item Operator exists for type
+\item Declared identifier
+\item Unique identifier
+\item Array index integer type
+\item While/If expression boolean type
+\item Method call parameter count match
+\item Reference only for variables
+\item Size for arrays only
+\end{itemize}
+
+Notably, there is no check that return is called, or that its type is correct.
+
+\section{Modified grammar}
+\begin{enumerate}
+\item Simple statement should lead into new reference start rule, which would then split to call and assigment, since both of them can start with an identifier.
+\item Factor should contain same kind of reference start rule as previously, for call and variable.
+\item If statement should contain only: "if" $<$Boolean expr$>$ "then" $<$statement$>$ [ "else" $<$statement$>$ ].
+\item In factor, size should be added to the end of every statement, or create a new rule where first a factor is read, and optionally size.
+\end{enumerate}
+
+\section{Abstract Syntax Tree}
+\begin{enumerate}
+\item AbtractSyntaxTree has ScopedProgram
+\item ScopedProgram has IStatements
+\item IStatement is implemented by Assert, Assigment, Read, Declaration, If, NoReturn Call, Print, Procedure, Return, While
+\begin{enumerate}
+\item Assert has IExpression
+\item Assigment has an IExpression and identifier
+\item Declaration has identifiers and their type
+\item If has IExpression and two IStatements
+\item NoReturnCall has a Call
+\item Print has IExpressions
+\item Procedure has a ScopedProgram, MiniPascalType, identifier and variables with their identifiers, types and reference flag
+\item Read has assigment statements
+\item Return has an IExpression
+\item While has an IExpression and a ScopedProgram
+\end{enumerate}
+\item IExpression is implemented by Expression and SignedExpression
+\begin{enumerate}
+\item Expression has IExpressions or IOperands and their operators
+\item SignedExpression is Expression and has a sign
+\end{enumerate}
+\item IOperand is implemented by Voolean, Integer, String and Real literals, Call, ExpressionOperand, Size, Unary, VariableOperand and Reading
+\begin{enumerate}
+\item Call has an identifier and IExpressions
+\item Reading has variable and its type
+\item ExpressionOperand has IExpression
+\item Size has and IOperand
+\item Unary has an IOperand and operator
+\item VariableOperand has identifier and its type
+\end{enumerate}
+
+
+\end{enumerate}
+
+
+
+\includepdf[pages={-}]{../Code_Gen_Project_2016_Spring.pdf}
+\includepdf[pages={-}]{../minipascalsyntax.pdf}
+
+\end{document}

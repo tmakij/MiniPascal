@@ -9,7 +9,7 @@
                 Current.Append(Read);
                 return States.Exponent;
             }
-            throw new LexerException("Expected digits or sign, found " + Read);
+            throw new LexerException("Expected digits or sign, found " + Read, Current.Line);
         }
     }
 }

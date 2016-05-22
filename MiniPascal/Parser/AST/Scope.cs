@@ -42,12 +42,6 @@ namespace MiniPascal.Parser.AST
             Identifier id = Variable.Identifier;
             if (variables.ContainsKey(id))
             {
-#if DEBUG
-                if (!variables[id].IsReference)
-                {
-                    throw new System.InvalidOperationException();
-                }
-#endif
                 variables[id] = Variable;
             }
             else

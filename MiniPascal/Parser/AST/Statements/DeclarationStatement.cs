@@ -30,7 +30,7 @@ namespace MiniPascal.Parser.AST
             {
                 if (Type.Size == null)
                 {
-                    throw new System.Exception("No array size has been given");
+                    throw new InvalidArrayIndexTypeException(null);
                 }
                 Type.Size.CheckIdentifiers(Current);
             }
@@ -43,7 +43,7 @@ namespace MiniPascal.Parser.AST
                 Type.Size.NodeType(Current);
                 if (!Type.Size.Type.Equals(MiniPascalType.Integer))
                 {
-                    throw new System.Exception("Expected integer expression, found " + Type.SimpleType);
+                    throw new TypeMismatchException(MiniPascalType.Integer, Type.Size.Type);
                 }
             }
         }

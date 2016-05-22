@@ -21,13 +21,17 @@
             factor.NodeType(Current);
             if (!factor.Type.IsArray)
             {
-                throw new System.Exception("Array expected, found " + Type);
+                throw new ArrayRequiredException(Type);
             }
             return Type;
         }
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
+            if (Reference)
+            {
+                throw new InvalidByReferenceException();
+            }
             factor.EmitIR(Emitter, false);
             Emitter.ArraySize();
             Emitter.ToInt32();

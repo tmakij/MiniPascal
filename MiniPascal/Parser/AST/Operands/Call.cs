@@ -30,7 +30,7 @@
             ToCall = Current.Procedure(toBeCalled);
             if (arguments.Count != ToCall.Parameters.DeclaredCount)
             {
-                throw new System.Exception("Invalid parameter count");
+                throw new InvalidParameterCountException(ToCall.Parameters.DeclaredCount, arguments.Count);
             }
             Parameters parameters = ToCall.Parameters;
             for (int i = 0; i < arguments.Count; i++)
@@ -48,6 +48,10 @@
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
+            if (Reference)
+            {
+                throw new InvalidByReferenceException();
+            }
             for (int i = 0; i < arguments.Count; i++)
             {
                 IExpression expr = arguments.Expression(i);

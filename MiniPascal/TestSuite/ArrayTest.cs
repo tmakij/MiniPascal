@@ -54,6 +54,23 @@ namespace MiniPascal.TestSuite
         }
 
         [Test]
+        public void ArraysIndexByRef()
+        {
+            Redirect(@"begin
+                        var arr : array[100] of integer;
+                        var st : array[2] of string;
+                        arr[0]:=1;
+                        procedure aas(var i:integer);
+                            begin
+                                i := 2;
+                                st[1] := \""Hello\"";
+                            end;
+                        aas(arr[0]);
+                        writeln(arr[0], st[1]) end.");
+            Assert.AreEqual(2 + "Hello", output);
+        }
+
+        [Test]
         public void ArraysSize()
         {
             Redirect(@"begin
@@ -104,6 +121,37 @@ namespace MiniPascal.TestSuite
                         var arr : array[3] of string;
                         writeln(\""\"" = arr[0],\""\"" <> arr[1], arr[2]) end.");
             Assert.AreEqual(bool.FalseString + bool.TrueString, output);
+        }
+
+        [Test]
+        public void ArraysInvalidIndex()
+        {
+            Assert.Catch<Parser.AST.InvalidArrayIndexTypeException>(() =>
+            {
+                Redirect(@"begin
+                        var arr, arr2 : array[2] of integer;
+                        arr[arr2] := 2; end.");
+            });
+        }
+
+        [Test]
+        public void ArraysInvalidIndexNoType()
+        {
+            Assert.Catch<Parser.AST.InvalidArrayIndexTypeException>(() =>
+            {
+                Redirect(@"begin
+                        var arr, arr2 : array[2] of integer;
+                        arr[] := 2; end.");
+            });
+        }
+
+        [Test]
+        public void ArraysInvalidSize()
+        {
+            Assert.Catch<Parser.AST.ArrayRequiredException>(() =>
+            {
+                Redirect(@"begin writeln((1).size); end.");
+            });
         }
     }
 }

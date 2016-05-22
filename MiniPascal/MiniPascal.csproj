@@ -76,8 +76,14 @@
     <Compile Include="Lexer\ScannerStates\StringLiteral\StringLiteralStart.cs" />
     <Compile Include="Parser\AST\AbstractSyntaxTree.cs" />
     <Compile Include="Parser\AST\Arguments.cs" />
+    <Compile Include="Parser\AST\ArrayAssigmentExpection.cs" />
+    <Compile Include="Parser\AST\ArrayRequiredException.cs" />
     <Compile Include="Parser\AST\Expressions\Expression.cs" />
     <Compile Include="Parser\AST\Expressions\SignedExpression.cs" />
+    <Compile Include="Parser\AST\Identifiers\InvalidSimpleTypeException.cs" />
+    <Compile Include="Parser\AST\InvalidArrayIndexTypeException.cs" />
+    <Compile Include="Parser\AST\InvalidByReferenceException.cs" />
+    <Compile Include="Parser\AST\InvalidParameterCountException.cs" />
     <Compile Include="Parser\AST\MiniPascalType.cs" />
     <Compile Include="Parser\AST\Operands\BooleanLiteral.cs" />
     <Compile Include="Parser\AST\Operands\Reading.cs" />
@@ -109,7 +115,6 @@
     <Compile Include="Parser\AST\Operators\Real\RealSubstraction.cs" />
     <Compile Include="Parser\AST\Scope.cs" />
     <Compile Include="Parser\AST\Statements\Assert.cs" />
-    <Compile Include="Parser\AST\Statements\Assert\AssertationExecption.cs" />
     <Compile Include="Parser\AST\Operators\BooleanAnd.cs" />
     <Compile Include="Parser\AST\Operators\BooleanNegation.cs" />
     <Compile Include="Parser\AST\Operators\Equals\NumericalEquals.cs" />
@@ -118,23 +123,18 @@
     <Compile Include="Parser\AST\Operators\StringConcatenation.cs" />
     <Compile Include="Parser\AST\ITypedNode.cs" />
     <Compile Include="Parser\AST\IIdentifierHolder.cs" />
-    <Compile Include="Parser\AST\Statements\Call.cs" />
+    <Compile Include="Parser\AST\Operands\Call.cs" />
     <Compile Include="Parser\AST\Statements\If.cs" />
     <Compile Include="Parser\AST\Statements\NoReturnCall.cs" />
     <Compile Include="Parser\AST\Statements\Procedure.cs" />
     <Compile Include="Parser\AST\Statements\Read.cs" />
-    <Compile Include="Parser\AST\Statements\Read\IntegerFormatException.cs" />
-    <Compile Include="Parser\AST\Statements\Read\IntegerOverflowException.cs" />
-    <Compile Include="Parser\AST\Statements\Read\IntegerParseOverflowException.cs" />
     <Compile Include="Parser\AST\Identifiers\InvalidTypeException.cs" />
     <Compile Include="Parser\AST\ScopedProgram.cs" />
-    <Compile Include="Parser\AST\Statements\Assert\AssertStatement.cs" />
     <Compile Include="Parser\AST\Statements\AssigmentStatement.cs" />
     <Compile Include="Parser\AST\Statements\DeclarationStatement.cs" />
     <Compile Include="Parser\AST\Operands\ExpressionOperand.cs" />
     <Compile Include="Parser\AST\Expressions\IExpression.cs" />
     <Compile Include="Parser\AST\Operands\IntegerLiteralOperand.cs" />
-    <Compile Include="Parser\AST\Statements\Read\ReadStatement.cs" />
     <Compile Include="Parser\AST\Identifiers\TypeMismatchException.cs" />
     <Compile Include="Parser\AST\Operands\IOperand.cs" />
     <Compile Include="Parser\AST\Statements\IStatement.cs" />
@@ -144,10 +144,8 @@
     <Compile Include="Parser\AST\SimpleType.cs" />
     <Compile Include="Parser\AST\Identifiers\UndefinedOperatorException.cs" />
     <Compile Include="Parser\AST\Identifiers\UninitializedVariableException.cs" />
-    <Compile Include="Parser\AST\Identifiers\UsedIdentifiers.cs" />
     <Compile Include="Parser\AST\Identifier.cs" />
     <Compile Include="Parser\AST\Operands\VariableOperand.cs" />
-    <Compile Include="Parser\AST\Identifiers\IdentifierTypes.cs" />
     <Compile Include="Parser\AST\Identifiers\VariableNameDefinedException.cs" />
     <Compile Include="Lexer\LexerException.cs" />
     <Compile Include="Parser\AST\Parameters.cs" />
@@ -155,7 +153,6 @@
     <Compile Include="Parser\AST\Statements\While.cs" />
     <Compile Include="Parser\AST\Variable.cs" />
     <Compile Include="Parser\AST\VariableReference.cs" />
-    <Compile Include="Parser\AST\VariableReferences.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserExpressions.cs" />
     <Compile Include="Parser\ParserStatements.cs" />
@@ -189,6 +186,7 @@
     <Compile Include="TestSuite\IfTest.cs" />
     <Compile Include="TestSuite\OperatorTest.cs" />
     <Compile Include="TestSuite\ProcedureTest.cs" />
+    <Compile Include="TestSuite\ReadTest.cs" />
     <Compile Include="TestSuite\RedirectedOutputTest.cs" />
     <Compile Include="TestSuite\WhileTest.cs" />
   </ItemGroup>

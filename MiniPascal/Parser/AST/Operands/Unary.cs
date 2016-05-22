@@ -30,6 +30,10 @@
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
+            if (Reference)
+            {
+                throw new InvalidByReferenceException();
+            }
             factor.EmitIR(Emitter, false);
             Type.UnaryOperation(oper).EmitIR(Emitter);
         }

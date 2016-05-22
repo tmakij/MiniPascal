@@ -36,7 +36,7 @@
                 {
                     if (!variable.Type.SimpleType.Equals(assigmentType.SimpleType))
                     {
-                        throw new System.Exception("Expected " + variable.Type.SimpleType + " but was " + assigmentType.SimpleType);
+                        throw new InvalidSimpleTypeException(assigmentType.SimpleType, variable.Type.SimpleType);
                     }
                 }
                 else
@@ -46,10 +46,19 @@
             }
             if (reference.ArrayIndex != null)
             {
-                if (!reference.ArrayIndex.NodeType(Current).SimpleType.Equals(SimpleType.Integer))
+                if (assigmentType.IsArray)
                 {
-                    throw new System.Exception();
+                    throw new ArrayAssigmentExpection(type.SimpleType, assigmentType);
                 }
+                MiniPascalType indexType = reference.ArrayIndex.NodeType(Current);
+                if (!indexType.Equals(MiniPascalType.Integer))
+                {
+                    throw new InvalidArrayIndexTypeException(indexType);
+                }
+            }
+            else if (reference.ArrayIndex == null && variable.Type.IsArray && !assigmentType.IsArray)
+            {
+                throw new InvalidArrayIndexTypeException(null);
             }
         }
 

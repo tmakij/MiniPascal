@@ -7,10 +7,16 @@ namespace MiniPascal.TestSuite
     [TestFixture]
     public abstract class RedirectedOutputTest
     {
-        protected string output { get { return proc.StandardOutput.ReadToEnd(); } }
+        protected string output
+        {
+            get
+            {
+                return proc.StandardOutput.ReadToEnd();
+            }
+        }
         private Process proc;
 
-        protected void Redirect(string FirstBlockInput)
+        protected void Redirect(string FirstBlockInput, params string[] ToInput)
         {
             const string binaryName = "TestBinary";
             const string binaryNameExe = binaryName + ".exe";
@@ -28,7 +34,15 @@ namespace MiniPascal.TestSuite
             proc.StartInfo.FileName = fullName;
             proc.StartInfo.UseShellExecute = false;
             proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.RedirectStandardInput = true;
+
             proc.Start();
+
+            foreach (string toInput in ToInput)
+            {
+                proc.StandardInput.WriteLine(toInput);
+            }
+
             proc.WaitForExit(7500);
         }
 

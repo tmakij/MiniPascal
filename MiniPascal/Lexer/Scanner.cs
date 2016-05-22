@@ -38,7 +38,7 @@ namespace MiniPascal.Lexer
             }
             if (!currentState.Equals(scannerStates.Base))
             {
-                throw new LexerException("Unexpected end of input");
+                throw new LexerException("Unexpected end of input", constr.Line);
             }
             constr.End(Symbol.EndOfInput);
             return constr.CreateStream();

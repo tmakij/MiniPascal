@@ -20,7 +20,7 @@
             {
                 return States.Comment;
             }
-            throw new LexerException("Invalid comment start");
+            throw new LexerException("Invalid comment start", Current.Line);
         }
     }
 }

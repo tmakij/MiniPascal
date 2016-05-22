@@ -29,9 +29,10 @@
             Type = variable.Type;
             if (reference.ArrayIndex != null)
             {
-                if (!reference.ArrayIndex.NodeType(Current).Equals(MiniPascalType.Integer))
+                MiniPascalType refType = reference.ArrayIndex.NodeType(Current);
+                if (!refType.Equals(MiniPascalType.Integer))
                 {
-                    throw new System.Exception("Expected " + MiniPascalType.Integer);
+                    throw new InvalidArrayIndexTypeException(refType);
                 }
                 if (Type.SimpleType.Equals(SimpleType.Boolean))
                 {
@@ -57,15 +58,21 @@
         {
             if (Reference)
             {
-                Emitter.LoadVariableAddress(reference.Name);
+                if (Type.IsArray && reference.ArrayIndex != null)
+                {
+                    Emitter.LoadVariable(reference.Name);
+                    reference.ArrayIndex.EmitIR(Emitter, false);
+                    Emitter.LoadArrayIndexAddress(Type);
+                }
+                else
+                {
+                    Emitter.LoadVariableAddress(reference.Name);
+                }
+
             }
             else if (variable.IsReference)
             {
                 Emitter.LoadReferenceVariable(variable);
-                if (reference.ArrayIndex != null)
-                {
-                    throw new System.NotSupportedException();
-                }
             }
             else
             {

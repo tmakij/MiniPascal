@@ -5,13 +5,13 @@ namespace MiniPascal.Lexer
 {
     public sealed class TokenConstruction
     {
+        public int Line { get; private set; }
         private readonly StringBuilder curr = new StringBuilder();
         private readonly List<Token> tokens = new List<Token>();
-        private int line = 1;
 
         public void IncrementLines()
         {
-            line++;
+            Line++;
         }
 
         public TokenStream CreateStream()
@@ -32,7 +32,7 @@ namespace MiniPascal.Lexer
         public void End(Symbol ID)
         {
             string res = TokenText(ID);
-            Token t = new Token(res, ID, line);
+            Token t = new Token(res, ID, Line);
             tokens.Add(t);
             /*
             string dbg;

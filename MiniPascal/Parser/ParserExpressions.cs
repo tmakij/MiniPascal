@@ -152,15 +152,8 @@ namespace MiniPascal.Parser
             string lex;
             if (AcceptWithLexeme(Symbol.RealLiteral, out lex))
             {
-                try
-                {
-                    float val = float.Parse(lex, CultureInfo.InvariantCulture);
-                    return new RealLiteral(val);
-                }
-                catch (OverflowException)
-                {
-                    throw new IntegerParseOverflowException(lex);
-                }
+                float val = float.Parse(lex, CultureInfo.InvariantCulture);
+                return new RealLiteral(val);
             }
             return null;
         }
@@ -170,15 +163,8 @@ namespace MiniPascal.Parser
             string lex;
             if (AcceptWithLexeme(Symbol.IntegerLiteral, out lex))
             {
-                try
-                {
-                    int val = int.Parse(lex);
-                    return new IntegerLiteralOperand(val);
-                }
-                catch (OverflowException)
-                {
-                    throw new IntegerParseOverflowException(lex);
-                }
+                int val = int.Parse(lex);
+                return new IntegerLiteralOperand(val);
             }
             return null;
         }

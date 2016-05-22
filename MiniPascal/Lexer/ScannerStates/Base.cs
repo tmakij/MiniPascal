@@ -117,7 +117,7 @@
                     Current.End(Symbol.IndexClose);
                     return this;
             }
-            throw new LexerException("Invalid character " + Read);
+            throw new LexerException("Invalid character " + Read, Current.Line);
         }
     }
 }

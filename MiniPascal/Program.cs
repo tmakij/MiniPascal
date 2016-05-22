@@ -11,17 +11,14 @@ namespace MiniPascal
     {
         private static int Main(string[] args)
         {
-            /*Console.WriteLine(@"aaa \"" \"" aaa");
-            Console.ReadKey();
-            return 0;*/
             if (args.Length != 1)
             {
-                //return Error("The program accepts one, and only one, argument, which is the path to the source");
+                return Error("The program accepts one, and only one, argument, which is the path to the source");
             }
             try
             {
-                //string sourcePath = args[0];
-                using (StreamReader sr = new StreamReader("test.txt", Encoding.UTF8))
+                string sourcePath = args[0];
+                using (StreamReader sr = new StreamReader(sourcePath, Encoding.UTF8))
                 {
                     SourceStream source = new SourceStream(sr);
                     Compiler.Compile(source, Environment.CurrentDirectory);
@@ -48,6 +45,10 @@ namespace MiniPascal
             {
                 return Error("Type mismatch: Expected \"" + ex.Expected + "\" but \"" + ex.Found + "\" was found");
             }
+            catch (InvalidSimpleTypeException ex)
+            {
+                return Error("Type mismatch: Expected \"" + ex.Expected + "\" but \"" + ex.Found + "\" was found");
+            }
             catch (VariableNameDefinedException ex)
             {
                 return Error("Variable \"" + ex.Identifier + "\" is defined more than once");
@@ -56,17 +57,25 @@ namespace MiniPascal
             {
                 return Error("Operator \"" + ex.Operator + "\" is not defined for the type " + ex.Type);
             }
-            catch (AssertationExecption)
+            catch (InvalidByReferenceException)
             {
-                return Error("Assertation failure");
+                return Error("Only variables can be passed by reference");
             }
-            catch (IntegerParseOverflowException ex)
+            catch (InvalidParameterCountException ex)
             {
-                return Error("Given integer (" + ex.Value + ") is not in the valid range [" + int.MinValue + " - +" + int.MaxValue + "]");
+                return Error("Invalid amount of paramaters on method call: expected " + ex.Expected + " but " + ex.Found + " was found");
             }
-            catch (IntegerFormatException ex)
+            catch (InvalidArrayIndexTypeException ex)
             {
-                return Error("Given value \"" + ex.ParseAttempt + "\" is not an integer");
+                return Error("Invalid array index type found expected integer but " + (ex.Found?.ToString() ?? "none") + " was found");
+            }
+            catch (ArrayAssigmentExpection ex)
+            {
+                return Error("Invalid array assigment: expected " + ex.Expected + " but " + ex.Found + " was found");
+            }
+            catch (ArrayRequiredException ex)
+            {
+                return Error("Invalid .size operator usage: expected array but " + ex.Found + " was found");
             }
             catch (InvalidTypeException ex)
             {
@@ -86,7 +95,6 @@ namespace MiniPascal
         private static int Error(string Message)
         {
             Console.Error.WriteLine(Message);
-            //Console.ReadKey();
             return -1;
         }
     }

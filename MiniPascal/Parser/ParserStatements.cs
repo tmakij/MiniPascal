@@ -308,17 +308,5 @@ namespace MiniPascal.Parser
             } while (Accept(Symbol.Comma));
             return parameters;
         }
-
-        private VariableReferences ReadVariables()
-        {
-            VariableReferences vars = new VariableReferences();
-            do
-            {
-                Identifier variable = Identifier();
-                VariableReference varRef = ReadVariableReference(variable);
-                vars.Add(varRef);
-            } while (Accept(Symbol.Comma));
-            return vars;
-        }
     }
 }

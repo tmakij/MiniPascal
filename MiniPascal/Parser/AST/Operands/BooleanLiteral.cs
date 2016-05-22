@@ -22,6 +22,10 @@
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
+            if (Reference)
+            {
+                throw new InvalidByReferenceException();
+            }
             int booleanValue = literal ? 1 : 0;
             Emitter.PushInt32(booleanValue);
         }

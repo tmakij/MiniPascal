@@ -28,7 +28,11 @@
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
-            Emitter.CallRead(variable.Type);
+            if (Reference)
+            {
+                throw new InvalidByReferenceException();
+            }
+            Emitter.CallRead(Type);
         }
     }
 }

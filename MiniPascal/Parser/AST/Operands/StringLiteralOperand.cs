@@ -21,6 +21,10 @@
 
         public void EmitIR(CILEmitter Emitter, bool Reference)
         {
+            if (Reference)
+            {
+                throw new InvalidByReferenceException();
+            }
             Emitter.PushString(literal);
         }
     }
